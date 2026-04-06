@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mockify Result</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --surface2: #1c1c27;
+      --border: #2a2a3d;
+      --accent: #6c63ff;
+      --accent2: #ff6584;
+      --accent3: #43e97b;
+      --text: #e8e8f0;
+      --text-dim: #8888aa;
+      --danger: #ff4d6d;
+      --warn: #ffd166;
+      --success: #43e97b;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 8px 32px rgba(0,0,0,0.4);
+      --glow: 0 0 40px rgba(108,99,255,0.15);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(108,99,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(108,99,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none; z-index: 0;
+    }
+
+    .page { min-height: 100vh; position: relative; z-index: 1; display: flex; flex-direction: column; }
+
+    .navbar {
+      display: flex; align-items: center;
+      background: rgba(19,19,26,0.9);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      position: sticky; top: 0; z-index: 50;
+    }
+
+    .nav-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.4px;
+    }
+
+    .nav-spacer { flex: 1; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 13px 24px;
+      border: none; border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(108,99,255,0.35);
+    }
+
+    .btn-primary:hover { background: #7c75ff; transform: translateY(-1px); box-shadow: 0 6px 28px rgba(108,99,255,0.45); }
+
+    .btn-secondary {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    .result-body {
+      flex: 1; padding: 32px 24px;
+      max-width: 800px; width: 100%; margin: 0 auto;
+    }
+
+    .score-hero {
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 48px 32px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .score-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(108,99,255,0.12) 0%, transparent 60%);
+    }
+
+    .score-grade {
+      position: relative;
+      font-family: 'DM Mono', monospace;
+      font-size: 5rem; font-weight: 500;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .score-grade.excellent { color: var(--success); }
+    .score-grade.good { color: var(--accent); }
+    .score-grade.average { color: var(--warn); }
+    .score-grade.poor { color: var(--danger); }
+
+    .score-label {
+      position: relative;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .result-topic-label {
+      position: relative;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    .score-stats {
+      position: relative;
+      display: flex; justify-content: center; gap: 32px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .score-stat { text-align: center; }
+    .score-stat-val { font-family: 'DM Mono', monospace; font-size: 1.8rem; font-weight: 500; line-height: 1; }
+    .score-stat-lbl { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+    }
+
+    .questions-review { display: flex; flex-direction: column; gap: 12px; }
+
+    .review-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .review-card.correct { border-left: 3px solid var(--success); }
+    .review-card.incorrect { border-left: 3px solid var(--danger); }
+    .review-card.unanswered { border-left: 3px solid var(--text-dim); }
+
+    .review-q-head {
+      display: flex; align-items: flex-start; gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .review-q-num {
+      background: var(--surface2);
+      width: 28px; height: 28px; min-width: 28px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Mono', monospace; font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    .review-q-text {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .review-options { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+    .review-opt {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 0.85rem;
+      display: flex; align-items: center; gap: 8px;
+      min-width: 0;
+    }
+
+    .review-opt.is-correct { border-color: rgba(67,233,123,0.4); background: rgba(67,233,123,0.07); color: var(--success); }
+    .review-opt.is-wrong { border-color: rgba(255,77,109,0.4); background: rgba(255,77,109,0.07); color: var(--danger); }
+
+    .review-opt-key {
+      width: 22px; height: 22px; min-width: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.04);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    .error-box {
+      background: rgba(255,77,109,0.12);
+      border: 1px solid rgba(255,77,109,0.3);
+      color: var(--danger);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+      .score-grade { font-size: 3.4rem; }
+      .score-stats { gap: 18px; }
+    }
+
+    @media (max-width: 500px) {
+      .review-options { grid-template-columns: 1fr; }
+      .result-actions { flex-direction: column; }
+      .result-body { padding: 24px 16px 32px; }
+      .navbar { padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <nav class="navbar">
+      <a class="nav-logo" href="/index.html">Mockify</a>
+      <div class="nav-spacer"></div>
+    </nav>
+
+    <div class="result-body">
+      <div class="score-hero">
+        <div class="score-grade" id="result-grade">7/10</div>
+        <div class="score-label" id="result-label">Great job!</div>
+        <div class="result-topic-label" id="result-topic-label"></div>
+        <div class="score-stats">
+          <div class="score-stat">
+            <div class="score-stat-val" id="res-correct" style="color:var(--success)">7</div>
+            <div class="score-stat-lbl">Correct</div>
+          </div>
+          <div class="score-stat">
+            <div class="score-stat-val" id="res-wrong" style="color:var(--danger)">3</div>
+            <div class="score-stat-lbl">Wrong</div>
+          </div>
+          <div class="score-stat">
+            <div class="score-stat-val" id="res-pct" style="color:var(--accent)">70%</div>
+            <div class="score-stat-lbl">Score</div>
+          </div>
+          <div class="score-stat">
+            <div class="score-stat-val" id="res-time" style="color:var(--text-dim)">—</div>
+            <div class="score-stat-lbl">Time</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="section-title">Detailed Review</h3>
+      <div id="error-box" class="error-box"></div>
+      <div id="questions-review" class="questions-review"></div>
+
+      <div class="result-actions">
+        <button type="button" class="btn btn-secondary" onclick="window.location.href='/index.html'">← Dashboard</button>
+        <button type="button" class="btn btn-primary" onclick="window.location.href='/index.html'">Take Another Mock</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = 'http://localhost:5000/api';
+
+    function escapeHtml(s) {
+      if (s == null) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function formatTime(sec) {
+      const total = Number(sec || 0);
+      const m = Math.floor(total / 60);
+      const s = total % 60;
+      return `${m}:${String(s).padStart(2, '0')}`;
+    }
+
+    async function apiCall(path) {
+      const res = await fetch(API + path, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+      return data;
+    }
+
+    function renderResults(data) {
+      const pct = Number(data.percentage || 0);
+      const gradeEl = document.getElementById('result-grade');
+      gradeEl.textContent = `${data.score}/${data.total}`;
+      gradeEl.className = 'score-grade ' + (pct >= 80 ? 'excellent' : pct >= 60 ? 'good' : pct >= 40 ? 'average' : 'poor');
+
+      const labels = { excellent: '🏆 Outstanding!', good: '⭐ Great job!', average: '💪 Keep practicing', poor: '📖 Study more' };
+      document.getElementById('result-label').textContent = pct >= 80 ? labels.excellent : pct >= 60 ? labels.good : pct >= 40 ? labels.average : labels.poor;
+      document.getElementById('result-topic-label').textContent = `Topic: ${data.topic}`;
+      document.getElementById('res-correct').textContent = data.correct_answers;
+      document.getElementById('res-wrong').textContent = data.wrong_answers;
+      document.getElementById('res-pct').textContent = `${pct}%`;
+      document.getElementById('res-time').textContent = formatTime(data.time_taken);
+
+      const review = document.getElementById('questions-review');
+      review.innerHTML = (data.detailed || []).map((q, i) => {
+        const cls = q.user_answer == null ? 'unanswered' : q.is_correct ? 'correct' : 'incorrect';
+        const opts = ['A', 'B', 'C', 'D'].map(k => {
+          let optCls = '';
+          if (k === q.correct_answer) optCls = 'is-correct';
+          else if (k === q.user_answer && !q.is_correct) optCls = 'is-wrong';
+          return `<div class="review-opt ${optCls}">
+            <span class="review-opt-key">${k}</span>
+            <span>${escapeHtml(q.options[k])}</span>
+            ${k === q.correct_answer ? ' ✓' : ''}
+            ${k === q.user_answer && !q.is_correct ? ' ✗' : ''}
+          </div>`;
+        }).join('');
+        return `<div class="review-card ${cls}">
+          <div class="review-q-head">
+            <div class="review-q-num">${i + 1}</div>
+            <div class="review-q-text">${escapeHtml(q.question)}</div>
+          </div>
+          <div class="review-options">${opts}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function showError(message) {
+      const box = document.getElementById('error-box');
+      box.textContent = message;
+      box.style.display = 'block';
+    }
+
+    async function init() {
+      const params = new URLSearchParams(window.location.search);
+      const resultId = params.get('result_id');
+      const stored = sessionStorage.getItem('mockify_latest_result');
+
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (!resultId || String(parsed.result_id) === String(resultId)) {
+            renderResults(parsed);
+            sessionStorage.removeItem('mockify_latest_result');
+            return;
+          }
+        } catch (e) {}
+      }
+
+      if (!resultId) {
+        showError('No result selected. Go back to the dashboard and open a result.');
+        return;
+      }
+
+      try {
+        const data = await apiCall(`/results/${resultId}`);
+        renderResults(data);
+      } catch (e) {
+        showError(e.message);
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

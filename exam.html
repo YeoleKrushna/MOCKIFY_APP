@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mockify Exam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --surface2: #1c1c27;
+      --border: #2a2a3d;
+      --accent: #6c63ff;
+      --accent2: #ff6584;
+      --accent3: #43e97b;
+      --text: #e8e8f0;
+      --text-dim: #8888aa;
+      --danger: #ff4d6d;
+      --warn: #ffd166;
+      --success: #43e97b;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(108,99,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(108,99,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none; z-index: 0;
+    }
+
+    .page { min-height: 100vh; position: relative; z-index: 1; display: flex; flex-direction: column; }
+
+    .exam-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      background: rgba(19,19,26,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      position: sticky; top: 0; z-index: 30;
+      flex-wrap: wrap;
+    }
+
+    .exam-title {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+
+    .exam-title span {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+    }
+
+    .exam-title strong {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .timer-display {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .timer-display.warning { border-color: rgba(255,209,102,0.45); color: var(--warn); }
+    .timer-display.danger { border-color: rgba(255,77,109,0.45); color: var(--danger); }
+
+    .submit-exam-btn {
+      background: linear-gradient(135deg, var(--accent3), #06d6a0);
+      color: #000;
+      font-weight: 700;
+      border: none; border-radius: var(--radius-sm);
+      padding: 12px 28px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(67,233,123,0.3);
+    }
+
+    .submit-exam-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(67,233,123,0.4); }
+
+    .exam-body {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 24px 40px;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 24px;
+    }
+
+    .nav-panel, .question-area {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .nav-panel { padding: 20px; height: fit-content; }
+
+    .nav-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+
+    .question-area { padding: 32px; }
+
+    .q-counter {
+      font-size: 0.78rem; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      margin-bottom: 12px;
+    }
+
+    .q-text {
+      font-size: 1.1rem; line-height: 1.7;
+      margin-bottom: 28px;
+      color: var(--text);
+    }
+
+    .options-grid { display: flex; flex-direction: column; gap: 10px; }
+
+    .option-btn {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 18px;
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: left;
+      width: 100%;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+    }
+
+    .option-btn:hover:not(.selected) { border-color: rgba(108,99,255,0.4); }
+
+    .option-btn.selected {
+      border-color: var(--accent);
+      background: rgba(108,99,255,0.1);
+      color: var(--text);
+    }
+
+    .option-key {
+      width: 30px; height: 30px; min-width: 30px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem; font-weight: 500;
+      color: var(--text-dim);
+      transition: all 0.15s;
+    }
+
+    .option-btn.selected .option-key {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .exam-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 28px; padding-top: 24px;
+      border-top: 1px solid var(--border);
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 13px 24px;
+      border: none; border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+
+    .btn-secondary {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    .q-nav-btn {
+      width: 40px; height: 40px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text-dim);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem; font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .q-nav-btn.answered { border-color: var(--accent); color: var(--accent); background: rgba(108,99,255,0.1); }
+    .q-nav-btn.current { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 60;
+      padding: 20px;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal-box {
+      width: 100%; max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .modal-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; }
+    .modal-body { color: var(--text-dim); line-height: 1.6; margin-bottom: 18px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+    .loading-overlay {
+      position: fixed; inset: 0;
+      background: rgba(10,10,15,0.9);
+      backdrop-filter: blur(8px);
+      z-index: 70;
+      display: none;
+      flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 24px;
+    }
+
+    .loading-overlay.active { display: flex; }
+
+    .loading-icon {
+      width: 70px; height: 70px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-text {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      color: var(--text);
+    }
+
+    .loading-sub { color: var(--text-dim); font-size: 0.875rem; }
+
+    .error-box {
+      width: 100%;
+      max-width: 1120px;
+      margin: 24px auto 0;
+      background: rgba(255,77,109,0.12);
+      border: 1px solid rgba(255,77,109,0.3);
+      color: var(--danger);
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      display: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 900px) {
+      .exam-body { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px) {
+      .q-nav-btn { width: 36px; height: 36px; }
+      .exam-header { padding: 14px 16px; }
+      .exam-body { padding: 20px 16px 32px; }
+      .question-area { padding: 22px; }
+      .exam-nav { flex-direction: column; }
+      .exam-nav .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="loading-icon"></div>
+    <div class="loading-text">Preparing your exam...</div>
+    <div class="loading-sub" id="loading-sub">Loading questions</div>
+  </div>
+
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-title" id="modal-title">Are you sure?</div>
+      <div class="modal-body" id="modal-body">This action cannot be undone.</div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button type="button" class="btn btn-secondary" id="modal-confirm-btn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="error-box" class="error-box"></div>
+
+  <div class="page">
+    <div class="exam-header">
+      <div class="exam-title">
+        <span>Mockify Exam</span>
+        <strong id="exam-topic">Loading...</strong>
+      </div>
+      <div class="timer-display" id="timer-display">
+        <span>⏱</span>
+        <span id="timer-text">15:00</span>
+      </div>
+      <button type="button" class="submit-exam-btn" onclick="confirmSubmit(event)">Submit Exam</button>
+    </div>
+
+    <div class="exam-body">
+      <div class="nav-panel">
+        <div class="nav-label">Questions</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px" id="q-nav-grid"></div>
+        <div style="margin-top:18px">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+            <div style="width:12px;height:12px;border-radius:2px;background:var(--accent)"></div>
+            <span style="font-size:0.75rem;color:var(--text-dim)">Answered</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="width:12px;height:12px;border-radius:2px;border:2px solid var(--border)"></div>
+            <span style="font-size:0.75rem;color:var(--text-dim)">Unanswered</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="question-area">
+        <div class="q-counter" id="q-counter">Question 1 of 10</div>
+        <div class="q-text" id="q-text">Loading question...</div>
+        <div class="options-grid" id="options-grid"></div>
+        <div class="exam-nav">
+          <button type="button" class="btn btn-secondary" onclick="prevQuestion()">← Previous</button>
+          <button type="button" class="btn btn-secondary" onclick="nextQuestion()">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = 'http://localhost:5000/api';
+    let examQuestions = [];
+    let examAnswers = {};
+    let examMockId = null;
+    let examTopic = '';
+    let currentQuestion = 0;
+    let timerInterval = null;
+    let timerSeconds = 900;
+    let examStartTime = null;
+    let examSubmitInFlight = false;
+
+    function escapeHtml(s) {
+      if (s == null) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${m}:${String(s).padStart(2, '0')}`;
+    }
+
+    function showLoading(msg = 'Preparing your exam...', sub = 'Loading questions') {
+      document.getElementById('loading-overlay').classList.add('active');
+      document.querySelector('.loading-text').textContent = msg;
+      document.getElementById('loading-sub').textContent = sub;
+    }
+
+    function hideLoading() {
+      document.getElementById('loading-overlay').classList.remove('active');
+    }
+
+    function showError(message) {
+      const el = document.getElementById('error-box');
+      el.textContent = message;
+      el.style.display = 'block';
+    }
+
+    function openModal(title, body, onConfirm) {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-body').textContent = body;
+      document.getElementById('modal-confirm-btn').onclick = () => { closeModal(); onConfirm(); };
+      document.getElementById('modal-overlay').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('active');
+    }
+
+    async function apiCall(method, path, body) {
+      const opts = {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+      };
+      if (body) opts.body = JSON.stringify(body);
+      const res = await fetch(API + path, opts);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+      return data;
+    }
+
+    function openResultPage(resultId, resultData = null) {
+      if (resultData) {
+        sessionStorage.setItem('mockify_latest_result', JSON.stringify(resultData));
+      }
+      window.location.href = resultId ? `result.html?result_id=${resultId}` : 'result.html';
+    }
+
+    function loadExam(data) {
+      examQuestions = data.questions || [];
+      examMockId = data.mock_id;
+      examTopic = data.topic || 'Mock Test';
+      document.getElementById('exam-topic').textContent = examTopic;
+      buildNavGrid();
+      renderQuestion(0);
+      examStartTime = Date.now();
+      startTimer();
+    }
+
+    function buildNavGrid() {
+      const grid = document.getElementById('q-nav-grid');
+      grid.innerHTML = examQuestions.map((_, i) => `
+        <button type="button" class="q-nav-btn ${i === 0 ? 'current' : ''}" id="qnav-${i}" onclick="goToQuestion(${i})">${i + 1}</button>
+      `).join('');
+    }
+
+    function renderQuestion(idx) {
+      const q = examQuestions[idx];
+      if (!q) return;
+      document.getElementById('q-counter').textContent = `Question ${idx + 1} of ${examQuestions.length}`;
+      document.getElementById('q-text').textContent = q.question;
+
+      const grid = document.getElementById('options-grid');
+      grid.innerHTML = ['A', 'B', 'C', 'D'].map(key => {
+        const selected = examAnswers[idx] === key;
+        return `<button type="button" class="option-btn ${selected ? 'selected' : ''}" onclick="selectAnswer(${idx}, '${key}')">
+          <span class="option-key">${key}</span>
+          <span>${escapeHtml(q.options[key])}</span>
+        </button>`;
+      }).join('');
+
+      document.querySelectorAll('.q-nav-btn').forEach((b, i) => {
+        b.classList.remove('current', 'answered');
+        if (i === idx) b.classList.add('current');
+        else if (examAnswers[i]) b.classList.add('answered');
+      });
+
+      currentQuestion = idx;
+    }
+
+    function selectAnswer(qIdx, key) {
+      examAnswers[qIdx] = key;
+      renderQuestion(qIdx);
+    }
+
+    function goToQuestion(idx) { renderQuestion(idx); }
+    function nextQuestion() { if (currentQuestion < examQuestions.length - 1) renderQuestion(currentQuestion + 1); }
+    function prevQuestion() { if (currentQuestion > 0) renderQuestion(currentQuestion - 1); }
+
+    function updateTimerDisplay() {
+      const el = document.getElementById('timer-display');
+      document.getElementById('timer-text').textContent = formatTime(timerSeconds);
+      el.classList.remove('warning', 'danger');
+      if (timerSeconds <= 60) el.classList.add('danger');
+      else if (timerSeconds <= 180) el.classList.add('warning');
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      updateTimerDisplay();
+      timerInterval = setInterval(() => {
+        timerSeconds--;
+        updateTimerDisplay();
+        if (timerSeconds <= 0) {
+          clearInterval(timerInterval);
+          submitExam();
+        }
+      }, 1000);
+    }
+
+    function confirmSubmit(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      const answered = Object.keys(examAnswers).length;
+      const unanswered = examQuestions.length - answered;
+      if (unanswered > 0) {
+        openModal('Submit Exam?', `You have ${unanswered} unanswered question(s). Are you sure you want to submit?`, submitExam);
+      } else {
+        submitExam();
+      }
+    }
+
+    async function submitExam() {
+      if (examSubmitInFlight) return;
+      examSubmitInFlight = true;
+      clearInterval(timerInterval);
+      showLoading('Evaluating answers...', 'Calculating your score');
+
+      try {
+        const data = await apiCall('POST', '/results/submit', {
+          mock_id: examMockId,
+          answers: examAnswers,
+          time_taken: Math.round((Date.now() - examStartTime) / 1000)
+        });
+        openResultPage(data.result_id, data);
+      } catch (e) {
+        showError('Failed to submit: ' + e.message);
+      } finally {
+        examSubmitInFlight = false;
+        hideLoading();
+      }
+    }
+
+    async function init() {
+      showLoading();
+      const params = new URLSearchParams(window.location.search);
+      const mockId = params.get('mock_id');
+      const stored = sessionStorage.getItem('mockify_latest_exam');
+
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (!mockId || String(parsed.mock_id) === String(mockId)) {
+            loadExam(parsed);
+            sessionStorage.removeItem('mockify_latest_exam');
+            hideLoading();
+            return;
+          }
+        } catch (e) {}
+      }
+
+      if (!mockId) {
+        hideLoading();
+        showError('No mock selected. Go back to the dashboard and generate a mock first.');
+        return;
+      }
+
+      try {
+        const data = await apiCall('GET', `/mock/${mockId}`);
+        loadExam(data);
+      } catch (e) {
+        showError(e.message);
+      } finally {
+        hideLoading();
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
