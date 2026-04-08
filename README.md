@@ -1,97 +1,96 @@
-# Mockify
+# Mockify: AI-Powered Mock Test Platform 🚀
 
-Mockify is a Flask-based AI mock test platform where users can generate topic-based MCQ tests, attempt them in a timed exam view, and review detailed results.
+**Containerized Deployment using Docker and AWS EC2**
 
-## Features
+## 📖 Introduction
+**Mockify** is an AI-powered mock test web application designed to help users practice any topic instantly. 
+* **Tech Stack:** Developed using Flask (Backend), HTML, CSS, and JavaScript (Frontend) for full-stack web development.
+* **Core Functionality:** Allows users to generate, attempt, and analyze MCQ-based tests in a structured, personalized way.
+* **Infrastructure:** Focuses on a containerized deployment approach using Docker for consistency and portability, hosted on an AWS EC2 instance.
 
-- User registration and login
-- Admin dashboard
-- AI-generated 10-question MCQ mocks
-- Separate dashboard, exam, and result pages
-- Result history
-- Per-user daily mock limits
-- Admin-only limit management
-- Retry, cooldown, caching, and fallback handling for AI generation
+## ⚠️ Problem Statement
+In traditional systems, generating and practicing topic-specific tests is often manual and time-consuming. Users rely on static question banks, which lack flexibility and personalization. Additionally, deploying full-stack applications manually can lead to configuration issues, inconsistencies, and errors. Managing dependencies and environment setup across systems becomes difficult without proper standardization. 
 
-## Tech Stack
+There is a distinct need for an intelligent system that can generate dynamic tests, paired with a deployment approach that ensures consistency, scalability, and efficiency.
 
-- Backend: Flask, SQLAlchemy, Werkzeug
-- Frontend: HTML, CSS, JavaScript
-- Database: SQLite
-- AI provider: Groq API
-- Auth: Flask session-based auth
+---
 
-## Project Structure
+## 🏗️ System Architecture
 
-```text
-Mockify/
-+-- app.py
-+-- auth.py
-+-- admin.py
-+-- mock.py
-+-- results.py
-+-- database.py
-+-- index.html
-+-- exam.html
-+-- result.html
-+-- requirements.txt
-+-- .env.example
-+-- .gitignore
-+-- README.md
-```
+![System Architecture](images/archi.png)
 
-## Run Locally
+### Architecture Flow:
+1. **User Request:** The user accesses the application through their web browser.
+2. **Frontend to Backend:** The frontend sends HTTP API requests to the Flask backend running inside a Docker Container on AWS EC2.
+3. **Logic Processing:** The backend processes the request and handles the core application logic.
+4. **AI Generation:** The backend calls the **Groq API** to dynamically generate multiple-choice questions (MCQs) based on the user's prompt.
+5. **Data Handling:** The Groq API returns the generated questions, which the backend then stores in a local **SQLite Database**. Data is also retrieved from this DB for user history.
+6. **Response:** The backend sends the structured response back to the frontend.
+7. **Display:** The frontend renders the dynamic UI, displaying the test or results to the user.
 
-1. Create and activate a virtual environment
-2. Install dependencies
-3. Add your `.env`
-4. Start the app
+---
 
-```bash
-pip install -r requirements.txt
-python app.py
-```
+## 🛠️ Implementation & Deployment Guide
 
-Open:
+The following steps detail the end-to-end deployment of Mockify on AWS using Docker.
 
-```text
-http://127.0.0.1:5000/
-```
+### Step 1: AWS EC2 Provisioning & Security Groups
+First, an AWS EC2 instance is launched. To allow web traffic and SSH access, inbound rules are configured in the Security Group.
+![EC2 Instance and Security Groups](ec2.png)
+* **Ports Opened:** * `22` (SSH) for terminal access.
+  * `80` (HTTP) and `443` (HTTPS) for standard web traffic.
+  * `5000` (Custom TCP) specifically exposed for the Flask application.
 
-## Main Pages
+### Step 2: Installing Docker on EC2
+Using EC2 Instance Connect, we access the terminal and install Docker to containerize our application.
+![Install Docker](images/docker_install.png)
+* Command used: `sudo yum install docker -y`
 
-- `/` -> auth + dashboard
-- `/index.html` -> auth + dashboard
-- `/exam.html` -> exam page
-- `/result.html` -> result page
+Once installed, the Docker service is started to allow container execution.
+![Start Docker Service](images/start_docker.png)
+* Command used: `sudo service docker start`
 
-## API Routes
+We verify the installation by checking the Docker version.
+![Check Docker Version](images/verify_docker.png)
+* Command used: `docker --version` (Running version 25.0.14).
 
-### Auth
+### Step 3: Cloning the Repository
+The source code is pulled directly from GitHub onto the EC2 instance.
+![Git Clone](images/clone_repo.png)
+* Command used: `git clone https://github.com/YeoleKrushna/MOCKIFY_APP.git`
+* Navigated into the directory using `cd MOCKIFY_APP`.
 
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `POST /api/auth/logout`
-- `GET /api/auth/me`
+### Step 4: Configuring the Dockerfile
+To ensure the application runs consistently, a `Dockerfile` is used to define the environment. 
+![Dockerfile Configuration](images/docker_file.png)
+* The image uses `python:3.10-slim`.
+* It installs dependencies from `requirements.txt`.
+* Exposes port `5000` and sets the command to run `app.py`.
 
-### Mock
+### Step 5: Building the Docker Image
+With the environment defined, the Docker image is built locally on the EC2 instance.
+![Docker Build](images/building_dock_img.png)
+* Command used: `docker build -t mockify .`
+* *(Note: Environment variables, such as API keys, are configured using a `.env` file prior to running the container).*
 
-- `POST /api/mock/generate`
-- `GET /api/mock/<mock_id>`
-- `GET /api/mock/history`
+### Step 6: Application Access & UI
+Once the container is running and port mapping is established, the application is live and accessible via the EC2 instance's Public IP address on port `5000`.
 
-### Results
+**Sign-In Page:**
+![Mockify Sign In](images/login.png)
+* Users are greeted with a clean, responsive authentication page to secure their personalized test data.
 
-- `POST /api/results/submit`
-- `GET /api/results/<result_id>`
-- `GET /api/results/history`
+**User Dashboard:**
+![Mockify Dashboard](images/main_ui.png)
+* Users can input custom topics (e.g., "OOP in Python", "Data Structures") to generate instant 10-question MCQs.
+* The dashboard tracks daily mock limits, total mocks taken, best scores, and provides a history of past results.
 
-### Admin
+---
 
-- `GET /api/admin/stats`
-- `GET /api/admin/users`
-- `PUT /api/admin/users/<id>/limit`
-- `DELETE /api/admin/users/<id>`
-- `GET /api/admin/mocks`
-- `GET /api/admin/results`
-
+## 🎯 Applications & Use Cases
+* **Students:** For targeted, topic-wise practice tests.
+* **Job Seekers:** Helps in preparing for aptitude and technical exams (e.g., TCS NQT, Software Engineering interviews).
+* **Quick Revision:** Highly useful for rapid assessment before exams or interviews.
+* **Educational Institutions:** Can be utilized in colleges for quick, dynamic mock assessments.
+* **Self-Learning:** Supports independent study through instant feedback and result analysis.
+* **E-Learning Platforms:** Applicable as an integrable tool within larger online test and education systems.
