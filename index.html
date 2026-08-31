@@ -5,10 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0f">
 <meta name="description" content="Mockify turns any topic into a focused AI-generated mock test — choose your time, take the test, and learn from every mistake.">
-<title>Mockify — AI Mock Tests</title>
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://mockify.tech/">
+<meta property="og:title" content="Mockify | AI Mock Test Generator & MCQ Practice">
+<meta property="og:description" content="Create a focused AI-generated mock test for any topic, set your time limit, and review what to study next.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mockify.tech/">
+<meta property="og:site_name" content="Mockify">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mockify | AI Mock Test Generator & MCQ Practice">
+<meta name="twitter:description" content="Create a focused AI-generated mock test for any topic, set your time limit, and review what to study next.">
+<title>Mockify | AI Mock Test Generator & MCQ Practice</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='32' y2='32'%3E%3Cstop stop-color='%236c63ff'/%3E%3Cstop offset='1' stop-color='%23ff6584'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='%230a0a0f'/%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)' fill-opacity='0.92'/%3E%3Cpath d='M9 20V12L16 17L23 12V20' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='32' y2='32'%3E%3Cstop stop-color='%236c63ff'/%3E%3Cstop offset='1' stop-color='%23ff6584'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Cpath d='M9 20V12L16 17L23 12V20' stroke='white' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -762,6 +773,9 @@
   .footer-col h5 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-faint); margin-bottom: 14px; font-weight: 600; }
   .footer-col a { display: block; color: var(--text-dim); font-size: 0.87rem; text-decoration: none; margin-bottom: 10px; }
   .footer-col a:hover { color: var(--text); }
+  .footer-col span, .footer-action { display: block; color: var(--text-dim); font: inherit; font-size: 0.87rem; margin-bottom: 10px; }
+  .footer-action { padding: 0; border: 0; background: transparent; cursor: pointer; text-align: left; }
+  .footer-action:hover { color: var(--text); }
 
   .footer-bottom {
     display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
@@ -805,7 +819,7 @@
     display: flex; flex-direction: column; align-items: center; gap: 10px;
   }
 
-  .auth-logo h1 {
+  .auth-logo h1, .auth-brand-name {
     font-family: 'DM Serif Display', serif;
     font-size: 2.4rem;
     letter-spacing: -0.01em;
@@ -906,11 +920,22 @@
     font-size: 0.75rem; font-weight: 500;
   }
 
-  .nav-user {
-    display: flex; align-items: center; gap: 10px;
-    color: var(--text-dim); font-size: 0.875rem;
-    flex-wrap: wrap;
+.nav-user {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-dim);
+  font-size: 0.875rem;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+@media (max-width: 700px) {
+  .nav-user > span {
+    display: none !important;
   }
+}
 
   .nav-avatar {
     width: 34px; height: 34px;
@@ -1576,6 +1601,9 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 </style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"Mockify","url":"https://mockify.tech/","description":"An AI-powered mock test platform for topic-based MCQ practice."},{"@type":"Organization","name":"Mockify","url":"https://mockify.tech/"},{"@type":"SoftwareApplication","name":"Mockify","applicationCategory":"EducationalApplication","url":"https://mockify.tech/","description":"An AI-powered mock test platform that generates topic-based multiple-choice practice tests with timed sessions and answer review."}]}
+</script>
 </head>
 <body>
 
@@ -1611,6 +1639,7 @@
     <a href="#features" onclick="closeMobileNav()">Features</a>
     <a href="#how-it-works" onclick="closeMobileNav()">How It Works</a>
     <a href="#why-mockify" onclick="closeMobileNav()">Why Mockify</a>
+    <a href="#use-cases" onclick="closeMobileNav()">Use Cases</a>
     <a href="#faq" onclick="closeMobileNav()">FAQ</a>
   </nav>
   <div class="mobile-nav-actions">
@@ -1624,8 +1653,9 @@
 ═══════════════════════════════════════════ -->
 <div class="page active" id="home-page">
 
-  <nav class="site-nav" id="site-nav">
-    <a href="#home-page" class="brand" aria-label="Mockify home">
+  <header>
+  <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+    <a href="/" class="brand" aria-label="Mockify home">
       <span class="logo-mark" aria-hidden="true">
         <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
           <rect width="32" height="32" rx="9" fill="url(#mg2)"/>
@@ -1639,6 +1669,7 @@
       <a href="#features">Features</a>
       <a href="#how-it-works">How It Works</a>
       <a href="#why-mockify">Why Mockify</a>
+      <a href="#use-cases">Use Cases</a>
       <a href="#faq">FAQ</a>
     </div>
     <div class="nav-spacer"></div>
@@ -1648,6 +1679,7 @@
       <button type="button" class="nav-toggle" id="nav-toggle-btn" aria-label="Open menu" onclick="openMobileNav()"><span></span></button>
     </div>
   </nav>
+  </header>
 
   <main class="home-main">
 
@@ -1657,7 +1689,7 @@
       <div class="wrap hero-grid">
         <div>
           <span class="eyebrow-badge"><span class="dot"></span>AI-powered mock testing</span>
-          <h1 class="hero-headline">Turn any topic into a mock test.</h1>
+          <h1 class="hero-headline">AI mock tests and MCQ practice for any topic.</h1>
           <p class="hero-sub">Describe what you want to practice. Mockify writes a focused set of questions, lets you pick your own time limit, and shows you exactly what to review afterward.</p>
           <div class="hero-ctas">
             <button type="button" class="btn btn-primary btn-lg" onclick="openAuth('register')">Start Practicing Free</button>
@@ -1833,7 +1865,7 @@
       <div class="wrap">
         <div class="section-head">
           <h2 class="headline">Practice for whatever you're preparing for</h2>
-          <p class="section-copy">Mockify adapts to the topic you give it.</p>
+          <p class="section-copy">Use Mockify as a topic-based practice test generator for academic revision, technical interview preparation, developer concepts, data science and ML, aptitude, or general learning. Choose the topic and duration; Mockify creates a focused 10-question MCQ practice session.</p>
         </div>
         <div class="usecase-chips">
           <div class="usecase-chip"><span class="uc-icon">🎓</span>Students & academics</div>
@@ -1923,20 +1955,20 @@
         </div>
         <div class="footer-col">
           <h5>Navigate</h5>
-          <a href="#home-page">Home</a>
+          <a href="/">Home</a>
           <a href="#features">Features</a>
           <a href="#how-it-works">How It Works</a>
           <a href="#faq">FAQ</a>
         </div>
         <div class="footer-col">
           <h5>Product</h5>
-          <a href="javascript:void(0)" onclick="openAuth('login')">Sign In</a>
-          <a href="javascript:void(0)" onclick="openAuth('register')">Get Started</a>
+          <button type="button" class="footer-action" onclick="openAuth('login')">Sign In</button>
+          <button type="button" class="footer-action" onclick="openAuth('register')">Get Started</button>
         </div>
         <div class="footer-col">
           <h5>Legal</h5>
-          <a href="javascript:void(0)">Privacy</a>
-          <a href="javascript:void(0)">Terms</a>
+          <span>Privacy policy coming soon</span>
+          <span>Terms coming soon</span>
         </div>
       </div>
       <div class="footer-bottom">
@@ -1963,7 +1995,7 @@
           <defs><linearGradient id="mg4" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#6c63ff"/><stop offset="1" stop-color="#ff6584"/></linearGradient></defs>
         </svg>
       </span>
-      <h1>Mockify</h1>
+      <div class="auth-brand-name">Mockify</div>
       <p>AI-powered mock tests, tailored for you</p>
     </div>
 
