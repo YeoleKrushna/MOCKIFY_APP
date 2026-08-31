@@ -41,8 +41,9 @@ def valid_email(email):
         len(email) <= 150
         and bool(
             re.fullmatch(
-                r"[^\s@]+@[^\s@]+\.[^\s@]+",
-                email
+                r"[A-Za-z0-9._%+-]+@gmail\.com",
+                email,
+                re.IGNORECASE
             )
         )
     )
@@ -644,7 +645,7 @@ def register():
 
         return jsonify({
             "error": (
-                "Please provide a valid email address."
+                "Please use a valid Gmail address ending with @gmail.com."
             )
         }), 400
 
@@ -702,7 +703,7 @@ def request_otp():
 
         return jsonify({
             "error": (
-                "Please provide a valid email address."
+                "Please use a valid Gmail address ending with @gmail.com."
             )
         }), 400
 
@@ -763,7 +764,7 @@ def verify_otp():
 
         return jsonify({
             "error": (
-                "Please provide a valid email address."
+                "Please use a valid Gmail address ending with @gmail.com."
             )
         }), 400
 

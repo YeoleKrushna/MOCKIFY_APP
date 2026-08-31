@@ -40,6 +40,7 @@ class User(db.Model, OTPFields):
     mocks = db.relationship("Mock", backref="user", lazy=True, cascade="all, delete-orphan", passive_deletes=True)
     results = db.relationship("Result", backref="user", lazy=True, cascade="all, delete-orphan", passive_deletes=True)
     otp_events = db.relationship("OTPEvent", backref="user", lazy=True, cascade="all, delete-orphan", passive_deletes=True)
+    feedback = db.relationship("Feedback", backref="user", lazy=True, cascade="all, delete-orphan", passive_deletes=True)
 
     def reset_daily_count_if_needed(self):
         if self.last_reset_date != date.today():
@@ -73,7 +74,6 @@ class PendingOTP(db.Model, OTPFields):
 
 
 class OTPEvent(db.Model):
-    """Delivery metadata only; plaintext OTP values are never persisted."""
     __tablename__ = "otp_events"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), index=True)
@@ -111,6 +111,21 @@ class Result(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False, index=True)
 
 
+class Feedback(db.Model):
+    __tablename__ = "feedback"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(150), nullable=False, index=True)
+    category = db.Column(db.String(30), nullable=False, default="general")
+    message = db.Column(db.Text, nullable=False)
+    image_name = db.Column(db.String(255))
+    image_mime = db.Column(db.String(100))
+    image_size = db.Column(db.Integer)
+    status = db.Column(db.String(20), nullable=False, default="pending")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False, index=True)
+
+
 def _column_additions():
     pg = db.engine.dialect.name == "postgresql"
     boolean = "BOOLEAN NOT NULL DEFAULT " + ("TRUE" if pg else "1")
@@ -122,6 +137,10 @@ def _column_additions():
             "otp_last_sent_at": datetime_type, "otp_request_count": "INTEGER NOT NULL DEFAULT 0",
             "otp_request_window_started_at": datetime_type, "last_seen_at": datetime_type,
             "last_login_at": datetime_type,
+        },
+        "otp_events": {
+            "event_type": "VARCHAR(50) NOT NULL DEFAULT 'verification'",
+            "ip_address": "VARCHAR(64)",
         },
         "mocks": {"timer_minutes": "INTEGER NOT NULL DEFAULT 15"},
         "results": {"explanations": "TEXT NOT NULL DEFAULT '{}'"},
@@ -143,13 +162,19 @@ def _upgrade_existing_tables():
 
 
 def init_db():
-    """Create new tables and make narrowly scoped upgrades to legacy SQLite/Postgres schemas."""
     db.create_all()
     _upgrade_existing_tables()
-    # Never create a public default password. Bootstrap is explicit and one-time.
     email = os.environ.get("BOOTSTRAP_ADMIN_EMAIL", "").strip().lower()
     password = os.environ.get("BOOTSTRAP_ADMIN_PASSWORD", "")
     if email and password and not User.query.filter_by(email=email).first():
         from werkzeug.security import generate_password_hash
-        db.session.add(User(name=os.environ.get("BOOTSTRAP_ADMIN_NAME", "Administrator").strip() or "Administrator", email=email, password_hash=generate_password_hash(password), email_verified=True, is_admin=True, is_super_admin=os.environ.get("BOOTSTRAP_SUPER_ADMIN", "false").lower() == "true", daily_mock_limit=999))
+        db.session.add(User(
+            name=os.environ.get("BOOTSTRAP_ADMIN_NAME", "Administrator").strip() or "Administrator",
+            email=email,
+            password_hash=generate_password_hash(password),
+            email_verified=True,
+            is_admin=True,
+            is_super_admin=os.environ.get("BOOTSTRAP_SUPER_ADMIN", "false").lower() == "true",
+            daily_mock_limit=999,
+        ))
         db.session.commit()

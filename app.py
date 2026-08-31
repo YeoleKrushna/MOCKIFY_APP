@@ -21,6 +21,7 @@ from admin import admin_bp  # noqa: E402
 from analytics import analytics_bp  # noqa: E402
 from auth import auth_bp  # noqa: E402
 from database import db, init_db  # noqa: E402
+from feedback import feedback_bp  # noqa: E402
 from mock import mock_bp  # noqa: E402
 from results import results_bp  # noqa: E402
 
@@ -37,7 +38,11 @@ if is_production and not secret_key:
 
 database_url = os.environ.get("DATABASE_URL", "").strip()
 if database_url.startswith("postgres://"):
-    database_url = "postgresql://" + database_url[len("postgres://"):]
+    database_url = "postgresql+psycopg://" + database_url[len("postgres://"):]
+
+elif database_url.startswith("postgresql://"):
+    database_url = "postgresql+psycopg://" + database_url[len("postgresql://"):]
+    
 if not database_url:
     database_url = f"sqlite:///{BASE_DIR / 'instance' / 'mockify.db'}"
 
@@ -64,7 +69,7 @@ cors_origins = [item.strip() for item in os.environ.get("CORS_ORIGINS", default_
 CORS(app, resources={r"/api/*": {"origins": cors_origins}}, supports_credentials=True)
 
 db.init_app(app)
-for blueprint, prefix in ((auth_bp, "/api/auth"), (mock_bp, "/api/mock"), (admin_bp, "/api/admin"), (results_bp, "/api/results"), (analytics_bp, "/api/analytics")):
+for blueprint, prefix in ((auth_bp, "/api/auth"), (mock_bp, "/api/mock"), (admin_bp, "/api/admin"), (results_bp, "/api/results"), (analytics_bp, "/api/analytics"), (feedback_bp, "/api/feedback")):
     app.register_blueprint(blueprint, url_prefix=prefix)
 
 
@@ -84,7 +89,7 @@ def secure_response(response):
         "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
         "Content-Security-Policy": "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'",
     })
-    if request.path.startswith("/api/") and ("auth" in request.path or "admin" in request.path or "results" in request.path):
+    if request.path.startswith("/api/") and ("auth" in request.path or "admin" in request.path or "results" in request.path or "feedback" in request.path):
         response.headers["Cache-Control"] = "no-store, private"
     return response
 

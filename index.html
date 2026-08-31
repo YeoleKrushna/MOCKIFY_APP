@@ -199,6 +199,13 @@
 
   .nav-spacer { flex: 1; }
 
+  .navbar-feedback-link {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+
   .site-nav-actions { display: flex; align-items: center; gap: 10px; }
 
   .nav-toggle {
@@ -935,6 +942,48 @@
   .nav-user > span {
     display: none !important;
   }
+
+  .navbar {
+    height: 58px;
+    padding: 0 12px;
+    gap: 7px;
+  }
+
+  .navbar .nav-logo {
+    font-size: 1.3rem;
+    gap: 7px;
+  }
+
+  .navbar .nav-logo .logo-mark svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .navbar .nav-pill {
+    display: none !important;
+  }
+
+  .navbar .nav-user {
+    gap: 7px;
+  }
+
+  .navbar .nav-avatar {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    font-size: 0.8rem;
+  }
+
+  .navbar .nav-user .btn-sm {
+    padding: 6px 9px;
+    min-height: 34px;
+    font-size: 0.76rem;
+    line-height: 1;
+  }
+
+  .navbar-feedback-link {
+    display: none;
+  }
 }
 
   .nav-avatar {
@@ -948,19 +997,212 @@
   /* ─── DASHBOARD ─── */
   #dashboard-page { flex-direction: column; }
 
+  /* ─── FEEDBACK ─── */
+  .feedback-card {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin-top: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    min-width: 0;
+  }
+  .feedback-title { font-family:'DM Serif Display',serif; font-size:1.45rem; margin-bottom:6px; }
+  .feedback-sub { color:var(--text-dim); font-size:.875rem; line-height:1.55; margin-bottom:18px; max-width:850px; }
+  .feedback-grid { display:grid; grid-template-columns:minmax(150px,170px) minmax(0,1fr); gap:14px; align-items:stretch; }
+  .feedback-select, .feedback-textarea {
+    width:100%; min-width:0; background:var(--surface2); border:1px solid var(--border);
+    border-radius:var(--radius-sm); color:var(--text); font:inherit; outline:none;
+  }
+  .feedback-select { padding:12px 14px; min-height:120px; }
+  .feedback-textarea { display:block; padding:14px; min-height:120px; resize:vertical; line-height:1.55; }
+  .feedback-select:focus, .feedback-textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(108,99,255,.12); }
+  .feedback-meta { display:flex; justify-content:space-between; gap:12px; margin-top:8px; color:var(--text-dim); font-size:.75rem; }
+  .feedback-file { display:block; margin-top:12px; width:100%; max-width:100%; padding:10px; background:var(--surface2); border:1px dashed var(--border); border-radius:var(--radius-sm); color:var(--text-dim); }
+  .feedback-actions { display:flex; align-items:center; gap:12px; margin-top:14px; flex-wrap:wrap; }
+  .feedback-actions .btn { flex:0 0 auto; }
+  .feedback-history { margin-top:24px; padding-top:20px; border-top:1px solid var(--border); }
+  .feedback-history-item { padding:12px 0; border-bottom:1px solid rgba(255,255,255,.05); }
+  .feedback-history-item:last-child { border-bottom:0; }
+  .feedback-history-head { display:flex; justify-content:space-between; gap:10px; font-size:.82rem; }
+  .feedback-history-msg { margin-top:6px; color:var(--text-dim); font-size:.85rem; line-height:1.5; white-space:pre-wrap; word-break:break-word; }
+
   .dashboard-body {
     flex: 1;
     display: grid;
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: minmax(0,1fr) 320px;
     gap: 24px;
+    align-items: start;
     padding: 32px 24px;
     max-width: 1100px;
     width: 100%;
     margin: 0 auto;
   }
 
+  @media (min-width:769px) {
+    .dashboard-body > .stats-sidebar { padding-top:76px; }
+  }
+
+  @media (max-width:768px) {
+    .feedback-card { padding:20px; grid-column:1; }
+    .feedback-grid { grid-template-columns:1fr; }
+    .feedback-select { min-height:auto; }
+    .feedback-actions { align-items:stretch; flex-direction:column; }
+    .feedback-actions .btn { width:100%; }
+    .feedback-actions > span { width:100%; line-height:1.45; }
+  }
+
   @media (max-width: 768px) {
     .dashboard-body { grid-template-columns: 1fr; padding: 20px 16px; }
+  }
+
+  /* ─── DASHBOARD VISUAL ALIGNMENT ─── */
+  .dashboard-main {
+    min-width: 0;
+  }
+
+  .dashboard-heading-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 0;
+  }
+
+  .dashboard-feedback-link {
+    flex: 0 0 auto;
+    margin-bottom: 24px;
+    white-space: nowrap;
+  }
+
+  .history-section {
+    margin-top: 32px !important;
+  }
+
+  .history-section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.45rem;
+    line-height: 1.2;
+    margin-bottom: 14px;
+  }
+
+  .history-list {
+    width: 100%;
+  }
+
+  .dashboard-feedback-link {
+    /* The feedback shortcut now lives in the navbar. */
+    display: none;
+  }
+
+  .feedback-card {
+    grid-column: 1 / -1;
+    align-self: start;
+    max-width: 980px;
+    width: 100%;
+    justify-self: center;
+    padding: 24px;
+  }
+
+  .feedback-grid {
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+
+  .feedback-select {
+    height: 48px;
+    min-height: 48px;
+    align-self: start;
+  }
+
+  .feedback-textarea {
+    height: 48px;
+    min-height: 48px;
+    max-height: 48px;
+    resize: none;
+    overflow-y: auto;
+    padding: 12px 14px;
+    line-height: 1.4;
+  }
+
+  .feedback-history {
+    margin-top: 20px;
+    padding-top: 18px;
+  }
+
+  .dashboard-history {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .dashboard-history .history-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .dashboard-history .history-item {
+    min-width: 0;
+  }
+
+  .dashboard-history .history-topic {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+  }
+
+  .dashboard-history .history-meta {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  @media (min-width: 769px) {
+    .dashboard-body > .stats-sidebar {
+      padding-top: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .feedback-card {
+      max-width: none;
+      padding: 20px;
+    }
+
+    .feedback-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .feedback-select {
+      width: 100%;
+      height: 46px;
+      min-height: 46px;
+    }
+
+    .feedback-textarea {
+      height: 46px;
+      min-height: 46px;
+      max-height: 46px;
+      resize: none;
+      overflow-y: auto;
+    }
+
+    .dashboard-history {
+      margin-top: 4px;
+    }
+
+    .dashboard-history .history-list {
+      grid-template-columns: 1fr;
+    }
+
+    .history-section {
+      margin-top: 0 !important;
+    }
   }
 
   .section-title {
@@ -1610,6 +1852,38 @@
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ─── FINAL DASHBOARD ALIGNMENT ─── */
+  @media (min-width: 769px) {
+    /* Keep the heading at the top, but align the first stats card with the generator card. */
+    .dashboard-body > .stats-sidebar {
+      padding-top: 103px !important;
+    }
+
+    /* Give every dashboard section the same visual left/right edges. */
+    .dashboard-main,
+    .dashboard-history,
+    .feedback-card {
+      min-width: 0;
+    }
+
+    /* Center the Past Results heading across the full history section. */
+    .dashboard-history .history-section-title {
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 768px) {
+    /* Do not carry the desktop stat offset onto mobile. */
+    .dashboard-body > .stats-sidebar {
+      padding-top: 0 !important;
+    }
+
+    .dashboard-history .history-section-title {
+      text-align: center;
+    }
+  }
+
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"Mockify","url":"https://mockify.tech/","description":"An AI-powered mock test platform for topic-based MCQ practice."},{"@type":"Organization","name":"Mockify","url":"https://mockify.tech/"},{"@type":"SoftwareApplication","name":"Mockify","applicationCategory":"EducationalApplication","url":"https://mockify.tech/","description":"An AI-powered mock test platform that generates topic-based multiple-choice practice tests with timed sessions and answer review."}]}
@@ -2030,7 +2304,7 @@
           <input
             type="email"
             id="login-email"
-            placeholder="you@example.com"
+            placeholder="you@gmail.com"
             autocomplete="email"
           >
         </div>
@@ -2061,7 +2335,7 @@
           <input
             type="email"
             id="reg-email"
-            placeholder="you@example.com"
+            placeholder="you@gmail.com"
             autocomplete="email"
           >
         </div>
@@ -2148,6 +2422,12 @@
       Mockify
     </span>
     <span class="nav-pill" id="nav-user-role"></span>
+    <button
+      type="button"
+      class="btn btn-secondary btn-sm navbar-feedback-link"
+      onclick="openFeedbackSection()"
+      aria-label="Open feedback form"
+    >♡ Feedback / Report a Bug</button>
     <div class="nav-spacer"></div>
     <div class="nav-user">
       <div class="nav-avatar" id="nav-avatar">U</div>
@@ -2159,9 +2439,13 @@
 
   <div class="dashboard-body">
     <!-- Main generate area -->
-    <div>
-      <h2 class="section-title">Generate Mock Test</h2>
-      <p class="section-sub">Describe any topic and get 10 AI-crafted MCQs instantly</p>
+    <div class="dashboard-main">
+      <div class="dashboard-heading-row">
+        <div>
+          <h2 class="section-title">Generate Mock Test</h2>
+          <p class="section-sub">Describe any topic and get 10 AI-crafted MCQs instantly</p>
+        </div>
+      </div>
 
       <div class="generate-card">
         <div id="gen-error" class="error-msg"></div>
@@ -2198,13 +2482,6 @@
         </button>
       </div>
 
-      <!-- History -->
-      <div style="margin-top:28px">
-        <h3 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:14px">Past Results</h3>
-        <div id="history-list" class="history-list">
-          <div style="color:var(--text-dim);font-size:0.875rem;padding:16px;text-align:center;">No results yet. Take your first mock!</div>
-        </div>
-      </div>
     </div>
 
     <!-- Stats sidebar -->
@@ -2227,6 +2504,66 @@
         <div class="stat-sub">out of 10</div>
       </div>
     </div>
+
+    <!-- Full-width history -->
+    <div class="history-section dashboard-history">
+      <h3 class="history-section-title">Past Results</h3>
+      <div id="history-list" class="history-list">
+        <div style="color:var(--text-dim);font-size:0.875rem;padding:16px;text-align:center;">No results yet. Take your first mock!</div>
+      </div>
+    </div>
+
+    <section class="feedback-card" id="feedback-section" aria-labelledby="feedback-title">
+      <div class="feedback-title" id="feedback-title">Help us improve Mockify</div>
+      <p class="feedback-sub">
+        Found a bug, confusing question, UI issue, or have an idea? Send it directly to the Mockify team.
+        You can include one screenshot or image so we can investigate faster.
+      </p>
+
+      <div id="feedback-error" class="error-msg"></div>
+      <div id="feedback-success" class="success-msg"></div>
+
+      <form id="feedback-form" onsubmit="submitFeedback(event); return false;">
+        <div class="feedback-grid">
+          <select id="feedback-category" class="feedback-select" aria-label="Feedback type">
+            <option value="bug">Bug / Error</option>
+            <option value="suggestion">Suggestion</option>
+            <option value="question">Question</option>
+            <option value="general">Other</option>
+          </select>
+
+          <textarea
+            id="feedback-message"
+            class="feedback-textarea"
+            maxlength="2000"
+            placeholder="Tell us what happened, what you expected, or what you'd improve…"
+            required
+            oninput="updateFeedbackCount()"
+          ></textarea>
+        </div>
+
+        <div class="feedback-meta">
+          <span>Maximum 2,000 characters</span>
+          <span id="feedback-count">0 / 2000</span>
+        </div>
+
+        <input id="feedback-image" class="feedback-file" type="file" accept="image/png,image/jpeg,image/webp">
+
+        <div class="feedback-actions">
+          <button type="submit" class="btn btn-primary" id="feedback-submit-btn">Send Feedback</button>
+          <span style="color:var(--text-dim);font-size:.76rem;">
+            Up to 2 MB · PNG, JPG, or WebP · 3 submissions per day
+          </span>
+        </div>
+      </form>
+
+      <div class="feedback-history">
+        <div style="font-size:.82rem;font-weight:600;margin-bottom:8px;">Your recent feedback</div>
+        <div id="feedback-history-list">
+          <div style="color:var(--text-dim);font-size:.82rem;">Loading…</div>
+        </div>
+      </div>
+    </section>
   </div>
 </div>
 
@@ -2458,7 +2795,18 @@ function showError(id, msg) {
 
 function hideError(id) {
   const el = document.getElementById(id);
-  if (el) { el.style.display = 'none'; el.textContent = ''; }
+  if (el) {
+    el.style.display = 'none';
+    el.textContent = '';
+  }
+}
+
+function hideSuccess(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.style.display = 'none';
+    el.textContent = '';
+  }
 }
 
 function showSuccess(id, msg) {
@@ -2875,6 +3223,7 @@ async function handleLogout() {
 
 function afterLogin() {
   loadDashboard();
+  loadFeedbackHistory();
   showPage('dashboard-page');
   if (currentUser.is_admin) document.getElementById('admin-btn').style.display = 'inline-flex';
   else document.getElementById('admin-btn').style.display = 'none';
@@ -2922,6 +3271,133 @@ async function loadDashboard() {
     }).join('');
   } catch (e) {}
 }
+
+// ─── FEEDBACK ───
+const FEEDBACK_MAX_CHARS = 2000;
+const FEEDBACK_MAX_IMAGE_BYTES = 2 * 1024 * 1024;
+
+function feedbackShowError(message) {
+  showError('feedback-error', message);
+  hideSuccess('feedback-success');
+}
+
+function feedbackShowSuccess(message) {
+  hideError('feedback-error');
+  showSuccess('feedback-success', message);
+}
+
+function renderFeedbackHistory(items) {
+  const list = document.getElementById('feedback-history-list');
+  if (!list) return;
+
+  if (!items || !items.length) {
+    list.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;">No feedback submitted yet.</div>';
+    return;
+  }
+
+  list.innerHTML = items.map(item => `<div class="feedback-history-item">
+    <div class="feedback-history-head">
+      <span>${escapeHtml(item.category_label)}</span>
+      <span style="color:var(--text-dim)">${escapeHtml(formatDate(item.created_at))} · ${escapeHtml(item.status)}</span>
+    </div>
+    <div class="feedback-history-msg">${escapeHtml(item.message)}</div>
+  </div>`).join('');
+}
+
+async function loadFeedbackHistory() {
+  try {
+    const data = await apiCall('GET', '/feedback/mine');
+    renderFeedbackHistory(data.feedback || []);
+  } catch (e) {
+    const list = document.getElementById('feedback-history-list');
+    if (list) list.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;">Feedback history is temporarily unavailable.</div>';
+  }
+}
+
+function updateFeedbackCount() {
+  const textarea = document.getElementById('feedback-message');
+  const count = document.getElementById('feedback-count');
+  if (textarea && count) count.textContent = `${textarea.value.length} / ${FEEDBACK_MAX_CHARS}`;
+}
+
+function openFeedbackSection() {
+  const section = document.getElementById('feedback-section');
+  if (!section) return;
+
+  section.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  });
+
+  window.setTimeout(() => {
+    const field = document.getElementById('feedback-message');
+    if (field) field.focus({ preventScroll: true });
+  }, 450);
+}
+
+async function submitFeedback(event) {
+  event.preventDefault();
+
+  const messageEl = document.getElementById('feedback-message');
+  const categoryEl = document.getElementById('feedback-category');
+  const imageEl = document.getElementById('feedback-image');
+  const button = document.getElementById('feedback-submit-btn');
+
+  const message = messageEl.value.trim();
+  const category = categoryEl.value;
+  const file = imageEl.files && imageEl.files[0];
+
+  hideError('feedback-error');
+  hideSuccess('feedback-success');
+
+  if (!message) return feedbackShowError('Please write a message before sending.');
+  if (message.length > FEEDBACK_MAX_CHARS) return feedbackShowError('Feedback is limited to 2,000 characters.');
+
+  if (file) {
+    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+      return feedbackShowError('Only PNG, JPG, or WebP images are allowed.');
+    }
+    if (file.size > FEEDBACK_MAX_IMAGE_BYTES) {
+      return feedbackShowError('The image must be 2 MB or smaller.');
+    }
+  }
+
+  button.disabled = true;
+  button.textContent = 'Sending…';
+
+  try {
+    const formData = new FormData();
+    formData.append('category', category);
+    formData.append('message', message);
+    if (file) formData.append('image', file);
+
+    const response = await fetch(`${API}/feedback/submit`, {
+      method: 'POST',
+      body: formData,
+      credentials: 'include'
+    });
+
+    const raw = await response.text();
+    let data = {};
+    try { data = raw ? JSON.parse(raw) : {}; } catch (e) {
+      throw new Error('The server returned an unexpected response.');
+    }
+
+    if (!response.ok) throw new Error(data.error || 'Unable to send feedback.');
+
+    messageEl.value = '';
+    imageEl.value = '';
+    updateFeedbackCount();
+    feedbackShowSuccess('Thanks — your feedback was sent to the Mockify team.');
+    await loadFeedbackHistory();
+  } catch (e) {
+    feedbackShowError(e.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Send Feedback';
+  }
+}
+
 
 function setTopic(t) {
   document.getElementById('topic-input').value = t;
