@@ -13,8 +13,8 @@ mock_bp = Blueprint('mock', __name__)
 load_dotenv(override=True)
 
 GROQ_API_URL = os.environ.get('GROQ_API_URL', 'https://api.groq.com/openai/v1/chat/completions').strip()
-GROQ_MODEL = os.environ.get('GROQ_MODEL', 'llama-3.3-70b-versatile').strip()
-GROQ_MAX_OUTPUT_TOKENS = int(os.environ.get('GROQ_MAX_OUTPUT_TOKENS', '1500'))
+GROQ_MODEL = os.environ.get('GROQ_MODEL', 'openai/gpt-oss-20b').strip()
+GROQ_MAX_OUTPUT_TOKENS = int(os.environ.get('GROQ_MAX_OUTPUT_TOKENS', '4000'))
 GROQ_MAX_RETRIES = max(1, int(os.environ.get('GROQ_MAX_RETRIES', '3')))
 GROQ_RETRY_BASE_DELAY = max(1, int(os.environ.get('GROQ_RETRY_BASE_DELAY', '2')))
 GENERATE_COOLDOWN_SECONDS = max(1, int(os.environ.get('GENERATE_COOLDOWN_SECONDS', '15')))
@@ -29,21 +29,42 @@ def get_groq_api_key():
         raise ValueError("GROQ_API_KEY not configured")
     return api_key
 
-MOCK_PROMPT = """You are an expert mock test generator.
+MOCK_PROMPT = """You are an expert exam and interview question designer.
 
-User input: {user_prompt}
+Requested topic:
+{user_prompt}
 
-Task:
-- Understand topic from input
-- Infer difficulty (default = medium)
-- Generate exactly 10 MCQs
+Your job is to create ONE high-quality 10-question MCQ mock test that gives the learner broad and useful coverage of the requested topic.
 
-Rules:
-- Each question must have a question, 4 options (A, B, C, D), and 1 correct answer
-- No repetition
-- Clear exam-style questions
+Before writing the questions, silently identify the most important subtopics and dimensions of the requested topic. Then distribute the 10 questions across those dimensions so the test is as comprehensive as possible within exactly 10 questions.
 
-Output ONLY valid JSON with no markdown, no extra text:
+Coverage priorities (adapt to the topic; do not force irrelevant categories):
+1. Core definition, purpose, and fundamentals
+2. Key concepts, components, terminology, or structure
+3. How the topic works / underlying mechanism, workflow, or principles
+4. Practical application or implementation
+5. Syntax, formulas, commands, APIs, configuration, or technical details when relevant
+6. Comparison, trade-offs, or choosing between related concepts when relevant
+7. Edge cases, constraints, limitations, or failure modes when relevant
+8. Debugging, troubleshooting, output prediction, or scenario-based reasoning when relevant
+9. Common mistakes, misconceptions, or exam traps
+10. Advanced/interview-level understanding or real-world decision making
+
+Important:
+- Exactly 10 questions. Never return 9 or 11.
+- Every question must be directly about the requested topic.
+- Cover different subtopics; avoid repeated ideas.
+- Prefer application, reasoning, and scenario questions over trivial memorization when the topic allows it.
+- Difficulty should be mixed: foundational to moderate, with a few challenging questions.
+- For narrow topics, adapt the coverage intelligently instead of inventing unrelated material.
+- Do not use vague questions merely about "studying" the topic.
+- All four options must be plausible enough to require understanding.
+- Exactly one option is correct.
+- Keep each question and option reasonably concise so all 10 questions fit in the response.
+
+Return ONLY valid JSON. No markdown. No commentary.
+
+Output shape:
 {{
   "questions": [
     {{
@@ -57,7 +78,8 @@ Output ONLY valid JSON with no markdown, no extra text:
       "answer": "A"
     }}
   ]
-}}"""
+}}
+"""
 
 
 class GroqAPIError(Exception):
@@ -235,18 +257,19 @@ def call_groq_once(prompt):
         "model": GROQ_MODEL,
         "messages": [
             {
-                "role": "system",
-                "content": "You generate exactly 10 MCQs and return only valid JSON."
-            },
-            {
                 "role": "user",
                 "content": prompt
             }
         ],
-        "temperature": 0.7,
-        "max_tokens": GROQ_MAX_OUTPUT_TOKENS,
+        "temperature": 0.2,
+        "max_completion_tokens": GROQ_MAX_OUTPUT_TOKENS,
+        "reasoning_format": "hidden",
+        "response_format": {
+            "type": "json_object"
+        },
         "stream": False
     }
+
     try:
         response = requests.post(
             GROQ_API_URL,
@@ -255,88 +278,167 @@ def call_groq_once(prompt):
                 "Content-Type": "application/json"
             },
             json=payload,
-            timeout=30
+            timeout=60
         )
+
         response.raise_for_status()
+
     except requests.exceptions.Timeout as exc:
-        raise GroqAPIError('AI request timed out. Please try again.') from exc
+        raise GroqAPIError(
+            "AI request timed out. Please try again."
+        ) from exc
+
     except requests.exceptions.HTTPError as exc:
-        status_code = exc.response.status_code if exc.response is not None else 502
-        error_message = 'AI service request failed. Please try again.'
+        status_code = (
+            exc.response.status_code
+            if exc.response is not None
+            else 502
+        )
+
+        error_message = "AI service request failed. Please try again."
 
         if exc.response is not None:
             try:
                 error_payload = exc.response.json()
+
                 if isinstance(error_payload, dict):
-                    raw_error = error_payload.get('error')
+                    raw_error = error_payload.get("error")
+
                     if isinstance(raw_error, dict):
-                        api_message = raw_error.get('message')
+                        api_message = raw_error.get("message")
                     elif isinstance(raw_error, str):
                         api_message = raw_error
                     else:
-                        api_message = error_payload.get('message')
+                        api_message = error_payload.get("message")
+
                     if api_message:
                         error_message = api_message
+
             except ValueError:
                 pass
 
         if status_code == 429:
-            error_message = 'AI service is rate-limited right now. Please wait a minute and try again.'
+            error_message = (
+                "AI service is rate-limited right now. "
+                "Please wait and try again."
+            )
         elif status_code >= 500:
-            error_message = 'AI service is temporarily unavailable. Please try again shortly.'
+            error_message = (
+                "AI service is temporarily unavailable. "
+                "Please try again shortly."
+            )
 
-        raise GroqAPIError(error_message, status_code=status_code) from exc
+        raise GroqAPIError(
+            error_message,
+            status_code=status_code
+        ) from exc
+
     except requests.exceptions.RequestException as exc:
-        raise GroqAPIError('Could not reach the AI service. Please try again.') from exc
+        raise GroqAPIError(
+            "Could not reach the AI service. Please try again."
+        ) from exc
 
     try:
         data = response.json()
-        text = extract_groq_text(data['choices'][0]['message']['content'])
-    except (ValueError, KeyError, IndexError, TypeError) as exc:
-        raise GroqAPIError('AI returned an unexpected response. Please try again.') from exc
 
-    # Strip markdown fences if present
-    text = text.strip()
-    if text.startswith('```'):
-        text = text.split('```')[1]
-        if text.startswith('json'):
-            text = text[4:]
-    text = text.strip()
-    try:
+        text = data["choices"][0]["message"]["content"]
+
+        if not isinstance(text, str):
+            raise ValueError("Groq returned non-text content")
+
         return json.loads(text)
-    except json.JSONDecodeError as exc:
-        raise GroqAPIError('AI returned invalid JSON. Please try again.') from exc
+
+    except (ValueError, KeyError, IndexError, TypeError) as exc:
+        print("RAW GROQ RESPONSE:")
+        print(response.text)
+
+        raise GroqAPIError(
+            "AI returned an unexpected JSON response. Please try again."
+        ) from exc
 
 
 def call_groq(prompt):
     last_error = None
+
     for attempt in range(GROQ_MAX_RETRIES):
         try:
-            return call_groq_once(prompt)
+            result = call_groq_once(prompt)
+
+            if validate_questions(result):
+                return result
+
+            last_error = GroqAPIError(
+                "AI generated an incomplete or invalid 10-question mock.",
+                status_code=422
+            )
+            print(
+                f"[MOCK] Invalid generation on attempt {attempt + 1}/{GROQ_MAX_RETRIES}.",
+                flush=True
+            )
+
         except GroqAPIError as exc:
             last_error = exc
-            should_retry = exc.status_code == 429 and attempt < GROQ_MAX_RETRIES - 1
+            should_retry = (
+                exc.status_code in (422, 429)
+                and attempt < GROQ_MAX_RETRIES - 1
+            )
             if not should_retry:
                 raise
-            time.sleep(GROQ_RETRY_BASE_DELAY * (attempt + 1))
+
+        if attempt < GROQ_MAX_RETRIES - 1:
+            delay = GROQ_RETRY_BASE_DELAY * (attempt + 1)
+            print(f"[MOCK] Retrying Groq in {delay}s...", flush=True)
+            time.sleep(delay)
 
     if last_error is not None:
         raise last_error
 
+    raise GroqAPIError(
+        "AI failed to generate a valid 10-question mock.",
+        status_code=502
+    )
+
 def validate_questions(questions_data):
     if not isinstance(questions_data, dict):
         return False
+
     questions = questions_data.get('questions', [])
-    if len(questions) != 10:
+    if not isinstance(questions, list) or len(questions) != 10:
         return False
+
+    seen = set()
+
     for q in questions:
+        if not isinstance(q, dict):
+            return False
+
         if not all(k in q for k in ['question', 'options', 'answer']):
             return False
-        if not all(k in q['options'] for k in ['A', 'B', 'C', 'D']):
+
+        question_text = str(q['question']).strip()
+        if not question_text:
             return False
+
+        normalized = re.sub(r'\W+', ' ', question_text.lower()).strip()
+        if normalized in seen:
+            return False
+        seen.add(normalized)
+
+        options = q.get('options')
+        if not isinstance(options, dict):
+            return False
+
+        if not all(k in options for k in ['A', 'B', 'C', 'D']):
+            return False
+
+        if not all(str(options[k]).strip() for k in ['A', 'B', 'C', 'D']):
+            return False
+
         if q['answer'] not in ['A', 'B', 'C', 'D']:
             return False
+
     return True
+
 
 @mock_bp.route('/generate', methods=['POST'])
 def generate_mock():
@@ -349,21 +451,38 @@ def generate_mock():
         return jsonify({'error': 'User not found'}), 404
 
     if not user.can_take_mock():
-        return jsonify({'error': f'Daily limit reached. You can take {user.daily_mock_limit} mock(s) per day.'}), 429
+        return jsonify({
+            'error': f'Daily limit reached. You can take {user.daily_mock_limit} mock(s) per day.'
+        }), 429
 
-    data = request.get_json()
-    topic = data.get('topic', '').strip()
+    data = request.get_json(silent=True) or {}
+    topic = str(data.get('topic', '')).strip()
+
     if not topic:
         return jsonify({'error': 'Topic is required'}), 400
+
     if len(topic) > 500:
         return jsonify({'error': 'Topic too long (max 500 chars)'}), 400
 
+    try:
+        timer_minutes = int(data.get('timer_minutes'))
+    except (TypeError, ValueError):
+        return jsonify({'error': 'Please select a valid test duration.'}), 400
+
+    allowed_timer_minutes = {5, 10, 15, 20, 30, 45, 60}
+    if timer_minutes not in allowed_timer_minutes:
+        return jsonify({'error': 'Invalid test duration selected.'}), 400
+
     cached_mock = get_cached_mock(user_id, topic)
     if cached_mock:
+        cached_mock.timer_minutes = timer_minutes
+        db.session.commit()
+
         return jsonify({
             'mock_id': cached_mock.id,
             'topic': topic,
             'questions': json.loads(cached_mock.questions),
+            'timer_minutes': timer_minutes,
             'total': 10,
             'cached': True
         }), 200
@@ -376,34 +495,55 @@ def generate_mock():
 
     prompt = MOCK_PROMPT.format(user_prompt=topic)
     mark_generate_attempt(user_id)
+
+    print(
+        f"[MOCK] Generating 10-question mock | user={user_id} | topic={topic!r} | timer={timer_minutes}m",
+        flush=True
+    )
+
     used_fallback = False
+
     try:
         questions_data = call_groq(prompt)
+
     except ValueError as exc:
+        print(f"[MOCK] Configuration error: {exc}", flush=True)
         return jsonify({'error': str(exc)}), 500
+
     except GroqAPIError as exc:
-        if exc.status_code == 429:
-            questions_data = build_fallback_questions(topic)
-            used_fallback = True
-        else:
-            return jsonify({'error': exc.message}), exc.status_code
+        print(
+            f"[MOCK] Groq error status={exc.status_code}: {exc.message}",
+            flush=True
+        )
+        return jsonify({'error': exc.message}), exc.status_code
 
     if not validate_questions(questions_data):
-        return jsonify({'error': 'AI returned invalid format. Please try again.'}), 502
+        print('[MOCK] Validation failed after all generation attempts.', flush=True)
+        return jsonify({
+            'error': 'AI could not produce a complete 10-question mock. Please try again.'
+        }), 502
 
     mock = Mock(
         user_id=user_id,
         topic=topic,
-        questions=json.dumps(questions_data['questions'])
+        questions=json.dumps(questions_data['questions']),
+        timer_minutes=timer_minutes
     )
+
     db.session.add(mock)
     user.mocks_taken_today += 1
     db.session.commit()
+
+    print(
+        f"[MOCK] Success | mock_id={mock.id} | questions={len(questions_data['questions'])} | timer={timer_minutes}m",
+        flush=True
+    )
 
     return jsonify({
         'mock_id': mock.id,
         'topic': topic,
         'questions': questions_data['questions'],
+        'timer_minutes': timer_minutes,
         'total': 10,
         'fallback': used_fallback
     }), 201
@@ -435,6 +575,7 @@ def get_mock(mock_id):
         'mock_id': mock.id,
         'topic': mock.topic,
         'questions': safe_questions,
+        'timer_minutes': mock.timer_minutes or 15,
         'created_at': mock.created_at.isoformat()
     }), 200
 

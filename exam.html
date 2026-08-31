@@ -336,7 +336,7 @@
       </div>
       <div class="timer-display" id="timer-display">
         <span>⏱</span>
-        <span id="timer-text">15:00</span>
+        <span id="timer-text">--:--</span>
       </div>
       <button type="button" class="submit-exam-btn" onclick="confirmSubmit(event)">Submit Exam</button>
     </div>
@@ -370,14 +370,15 @@
   </div>
 
   <script>
-    const API = 'http://localhost:5000/api';
+    const API = '/api';
     let examQuestions = [];
     let examAnswers = {};
     let examMockId = null;
     let examTopic = '';
     let currentQuestion = 0;
     let timerInterval = null;
-    let timerSeconds = 900;
+    let timerSeconds = 0;
+    let timerEnabled = true;
     let examStartTime = null;
     let examSubmitInFlight = false;
 
@@ -446,6 +447,16 @@
       document.getElementById('exam-topic').textContent = examTopic;
       buildNavGrid();
       renderQuestion(0);
+
+      const timerMinutes = Number(data.timer_minutes);
+      if (Number.isFinite(timerMinutes) && timerMinutes > 0) {
+        timerEnabled = true;
+        timerSeconds = timerMinutes * 60;
+      } else {
+        timerEnabled = false;
+        timerSeconds = 0;
+      }
+
       examStartTime = Date.now();
       startTimer();
     }
@@ -492,8 +503,17 @@
 
     function updateTimerDisplay() {
       const el = document.getElementById('timer-display');
-      document.getElementById('timer-text').textContent = formatTime(timerSeconds);
+      const text = document.getElementById('timer-text');
+
       el.classList.remove('warning', 'danger');
+
+      if (!timerEnabled) {
+        text.textContent = 'No limit';
+        return;
+      }
+
+      text.textContent = formatTime(timerSeconds);
+
       if (timerSeconds <= 60) el.classList.add('danger');
       else if (timerSeconds <= 180) el.classList.add('warning');
     }
@@ -501,9 +521,13 @@
     function startTimer() {
       clearInterval(timerInterval);
       updateTimerDisplay();
+
+      if (!timerEnabled) return;
+
       timerInterval = setInterval(() => {
         timerSeconds--;
         updateTimerDisplay();
+
         if (timerSeconds <= 0) {
           clearInterval(timerInterval);
           submitExam();

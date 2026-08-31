@@ -29,6 +29,47 @@
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* ─── PUBLIC STATISTICS ─── */
+
+.public-stats {
+  width: 100%;
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.public-stat-card {
+  background: rgba(19, 19, 26, 0.72);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 10px;
+  text-align: center;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+}
+
+.public-stat-number {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.35rem;
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--accent);
+}
+
+.public-stat-label {
+  margin-top: 5px;
+  color: var(--text-dim);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 600px) {
+  .public-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
   body {
     font-family: 'DM Sans', sans-serif;
     background: var(--bg);
@@ -313,6 +354,24 @@
   .topic-hints {
     display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px;
   }
+  .duration-select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 13px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    margin-top: 2px;
+  }
+
+  .duration-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+  }
+
 
   .hint-chip {
     background: var(--surface2);
@@ -925,14 +984,21 @@
 ═══════════════════════════════════════════ -->
 <div class="page active" id="auth-page">
   <div class="auth-container">
+
     <div class="auth-logo">
       <h1>Mockify</h1>
       <p>AI-powered mock tests, tailored for you</p>
     </div>
+
     <div class="auth-card">
       <div class="tab-switcher">
-        <button type="button" class="tab-btn active" onclick="switchAuthTab('login')">Sign In</button>
-        <button type="button" class="tab-btn" onclick="switchAuthTab('register')">Register</button>
+        <button type="button" class="tab-btn active" onclick="switchAuthTab('login')">
+          Sign In
+        </button>
+
+        <button type="button" class="tab-btn" onclick="switchAuthTab('register')">
+          Register
+        </button>
       </div>
 
       <div id="auth-error" class="error-msg"></div>
@@ -942,14 +1008,21 @@
       <div id="login-form">
         <div class="form-group">
           <label>Email</label>
-          <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email">
+          <input
+            type="email"
+            id="login-email"
+            placeholder="you@example.com"
+            autocomplete="email"
+          >
         </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
-        </div>
-        <button type="button" class="btn btn-primary" onclick="handleLogin()">
-          <span>Sign In</span>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="login-send-btn"
+          onclick="handleLogin()"
+        >
+          Send verification code
         </button>
       </div>
 
@@ -957,22 +1030,148 @@
       <div id="register-form" style="display:none">
         <div class="form-group">
           <label>Full Name</label>
-          <input type="text" id="reg-name" placeholder="Jane Doe">
+          <input
+            type="text"
+            id="reg-name"
+            placeholder="Jane Doe"
+          >
         </div>
+
         <div class="form-group">
           <label>Email</label>
-          <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email">
+          <input
+            type="email"
+            id="reg-email"
+            placeholder="you@example.com"
+            autocomplete="email"
+          >
         </div>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="register-send-btn"
+          onclick="handleRegister()"
+        >
+          Send verification code
+        </button>
+      </div>
+
+      <!-- OTP Form -->
+      <div id="otp-form" style="display:none">
+        <p
+          style="color:var(--text-dim);font-size:.9rem;margin-bottom:8px"
+          id="otp-instructions"
+        ></p>
+
+        <p
+          style="color:var(--text-dim);font-size:.82rem;margin-bottom:18px"
+          id="otp-expiry"
+        ></p>
+
         <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="reg-password" placeholder="Min 6 characters" autocomplete="new-password">
+          <label>Verification code</label>
+
+          <input
+            type="text"
+            id="otp-code"
+            inputmode="numeric"
+            maxlength="6"
+            placeholder="6-digit code"
+            autocomplete="one-time-code"
+          >
         </div>
-        <button type="button" class="btn btn-primary" onclick="handleRegister()">Create Account</button>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="verify-otp-btn"
+          onclick="handleVerifyOtp()"
+        >
+          Verify and continue
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          id="resend-otp-btn"
+          onclick="resendOtp()"
+          style="margin-top:10px;width:100%"
+        >
+          Resend code
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          onclick="backToEmailEntry()"
+          style="margin-top:10px;width:100%"
+        >
+          ← Use a different email
+        </button>
       </div>
     </div>
+
+
+    <!-- ═══════════════════════════════════════
+         PUBLIC MOCKIFY STATISTICS
+    ═══════════════════════════════════════ -->
+    <section
+      class="public-stats"
+      aria-label="Mockify statistics"
+    >
+
+      <div class="public-stat-card">
+        <div
+          class="public-stat-number"
+          id="public-users-count"
+        >0</div>
+
+        <div class="public-stat-label">
+          Learners
+        </div>
+      </div>
+
+
+      <div class="public-stat-card">
+        <div
+          class="public-stat-number"
+          id="public-mocks-count"
+        >0</div>
+
+        <div class="public-stat-label">
+          Mock Tests
+        </div>
+      </div>
+
+
+      <div class="public-stat-card">
+        <div
+          class="public-stat-number"
+          id="public-tests-count"
+        >0</div>
+
+        <div class="public-stat-label">
+          Completed Tests
+        </div>
+      </div>
+
+
+      <div class="public-stat-card">
+        <div
+          class="public-stat-number"
+          id="public-active-count"
+        >0</div>
+
+        <div class="public-stat-label">
+          Practicing Now
+        </div>
+      </div>
+
+    </section>
+
   </div>
 </div>
-
 <!-- ═══════════════════════════════════════════
      DASHBOARD PAGE
 ═══════════════════════════════════════════ -->
@@ -1012,6 +1211,20 @@
           <span class="hint-chip" onclick="setTopic('SQL queries and joins')">SQL & Joins</span>
           <span class="hint-chip" onclick="setTopic('React hooks and state management')">React Hooks</span>
           <span class="hint-chip" onclick="setTopic('Data Structures: arrays and linked lists')">Data Structures</span>
+        </div>
+
+        <div class="form-group">
+          <label for="timer-select">Test Duration</label>
+          <select id="timer-select" class="duration-select">
+            <option value="" selected disabled>Select time limit</option>
+            <option value="5">5 minutes</option>
+            <option value="10">10 minutes</option>
+            <option value="15">15 minutes</option>
+            <option value="20">20 minutes</option>
+            <option value="30">30 minutes</option>
+            <option value="45">45 minutes</option>
+            <option value="60">60 minutes</option>
+          </select>
         </div>
 
         <button type="button" class="generate-btn" id="generate-btn" onclick="handleGenerate()">
@@ -1063,7 +1276,7 @@
     </div>
     <div class="timer-display" id="timer-display">
       <span>⏱</span>
-      <span id="timer-text">15:00</span>
+      <span id="timer-text">--:--</span>
     </div>
     <button type="button" class="submit-exam-btn" onclick="confirmSubmit(event)">Submit Exam</button>
   </div>
@@ -1237,7 +1450,9 @@
 ═══════════════════════════════════════════ -->
 <script>
 // ─── CONFIG ───
-const API = 'http://localhost:5000/api';
+// Live Server commonly serves index.html on port 5500 during development, while
+// Flask runs on 5000. Production uses the same origin through the reverse proxy.
+const API = '/api';
 
 // ─── STATE ───
 let currentUser = null;
@@ -1246,7 +1461,8 @@ let examAnswers = {};
 let examMockId = null;
 let currentQuestion = 0;
 let timerInterval = null;
-let timerSeconds = 900; // 15 min
+let timerSeconds = 0;
+let timerEnabled = true;
 let examStartTime = null;
 let generateInFlight = false;
 let generateCooldownUntil = 0;
@@ -1380,7 +1596,13 @@ async function apiCall(method, path, body) {
   };
   if (body) opts.body = JSON.stringify(body);
   const res = await fetch(API + path, opts);
-  const data = await res.json();
+  const raw = await res.text();
+  let data = {};
+  try {
+    data = raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    throw new Error('The server returned an unexpected response. Make sure Flask is running on port 5000.');
+  }
   if (!res.ok) throw new Error(data.error || 'Request failed');
   return data;
 }
@@ -1396,37 +1618,172 @@ function formatTime(sec) {
 }
 
 // ─── AUTH ───
+let otpMode = null;
+let otpEmail = '';
+let otpName = '';
+let otpResendUntil = 0;
+let otpExpiresUntil = 0;
+let otpCountdownTimer = null;
+let authRequestInFlight = false;
+
 function switchAuthTab(tab) {
   document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', (tab === 'login') === (i === 0)));
   document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
   document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+  resetOtpFlow();
+  hideError('auth-error'); hideError('auth-success');
+}
+
+function authButton(id, disabled, label) {
+  const button = document.getElementById(id);
+  button.disabled = disabled;
+  button.textContent = label;
+}
+
+function formatOtpTime(milliseconds) {
+  const totalSeconds = Math.max(0, Math.ceil(milliseconds / 1000));
+  return `${Math.floor(totalSeconds / 60)}:${String(totalSeconds % 60).padStart(2, '0')}`;
+}
+
+function refreshOtpTimers() {
+  const now = Date.now();
+  const resendRemaining = otpResendUntil - now;
+  const expiryRemaining = otpExpiresUntil - now;
+  const resendButton = document.getElementById('resend-otp-btn');
+
+  if (resendRemaining > 0) {
+    resendButton.disabled = true;
+    resendButton.textContent = `Resend code (${Math.ceil(resendRemaining / 1000)}s)`;
+  } else if (!authRequestInFlight) {
+    resendButton.disabled = false;
+    resendButton.textContent = 'Resend code';
+  }
+
+  document.getElementById('otp-expiry').textContent = expiryRemaining > 0
+    ? `Code expires in ${formatOtpTime(expiryRemaining)}`
+    : 'Code expired. Request a new code.';
+
+  if (resendRemaining <= 0 && expiryRemaining <= 0) {
+    clearInterval(otpCountdownTimer);
+    otpCountdownTimer = null;
+  }
+}
+
+function startOtpCountdown(expiresIn = 600) {
+  clearInterval(otpCountdownTimer);
+  otpResendUntil = Date.now() + 60 * 1000;
+  otpExpiresUntil = Date.now() + expiresIn * 1000;
+  refreshOtpTimers();
+  otpCountdownTimer = setInterval(refreshOtpTimers, 1000);
+}
+
+function showOtpForm(mode, email, name, expiresIn) {
+  otpMode = mode;
+  otpEmail = email;
+  otpName = name || '';
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('register-form').style.display = 'none';
+  document.getElementById('otp-form').style.display = 'block';
+  document.getElementById('otp-code').value = '';
+  document.getElementById('otp-instructions').textContent = `We sent a 6-digit code to ${email}.`;
+  startOtpCountdown(expiresIn || 600);
+  document.getElementById('otp-code').focus();
+}
+
+function resetOtpFlow() {
+  clearInterval(otpCountdownTimer);
+  otpCountdownTimer = null;
+  otpMode = null;
+  otpEmail = '';
+  otpName = '';
+  document.getElementById('otp-form').style.display = 'none';
+}
+
+function backToEmailEntry() {
+  const tab = otpMode === 'register' ? 'register' : 'login';
+  resetOtpFlow();
+  document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+  document.querySelectorAll('.tab-btn').forEach((button, index) => button.classList.toggle('active', (tab === 'login') === (index === 0)));
   hideError('auth-error');
   hideError('auth-success');
 }
 
 async function handleLogin() {
-  hideError('auth-error');
+  if (authRequestInFlight) return;
   const email = document.getElementById('login-email').value.trim();
-  const password = document.getElementById('login-password').value;
-  if (!email || !password) return showError('auth-error', 'Please fill in all fields');
+  if (!email) return showError('auth-error', 'Please enter your email');
+  authRequestInFlight = true;
+  authButton('login-send-btn', true, 'Sending…');
+  hideError('auth-error');
   try {
-    const data = await apiCall('POST', '/auth/login', { email, password });
-    currentUser = data.user;
-    afterLogin();
-  } catch (e) { showError('auth-error', e.message); }
+    const data = await apiCall('POST', '/auth/request-otp', { email });
+    showOtpForm('login', email, '', data.expires_in);
+  } catch (e) {
+    showError('auth-error', e.message);
+  } finally {
+    authRequestInFlight = false;
+    authButton('login-send-btn', false, 'Send verification code');
+  }
 }
 
 async function handleRegister() {
-  hideError('auth-error');
+  if (authRequestInFlight) return;
   const name = document.getElementById('reg-name').value.trim();
   const email = document.getElementById('reg-email').value.trim();
-  const password = document.getElementById('reg-password').value;
-  if (!name || !email || !password) return showError('auth-error', 'Please fill in all fields');
+  if (!name || !email) return showError('auth-error', 'Please fill in all fields');
+  authRequestInFlight = true;
+  authButton('register-send-btn', true, 'Sending…');
+  hideError('auth-error');
   try {
-    const data = await apiCall('POST', '/auth/register', { name, email, password });
+    const data = await apiCall('POST', '/auth/register', { name, email });
+    // A code being sent is not an authenticated session.
+    showOtpForm('register', email, name, data.expires_in);
+  } catch (e) {
+    showError('auth-error', e.message);
+  } finally {
+    authRequestInFlight = false;
+    authButton('register-send-btn', false, 'Send verification code');
+  }
+}
+
+async function handleVerifyOtp() {
+  if (!otpMode || authRequestInFlight) return;
+  const otp = document.getElementById('otp-code').value.trim();
+  if (!/^\d{6}$/.test(otp)) return showError('auth-error', 'Enter the 6-digit verification code');
+  authRequestInFlight = true;
+  authButton('verify-otp-btn', true, 'Verifying…');
+  hideError('auth-error');
+  try {
+    const data = await apiCall('POST', '/auth/verify-otp', { email: otpEmail, otp });
     currentUser = data.user;
+    resetOtpFlow();
     afterLogin();
-  } catch (e) { showError('auth-error', e.message); }
+  } catch (e) {
+    showError('auth-error', e.message);
+  } finally {
+    authRequestInFlight = false;
+    authButton('verify-otp-btn', false, 'Verify and continue');
+  }
+}
+
+async function resendOtp() {
+  if (!otpMode || authRequestInFlight || Date.now() < otpResendUntil) return;
+  authRequestInFlight = true;
+  authButton('resend-otp-btn', true, 'Sending…');
+  hideError('auth-error');
+  try {
+    const path = otpMode === 'register' ? '/auth/register' : '/auth/request-otp';
+    const body = otpMode === 'register' ? { name: otpName, email: otpEmail } : { email: otpEmail };
+    const data = await apiCall('POST', path, body);
+    showSuccess('auth-success', 'A new verification code was sent.');
+    startOtpCountdown(data.expires_in);
+  } catch (e) {
+    showError('auth-error', e.message);
+  } finally {
+    authRequestInFlight = false;
+    refreshOtpTimers();
+  }
 }
 
 async function handleLogout() {
@@ -1492,8 +1849,19 @@ function setTopic(t) {
 
 async function handleGenerate() {
   hideError('gen-error');
+
   const topic = document.getElementById('topic-input').value.trim();
-  if (!topic) return showError('gen-error', 'Please enter a topic to generate questions');
+  const timerSelect = document.getElementById('timer-select');
+  const timerMinutes = Number(timerSelect.value);
+
+  if (!topic) {
+    return showError('gen-error', 'Please enter a topic to generate questions');
+  }
+
+  if (!Number.isFinite(timerMinutes) || timerMinutes <= 0) {
+    return showError('gen-error', 'Please select a test duration');
+  }
+
   if (generateInFlight) return;
 
   const cooldownRemaining = getGenerateCooldownRemaining();
@@ -1510,23 +1878,31 @@ async function handleGenerate() {
   showLoading('Generating your mock...', `Topic: "${topic.substring(0, 60)}"`);
 
   try {
-    const data = await apiCall('POST', '/mock/generate', { topic });
+    const data = await apiCall('POST', '/mock/generate', {
+      topic,
+      timer_minutes: timerMinutes
+    });
+
     examQuestions = data.questions;
     examMockId = data.mock_id;
     examAnswers = {};
     currentQuestion = 0;
-    timerSeconds = 900;
+    timerSeconds = Number(data.timer_minutes || timerMinutes) * 60;
     examStartTime = Date.now();
+
     if (data.cached) {
-      toast('Reused your recent mock to save an extra AI request.', 'info');
+      toast('Reused your recent mock and applied the selected duration.', 'info');
     }
+
     if (data.fallback) {
-      toast('Gemini is busy, so a backup mock was generated locally.', 'info');
+      toast('A backup mock was generated locally.', 'info');
     }
+
     if (!data.cached && currentUser) {
       currentUser.mocks_remaining = Math.max(0, (currentUser.mocks_remaining || 0) - 1);
       currentUser.can_take_mock = currentUser.mocks_remaining > 0;
     }
+
     openExamPage(data);
   } catch (e) {
     const retryAfter = parseCooldownSeconds(e.message);
@@ -1541,9 +1917,23 @@ async function handleGenerate() {
 
 // ─── EXAM ───
 function loadExam(data) {
-  document.getElementById('exam-topic').textContent = data.topic;
+  examQuestions = data.questions || [];
+  examMockId = data.mock_id;
+  document.getElementById('exam-topic').textContent = data.topic || 'Mock Test';
   buildNavGrid();
   renderQuestion(0);
+
+  const timerMinutes = Number(data.timer_minutes);
+  if (Number.isFinite(timerMinutes) && timerMinutes > 0) {
+    timerSeconds = timerMinutes * 60;
+    timerEnabled = true;
+  } else {
+    timerSeconds = 0;
+    timerEnabled = false;
+  }
+
+  examStartTime = Date.now();
+  startTimer();
 }
 
 function buildNavGrid() {
@@ -1591,17 +1981,29 @@ function prevQuestion() { if (currentQuestion > 0) renderQuestion(currentQuestio
 function startTimer() {
   clearInterval(timerInterval);
   updateTimerDisplay();
+  if (!timerEnabled) return;
+
   timerInterval = setInterval(() => {
     timerSeconds--;
     updateTimerDisplay();
-    if (timerSeconds <= 0) { clearInterval(timerInterval); submitExam(); }
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      submitExam();
+    }
   }, 1000);
 }
 
 function updateTimerDisplay() {
   const el = document.getElementById('timer-display');
-  document.getElementById('timer-text').textContent = formatTime(timerSeconds);
+  const text = document.getElementById('timer-text');
   el.classList.remove('warning', 'danger');
+
+  if (!timerEnabled) {
+    text.textContent = 'No limit';
+    return;
+  }
+
+  text.textContent = formatTime(timerSeconds);
   if (timerSeconds <= 60) el.classList.add('danger');
   else if (timerSeconds <= 180) el.classList.add('warning');
 }
@@ -1805,8 +2207,10 @@ function escapeHtml(s) {
 })();
 
 // Enter key on login
-document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
-document.getElementById('reg-password').addEventListener('keydown', e => { if (e.key === 'Enter') handleRegister(); });
+document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+document.getElementById('reg-email').addEventListener('keydown', e => { if (e.key === 'Enter') handleRegister(); });
+document.getElementById('otp-code').addEventListener('keydown', e => { if (e.key === 'Enter') handleVerifyOtp(); });
 </script>
+<script src="/public_stats.js"></script>
 </body>
 </html>

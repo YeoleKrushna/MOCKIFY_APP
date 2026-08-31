@@ -15,3 +15,10 @@ instance/
 htmlcov/
 Thumbs.db
 Desktop.ini
+@"
+.env
+venv/
+__pycache__/
+*.pyc
+instance/
+"@ | Set-Content .gitignore

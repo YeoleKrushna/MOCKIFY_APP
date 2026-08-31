@@ -237,6 +237,38 @@
       display: none;
     }
 
+    .explanation-box {
+      margin-top: 16px;
+      padding: 16px 18px;
+      background: rgba(108,99,255,0.07);
+      border: 1px solid rgba(108,99,255,0.28);
+      border-radius: var(--radius-sm);
+    }
+
+    .explanation-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    .explanation-text {
+      color: var(--text);
+      font-size: 0.88rem;
+      line-height: 1.65;
+    }
+
+    .your-answer-line {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
     @media (max-width: 700px) {
       .score-grade { font-size: 3.4rem; }
       .score-stats { gap: 18px; }
@@ -294,7 +326,7 @@
   </div>
 
   <script>
-    const API = 'http://localhost:5000/api';
+    const API = '/api';
 
     function escapeHtml(s) {
       if (s == null) return '';
@@ -347,12 +379,20 @@
             ${k === q.user_answer && !q.is_correct ? ' ✗' : ''}
           </div>`;
         }).join('');
+        const explanationHtml = !q.is_correct ? `
+          <div class="explanation-box">
+            <div class="explanation-title">💡 Why this answer?</div>
+            <div class="explanation-text">${escapeHtml(q.explanation || 'Explanation is unavailable for this question.')}</div>
+            ${q.user_answer ? `<div class="your-answer-line">Your answer: <strong>${escapeHtml(q.user_answer)}</strong> · Correct answer: <strong>${escapeHtml(q.correct_answer)}</strong></div>` : `<div class="your-answer-line">You did not answer this question · Correct answer: <strong>${escapeHtml(q.correct_answer)}</strong></div>`}
+          </div>` : '';
+
         return `<div class="review-card ${cls}">
           <div class="review-q-head">
             <div class="review-q-num">${i + 1}</div>
             <div class="review-q-text">${escapeHtml(q.question)}</div>
           </div>
           <div class="review-options">${opts}</div>
+          ${explanationHtml}
         </div>`;
       }).join('');
     }
