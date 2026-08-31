@@ -102,7 +102,10 @@
     }
 
     .timer-display.warning { border-color: rgba(255,209,102,0.45); color: var(--warn); }
-    .timer-display.danger { border-color: rgba(255,77,109,0.45); color: var(--danger); }
+    .timer-display.danger { border-color: rgba(255,77,109,0.6); color: var(--danger); animation: timer-pulse 1s ease-in-out infinite; }
+    .timer-display .timer-state { font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700; letter-spacing: .04em; }
+    .sound-toggle { width: 42px; height: 42px; border: 1px solid var(--border); border-radius: 50%; background: var(--surface2); color: var(--text-dim); cursor: pointer; transition: transform .18s, border-color .18s, color .18s; }
+    .sound-toggle:hover { transform: translateY(-1px); border-color: var(--accent); color: var(--text); }
 
     .submit-exam-btn {
       background: linear-gradient(135deg, var(--accent3), #06d6a0);
@@ -151,6 +154,9 @@
       margin-bottom: 12px;
     }
 
+    .exam-progress { height: 5px; overflow: hidden; border-radius: 99px; background: var(--surface2); margin: 0 0 22px; }
+    .exam-progress > span { display: block; height: 100%; width: 10%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .24s ease; }
+
     .q-text {
       font-size: 1.1rem; line-height: 1.7;
       margin-bottom: 28px;
@@ -181,6 +187,8 @@
       background: rgba(108,99,255,0.1);
       color: var(--text);
     }
+
+    .question-area.is-changing { animation: question-in .2s ease both; }
 
     .option-key {
       width: 30px; height: 30px; min-width: 30px;
@@ -307,6 +315,8 @@
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes question-in { from { opacity: .35; transform: translateX(8px); } to { opacity: 1; transform: none; } }
+    @keyframes timer-pulse { 50% { box-shadow: 0 0 0 5px rgba(255,77,109,.1); } }
 
     @media (max-width: 900px) {
       .exam-body { grid-template-columns: 1fr; }
@@ -319,6 +329,8 @@
       .question-area { padding: 22px; }
       .exam-nav { flex-direction: column; }
       .exam-nav .btn { width: 100%; }
+      .exam-title { max-width: calc(100% - 58px); }
+      .timer-display { order: 3; flex: 1; justify-content: center; }
     }
   </style>
 </head>
@@ -329,12 +341,12 @@
     <div class="loading-sub" id="loading-sub">Loading questions</div>
   </div>
 
-  <div class="modal-overlay" id="modal-overlay">
-    <div class="modal-box">
-      <div class="modal-title" id="modal-title">Are you sure?</div>
+  <div class="modal-overlay" id="modal-overlay" role="presentation">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-body">
+      <div class="modal-title" id="modal-title" tabindex="-1">Are you sure?</div>
       <div class="modal-body" id="modal-body">This action cannot be undone.</div>
       <div class="modal-actions">
-        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button type="button" class="btn btn-secondary" id="modal-cancel-btn" onclick="closeModal()">Continue test</button>
         <button type="button" class="btn btn-secondary" id="modal-confirm-btn">Confirm</button>
       </div>
     </div>
@@ -357,9 +369,11 @@
           <strong id="exam-topic">Loading...</strong>
         </div>
       </div>
-      <div class="timer-display" id="timer-display">
+      <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="false" aria-label="Enable final ten-second timer sound" title="Timer sound is off">🔇</button>
+      <div class="timer-display" id="timer-display" aria-live="polite">
         <span>⏱</span>
         <span id="timer-text">--:--</span>
+        <span class="timer-state" id="timer-state"></span>
       </div>
       <button type="button" class="submit-exam-btn" onclick="confirmSubmit(event)">Submit Exam</button>
     </div>
@@ -382,6 +396,7 @@
 
       <div class="question-area">
         <div class="q-counter" id="q-counter">Question 1 of 10</div>
+        <div class="exam-progress" aria-hidden="true"><span id="exam-progress-fill"></span></div>
         <div class="q-text" id="q-text">Loading question...</div>
         <div class="options-grid" id="options-grid"></div>
         <div class="exam-nav">
@@ -404,6 +419,9 @@
     let timerEnabled = true;
     let examStartTime = null;
     let examSubmitInFlight = false;
+    let soundEnabled = false;
+    let audioContext = null;
+    let lastModalTrigger = null;
 
     function escapeHtml(s) {
       if (s == null) return '';
@@ -433,14 +451,50 @@
     }
 
     function openModal(title, body, onConfirm) {
+      lastModalTrigger = document.activeElement;
       document.getElementById('modal-title').textContent = title;
       document.getElementById('modal-body').textContent = body;
       document.getElementById('modal-confirm-btn').onclick = () => { closeModal(); onConfirm(); };
       document.getElementById('modal-overlay').classList.add('active');
+      requestAnimationFrame(() => document.getElementById('modal-title').focus());
     }
 
     function closeModal() {
       document.getElementById('modal-overlay').classList.remove('active');
+      if (lastModalTrigger && document.contains(lastModalTrigger)) lastModalTrigger.focus();
+    }
+
+    function updateSoundToggle() {
+      const button = document.getElementById('sound-toggle');
+      button.textContent = soundEnabled ? '🔊' : '🔇';
+      button.setAttribute('aria-pressed', String(soundEnabled));
+      button.setAttribute('aria-label', soundEnabled ? 'Disable final ten-second timer sound' : 'Enable final ten-second timer sound');
+      button.title = soundEnabled ? 'Timer sound is on' : 'Timer sound is off';
+    }
+
+    async function toggleSound() {
+      soundEnabled = !soundEnabled;
+      localStorage.setItem('mockify-sound-enabled', String(soundEnabled));
+      updateSoundToggle();
+      if (soundEnabled) {
+        try {
+          audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+          await audioContext.resume();
+        } catch (e) { soundEnabled = false; updateSoundToggle(); }
+      }
+    }
+
+    function playTimerTick() {
+      if (!soundEnabled || !audioContext || audioContext.state !== 'running') return;
+      try {
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        oscillator.frequency.value = 760;
+        gain.gain.setValueAtTime(.025, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(.001, audioContext.currentTime + .06);
+        oscillator.connect(gain).connect(audioContext.destination);
+        oscillator.start(); oscillator.stop(audioContext.currentTime + .065);
+      } catch (e) { /* Visual timer feedback remains available. */ }
     }
 
     async function apiCall(method, path, body) {
@@ -495,6 +549,7 @@
       const q = examQuestions[idx];
       if (!q) return;
       document.getElementById('q-counter').textContent = `Question ${idx + 1} of ${examQuestions.length}`;
+      document.getElementById('exam-progress-fill').style.width = `${((idx + 1) / examQuestions.length) * 100}%`;
       document.getElementById('q-text').textContent = q.question;
 
       const grid = document.getElementById('options-grid');
@@ -513,6 +568,9 @@
       });
 
       currentQuestion = idx;
+      const area = document.querySelector('.question-area');
+      area.classList.remove('is-changing');
+      requestAnimationFrame(() => area.classList.add('is-changing'));
     }
 
     function selectAnswer(qIdx, key) {
@@ -532,13 +590,15 @@
 
       if (!timerEnabled) {
         text.textContent = 'No limit';
+        document.getElementById('timer-state').textContent = '';
         return;
       }
 
       text.textContent = formatTime(timerSeconds);
-
-      if (timerSeconds <= 60) el.classList.add('danger');
-      else if (timerSeconds <= 180) el.classList.add('warning');
+      const state = document.getElementById('timer-state');
+      if (timerSeconds <= 10) { el.classList.add('danger'); state.textContent = 'FINAL'; }
+      else if (timerSeconds <= 60) { el.classList.add('warning'); state.textContent = '1 MIN'; }
+      else state.textContent = '';
     }
 
     function startTimer() {
@@ -550,6 +610,8 @@
       timerInterval = setInterval(() => {
         timerSeconds--;
         updateTimerDisplay();
+
+        if (timerSeconds > 0 && timerSeconds <= 10) playTimerTick();
 
         if (timerSeconds <= 0) {
           clearInterval(timerInterval);
@@ -586,7 +648,7 @@
         });
         openResultPage(data.result_id, data);
       } catch (e) {
-        showError('Failed to submit: ' + e.message);
+        showError("We couldn't submit your test right now. Your answers are still on screen—check your connection and try again.");
       } finally {
         examSubmitInFlight = false;
         hideLoading();
@@ -627,6 +689,26 @@
       }
     }
 
+    document.getElementById('sound-toggle').addEventListener('click', toggleSound);
+    document.addEventListener('keydown', (event) => {
+      const modal = document.getElementById('modal-overlay');
+      if (event.key === 'Tab' && modal.classList.contains('active')) {
+        const focusable = [...modal.querySelectorAll('button:not([disabled]), [href], input:not([disabled])')];
+        const first = focusable[0], last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        return;
+      }
+      if (event.key === 'Escape' && document.getElementById('modal-overlay').classList.contains('active')) return closeModal();
+      if (event.target.matches('input, textarea, select, button')) return;
+      const choice = { '1': 'A', '2': 'B', '3': 'C', '4': 'D', a: 'A', b: 'B', c: 'C', d: 'D' }[event.key.toLowerCase()];
+      if (choice && examQuestions.length) selectAnswer(currentQuestion, choice);
+      if (event.key === 'ArrowRight') nextQuestion();
+      if (event.key === 'ArrowLeft') prevQuestion();
+    });
+    window.addEventListener('pagehide', () => { clearInterval(timerInterval); if (audioContext) audioContext.close().catch(() => {}); }, { once: true });
+    soundEnabled = localStorage.getItem('mockify-sound-enabled') === 'true';
+    updateSoundToggle();
     init();
   </script>
 </body>

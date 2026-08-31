@@ -1,358 +1,151 @@
+"""Mockify Flask application entry point."""
+
+import logging
 import os
 import secrets
+import time
+from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
-from flask import Flask, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
-
-
-# =========================================================
-# PATHS / ENV
-# =========================================================
+from sqlalchemy import text
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 BASE_DIR = Path(__file__).resolve().parent
+if os.environ.get("ENVIRONMENT", "development").strip().lower() != "production":
+    load_dotenv(BASE_DIR / ".env", override=False)
 
-load_dotenv(
-    BASE_DIR / ".env",
-    override=True
-)
-
-
-# =========================================================
-# IMPORT ROOT MODULES ONLY
-# =========================================================
-
-from auth import auth_bp
-from mock import mock_bp
-from admin import admin_bp
-from results import results_bp
-from analytics import analytics_bp
-from database import db, init_db
+from admin import admin_bp  # noqa: E402
+from analytics import analytics_bp  # noqa: E402
+from auth import auth_bp  # noqa: E402
+from database import db, init_db  # noqa: E402
+from mock import mock_bp  # noqa: E402
+from results import results_bp  # noqa: E402
 
 
-# =========================================================
-# APP
-# =========================================================
+def env_bool(name, default=False):
+    return os.environ.get(name, str(default)).strip().lower() in {"1", "true", "yes", "on"}
+
+
+environment = os.environ.get("ENVIRONMENT", "development").strip().lower()
+is_production = environment == "production"
+secret_key = os.environ.get("SECRET_KEY", "").strip()
+if is_production and not secret_key:
+    raise RuntimeError("SECRET_KEY must be set when ENVIRONMENT=production.")
+
+database_url = os.environ.get("DATABASE_URL", "").strip()
+if database_url.startswith("postgres://"):
+    database_url = "postgresql://" + database_url[len("postgres://"):]
+if not database_url:
+    database_url = f"sqlite:///{BASE_DIR / 'instance' / 'mockify.db'}"
+
 
 app = Flask(__name__)
-
-app.config["SECRET_KEY"] = (
-    os.environ.get("SECRET_KEY", "").strip()
-    or secrets.token_urlsafe(32)
+app.config.update(
+    SECRET_KEY=secret_key or secrets.token_urlsafe(32),
+    SQLALCHEMY_DATABASE_URI=database_url,
+    SQLALCHEMY_TRACK_MODIFICATIONS=False,
+    SQLALCHEMY_ENGINE_OPTIONS={"pool_pre_ping": True},
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE=os.environ.get("SESSION_COOKIE_SAMESITE", "Lax"),
+    SESSION_COOKIE_SECURE=env_bool("SESSION_COOKIE_SECURE", is_production),
+    PERMANENT_SESSION_LIFETIME=timedelta(seconds=int(os.environ.get("SESSION_LIFETIME_SECONDS", "28800"))),
+    TRUST_PROXY_HEADERS=env_bool("TRUST_PROXY_HEADERS", is_production),
 )
 
-app.config["SQLALCHEMY_DATABASE_URI"] = (
-    os.environ.get("DATABASE_URL", "").strip()
-    or "sqlite:///mockify.db"
-)
+if app.config["TRUST_PROXY_HEADERS"]:
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-app.config["SESSION_COOKIE_HTTPONLY"] = True
-
-app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-
-app.config["SESSION_COOKIE_SECURE"] = (
-    os.environ.get(
-        "SESSION_COOKIE_SECURE",
-        "false"
-    ).lower() == "true"
-)
-
-app.config["PERMANENT_SESSION_LIFETIME"] = int(
-    os.environ.get(
-        "SESSION_LIFETIME_SECONDS",
-        "28800"
-    )
-)
-
-app.config["TRUST_PROXY_HEADERS"] = (
-    os.environ.get(
-        "TRUST_PROXY_HEADERS",
-        "false"
-    ).lower() == "true"
-)
-
-
-# =========================================================
-# CORS
-# =========================================================
-
-CORS(
-    app,
-    resources={
-        r"/api/*": {
-            "origins": [
-                "http://127.0.0.1:5000",
-                "http://localhost:5000",
-                "http://127.0.0.1:5500",
-                "http://localhost:5500",
-            ]
-        }
-    },
-    supports_credentials=True,
-)
-
-
-# =========================================================
-# DATABASE
-# =========================================================
+logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO").upper())
+default_origins = "https://mockify.tech" if is_production else "http://127.0.0.1:5000,http://localhost:5000,http://127.0.0.1:5500,http://localhost:5500"
+cors_origins = [item.strip() for item in os.environ.get("CORS_ORIGINS", default_origins).split(",") if item.strip()]
+CORS(app, resources={r"/api/*": {"origins": cors_origins}}, supports_credentials=True)
 
 db.init_app(app)
+for blueprint, prefix in ((auth_bp, "/api/auth"), (mock_bp, "/api/mock"), (admin_bp, "/api/admin"), (results_bp, "/api/results"), (analytics_bp, "/api/analytics")):
+    app.register_blueprint(blueprint, url_prefix=prefix)
 
-
-# =========================================================
-# BLUEPRINTS
-# =========================================================
-
-app.register_blueprint(
-    auth_bp,
-    url_prefix="/api/auth"
-)
-
-app.register_blueprint(
-    mock_bp,
-    url_prefix="/api/mock"
-)
-
-app.register_blueprint(
-    admin_bp,
-    url_prefix="/api/admin"
-)
-
-app.register_blueprint(
-    results_bp,
-    url_prefix="/api/results"
-)
-
-app.register_blueprint(
-    analytics_bp,
-    url_prefix="/api/analytics"
-)
-
-
-# =========================================================
-# REQUEST DEBUG LOGGING
-# =========================================================
 
 @app.before_request
-def log_request():
-    print(
-        f"\n>>> REQUEST {request.method} {request.path}",
-        flush=True
-    )
-
-    if request.method in [
-        "POST",
-        "PUT",
-        "PATCH"
-    ]:
-        print(
-            ">>> CONTENT TYPE:",
-            request.content_type,
-            flush=True
-        )
+def request_started():
+    request._mockify_started_at = time.monotonic()
 
 
 @app.after_request
-def log_response(response):
-    print(
-        f"<<< RESPONSE {request.method} "
-        f"{request.path} -> {response.status_code}",
-        flush=True
-    )
-
+def secure_response(response):
+    elapsed = time.monotonic() - getattr(request, "_mockify_started_at", time.monotonic())
+    app.logger.info("%s %s -> %s (%.3fs)", request.method, request.path, response.status_code, elapsed)
+    response.headers.update({
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "X-Frame-Options": "DENY",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+        "Content-Security-Policy": "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'",
+    })
+    if request.path.startswith("/api/") and ("auth" in request.path or "admin" in request.path or "results" in request.path):
+        response.headers["Cache-Control"] = "no-store, private"
     return response
 
 
-# =========================================================
-# FRONTEND
-# =========================================================
+def static_file(filename, mimetype=None, cache_control=None):
+    response = send_from_directory(BASE_DIR, filename, mimetype=mimetype)
+    if cache_control:
+        response.headers["Cache-Control"] = cache_control
+    return response
+
 
 @app.route("/")
-def serve_index():
-
-    response = send_from_directory(
-        BASE_DIR,
-        "index.html"
-    )
-
-    response.headers["Cache-Control"] = (
-        "no-store, no-cache, must-revalidate, max-age=0"
-    )
-
-    response.headers["Pragma"] = "no-cache"
-
-    return response
-
-
 @app.route("/index.html")
-def serve_index_html():
-
-    response = send_from_directory(
-        BASE_DIR,
-        "index.html"
-    )
-
-    response.headers["Cache-Control"] = (
-        "no-store, no-cache, must-revalidate, max-age=0"
-    )
-
-    response.headers["Pragma"] = "no-cache"
-
-    return response
+def serve_index():
+    return static_file("index.html", cache_control="no-cache")
 
 
 @app.route("/result.html")
-def serve_result_html():
-
-    return send_from_directory(
-        BASE_DIR,
-        "result.html"
-    )
+def serve_result():
+    return static_file("result.html", cache_control="no-store, private")
 
 
 @app.route("/exam.html")
-def serve_exam_html():
-
-    return send_from_directory(
-        BASE_DIR,
-        "exam.html"
-    )
+def serve_exam():
+    return static_file("exam.html", cache_control="no-store, private")
 
 
 @app.route("/super-admin.html")
-def serve_super_admin_html():
+def serve_super_admin():
+    return static_file("super_admin.html", cache_control="no-store, private")
 
-    return send_from_directory(
-        BASE_DIR,
-        "super_admin.html"
-    )
-
-
-# =========================================================
-# PUBLIC STATS JAVASCRIPT
-# =========================================================
 
 @app.route("/public_stats.js")
-def serve_public_stats_js():
-
-    return send_from_directory(
-        BASE_DIR,
-        "public_stats.js"
-    )
+def serve_public_stats():
+    return static_file("public_stats.js", mimetype="application/javascript", cache_control="public, max-age=3600")
 
 
-# =========================================================
-# HEALTH
-# =========================================================
+@app.route("/robots.txt")
+def serve_robots():
+    return static_file("robots.txt", mimetype="text/plain", cache_control="public, max-age=3600")
+
+
+@app.route("/sitemap.xml")
+def serve_sitemap():
+    return static_file("sitemap.xml", mimetype="application/xml", cache_control="public, max-age=3600")
+
 
 @app.route("/api/health")
 def health():
+    try:
+        db.session.execute(text("SELECT 1"))
+    except Exception:
+        db.session.rollback()
+        app.logger.exception("Health check database query failed")
+        return jsonify({"status": "unhealthy"}), 503
+    return jsonify({"status": "ok", "environment": environment}), 200
 
-    return {
-        "status": "ok",
-
-        "auth_module": auth_bp.name,
-
-        "analytics_module": analytics_bp.name,
-
-        "brevo_configured": bool(
-            os.environ.get(
-                "BREVO_API_KEY",
-                ""
-            ).strip()
-        ),
-
-        "mail_from": os.environ.get(
-            "MAIL_FROM",
-            "otp@mockify.tech"
-        ),
-    }
-
-
-# =========================================================
-# DATABASE INIT
-# =========================================================
 
 with app.app_context():
     init_db()
 
 
-# =========================================================
-# RUN
-# =========================================================
-
 if __name__ == "__main__":
-
-    print(
-        "=" * 60,
-        flush=True
-    )
-
-    print(
-        "MOCKIFY STARTUP",
-        flush=True
-    )
-
-    print(
-        "=" * 60,
-        flush=True
-    )
-
-    print(
-        "App file:",
-        os.path.abspath(__file__),
-        flush=True
-    )
-
-    print(
-        "Working directory:",
-        os.getcwd(),
-        flush=True
-    )
-
-    print(
-        "Auth module:",
-        auth_bp,
-        flush=True
-    )
-
-    print(
-        "Analytics module:",
-        analytics_bp,
-        flush=True
-    )
-
-    print(
-        "Brevo API key configured:",
-        bool(
-            os.environ.get(
-                "BREVO_API_KEY",
-                ""
-            ).strip()
-        ),
-        flush=True
-    )
-
-    print(
-        "Mail sender:",
-        os.environ.get(
-            "MAIL_FROM",
-            "otp@mockify.tech"
-        ),
-        flush=True
-    )
-
-    print(
-        "=" * 60,
-        flush=True
-    )
-
-    app.run(
-        host="127.0.0.1",
-        port=5000,
-        debug=True,
-        use_reloader=True
-    )
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", "5000")), debug=not is_production, use_reloader=not is_production)

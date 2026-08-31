@@ -9,7 +9,7 @@ import requests
 from flask import Blueprint, current_app, jsonify, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from database import db, PendingOTP, User
+from database import db, PendingOTP, User, OTPEvent
 
 
 auth_bp = Blueprint("auth", __name__)
@@ -167,7 +167,7 @@ def send_otp_email(to_email, otp):
             "BREVO_API_KEY is missing."
         )
 
-        return False
+        return False, None
 
     if not sender:
         print(
@@ -179,7 +179,7 @@ def send_otp_email(to_email, otp):
             "MAIL_FROM is missing."
         )
 
-        return False
+        return False, None
 
     # -----------------------------------------------------
     # PAYLOAD
@@ -291,11 +291,6 @@ def send_otp_email(to_email, otp):
             flush=True
         )
 
-        print(
-            "Brevo response:",
-            response.text[:2000],
-            flush=True
-        )
 
         # -------------------------------------------------
         # SUCCESS
@@ -313,7 +308,11 @@ def send_otp_email(to_email, otp):
                 flush=True
             )
 
-            return True
+            try:
+                message_id = response.json().get("messageId")
+            except ValueError:
+                message_id = None
+            return True, message_id
 
         # -------------------------------------------------
         # FAILURE
@@ -330,12 +329,11 @@ def send_otp_email(to_email, otp):
         )
 
         current_app.logger.error(
-            "Brevo rejected OTP email. HTTP %s. Response: %s",
+            "Brevo rejected OTP email. HTTP status=%s",
             response.status_code,
-            response.text[:2000],
         )
 
-        return False
+        return False, None
 
     except requests.Timeout as exc:
 
@@ -345,7 +343,7 @@ def send_otp_email(to_email, otp):
             flush=True
         )
 
-        return False
+        return False, None
 
     except requests.ConnectionError as exc:
 
@@ -355,7 +353,7 @@ def send_otp_email(to_email, otp):
             flush=True
         )
 
-        return False
+        return False, None
 
     except requests.RequestException as exc:
 
@@ -365,7 +363,7 @@ def send_otp_email(to_email, otp):
             flush=True
         )
 
-        return False
+        return False, None
 
     except Exception as exc:
 
@@ -379,7 +377,7 @@ def send_otp_email(to_email, otp):
             "Unexpected OTP email error."
         )
 
-        return False
+        return False, None
 
 
 # =========================================================
@@ -542,10 +540,10 @@ def send_for(record, email, name=None):
         flush=True
     )
 
-    if not send_otp_email(
-        email,
-        otp
-    ):
+    sent, message_id = send_otp_email(email, otp)
+    if not sent:
+        db.session.add(OTPEvent(email=email, user_id=record.id if isinstance(record, User) else None, status="failed", ip_address=client_ip()))
+        db.session.commit()
 
         print(
             "OTP EMAIL FAILED.",
@@ -577,10 +575,9 @@ def send_for(record, email, name=None):
     if name is not None:
         record.pending_name = name.strip()
 
-    save_otp(
-        record,
-        otp
-    )
+    save_otp(record, otp)
+    db.session.flush()
+    db.session.add(OTPEvent(email=email, user_id=record.id if isinstance(record, User) else None, status="accepted", brevo_message_id=message_id, ip_address=client_ip()))
 
     db.session.commit()
 
@@ -936,6 +933,9 @@ def verify_otp():
 
         user.reset_daily_count_if_needed()
 
+    user.last_login_at = now
+    user.last_seen_at = now
+
     db.session.commit()
 
     # =====================================================
@@ -1001,6 +1001,9 @@ def legacy_admin_login():
 
     session.clear()
 
+    user.last_login_at = datetime.utcnow()
+    user.last_seen_at = user.last_login_at
+    db.session.commit()
     session["user_id"] = user.id
 
     session.permanent = True

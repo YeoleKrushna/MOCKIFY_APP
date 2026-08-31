@@ -126,6 +126,8 @@
       box-shadow: var(--shadow);
     }
 
+    .score-hero.is-ready { animation: result-arrive .45s ease both; }
+
     .score-hero::before {
       content: '';
       position: absolute; inset: 0;
@@ -185,6 +187,9 @@
       padding: 20px;
       box-shadow: var(--shadow);
     }
+
+    .review-card { animation: review-in .32s ease both; }
+    .review-card:nth-child(2) { animation-delay: .04s; }.review-card:nth-child(3) { animation-delay: .08s; }.review-card:nth-child(4) { animation-delay: .12s; }
 
     .review-card.correct { border-left: 3px solid var(--success); }
     .review-card.incorrect { border-left: 3px solid var(--danger); }
@@ -283,6 +288,12 @@
       color: var(--text-dim);
     }
 
+    .result-utility { display:flex; justify-content:center; margin-top:16px; }
+    .toast { position: fixed; right: 20px; bottom: 20px; z-index: 90; max-width: min(360px, calc(100vw - 32px)); padding: 12px 16px; background: var(--surface2); border:1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow); color:var(--text); opacity:0; transform:translateY(8px); transition: opacity .2s, transform .2s; }
+    .toast.show { opacity:1; transform:none; }
+    @keyframes result-arrive { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+    @keyframes review-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
     @media (max-width: 700px) {
       .score-grade { font-size: 3.4rem; }
       .score-stats { gap: 18px; }
@@ -314,20 +325,24 @@
 
     <div class="result-body">
       <div class="score-hero">
-        <div class="score-grade" id="result-grade">7/10</div>
-        <div class="score-label" id="result-label">Great job!</div>
+        <div class="score-grade" id="result-grade" aria-live="polite">—</div>
+        <div class="score-label" id="result-label">Loading your result…</div>
         <div class="result-topic-label" id="result-topic-label"></div>
         <div class="score-stats">
           <div class="score-stat">
-            <div class="score-stat-val" id="res-correct" style="color:var(--success)">7</div>
+            <div class="score-stat-val" id="res-correct" style="color:var(--success)">—</div>
             <div class="score-stat-lbl">Correct</div>
           </div>
           <div class="score-stat">
-            <div class="score-stat-val" id="res-wrong" style="color:var(--danger)">3</div>
+            <div class="score-stat-val" id="res-wrong" style="color:var(--danger)">—</div>
             <div class="score-stat-lbl">Wrong</div>
           </div>
           <div class="score-stat">
-            <div class="score-stat-val" id="res-pct" style="color:var(--accent)">70%</div>
+            <div class="score-stat-val" id="res-unanswered" style="color:var(--text-dim)">—</div>
+            <div class="score-stat-lbl">Unanswered</div>
+          </div>
+          <div class="score-stat">
+            <div class="score-stat-val" id="res-pct" style="color:var(--accent)">—</div>
             <div class="score-stat-lbl">Score</div>
           </div>
           <div class="score-stat">
@@ -336,6 +351,8 @@
           </div>
         </div>
       </div>
+
+      
 
       <h3 class="section-title">Detailed Review</h3>
       <div id="error-box" class="error-box"></div>
@@ -347,6 +364,7 @@
       </div>
     </div>
   </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
     const API = '/api';
@@ -377,47 +395,76 @@
     function renderResults(data) {
       const pct = Number(data.percentage || 0);
       const gradeEl = document.getElementById('result-grade');
-      gradeEl.textContent = `${data.score}/${data.total}`;
+      gradeEl.textContent = `0/${data.total}`;
       gradeEl.className = 'score-grade ' + (pct >= 80 ? 'excellent' : pct >= 60 ? 'good' : pct >= 40 ? 'average' : 'poor');
 
       const labels = { excellent: '🏆 Outstanding!', good: '⭐ Great job!', average: '💪 Keep practicing', poor: '📖 Study more' };
       document.getElementById('result-label').textContent = pct >= 80 ? labels.excellent : pct >= 60 ? labels.good : pct >= 40 ? labels.average : labels.poor;
       document.getElementById('result-topic-label').textContent = `Topic: ${data.topic}`;
-      document.getElementById('res-correct').textContent = data.correct_answers;
-      document.getElementById('res-wrong').textContent = data.wrong_answers;
-      document.getElementById('res-pct').textContent = `${pct}%`;
+      animateNumber(gradeEl, data.score, data.total, (value) => `${value}/${data.total}`);
+      animateNumber(document.getElementById('res-correct'), Number(data.correct_answers || 0));
+      animateNumber(document.getElementById('res-wrong'), Number(data.wrong_answers || 0));
+      animateNumber(document.getElementById('res-unanswered'), Number(data.unanswered_answers || 0));
+      animateNumber(document.getElementById('res-pct'), pct, null, (value) => `${value}%`);
       document.getElementById('res-time').textContent = formatTime(data.time_taken);
 
       const review = document.getElementById('questions-review');
       review.innerHTML = (data.detailed || []).map((q, i) => {
-        const cls = q.user_answer == null ? 'unanswered' : q.is_correct ? 'correct' : 'incorrect';
+        const cls = q.is_unanswered || q.user_answer == null ? 'unanswered' : q.is_correct ? 'correct' : 'incorrect';
         const opts = ['A', 'B', 'C', 'D'].map(k => {
           let optCls = '';
           if (k === q.correct_answer) optCls = 'is-correct';
-          else if (k === q.user_answer && !q.is_correct) optCls = 'is-wrong';
+          else if (k === q.user_answer && q.is_wrong) optCls = 'is-wrong';
           return `<div class="review-opt ${optCls}">
             <span class="review-opt-key">${k}</span>
             <span>${escapeHtml(q.options[k])}</span>
             ${k === q.correct_answer ? ' ✓' : ''}
-            ${k === q.user_answer && !q.is_correct ? ' ✗' : ''}
+            ${k === q.user_answer && q.is_wrong ? ' ✗' : ''}
           </div>`;
         }).join('');
-        const explanationHtml = !q.is_correct ? `
+        const explanationHtml = q.is_wrong ? `
           <div class="explanation-box">
-            <div class="explanation-title">💡 Why this answer?</div>
+            <div class="explanation-title">💡 Why this answer is incorrect</div>
             <div class="explanation-text">${escapeHtml(q.explanation || 'Explanation is unavailable for this question.')}</div>
-            ${q.user_answer ? `<div class="your-answer-line">Your answer: <strong>${escapeHtml(q.user_answer)}</strong> · Correct answer: <strong>${escapeHtml(q.correct_answer)}</strong></div>` : `<div class="your-answer-line">You did not answer this question · Correct answer: <strong>${escapeHtml(q.correct_answer)}</strong></div>`}
+            <div class="your-answer-line">Your answer: <strong>${escapeHtml(q.user_answer)}</strong> · Correct answer: <strong>${escapeHtml(q.correct_answer)}</strong></div>
+          </div>` : q.is_unanswered ? `
+          <div class="explanation-box">
+            <div class="explanation-title">📌 Unanswered</div>
+            <div class="explanation-text">You did not answer this question. Review the correct answer below.</div>
+            <div class="your-answer-line">Correct answer: <strong>${escapeHtml(q.correct_answer)}</strong></div>
           </div>` : '';
 
-        return `<div class="review-card ${cls}">
+        const status = q.is_unanswered || q.user_answer == null ? 'Unanswered' : q.is_correct ? 'Correct' : 'Incorrect';
+        return `<article class="review-card ${cls}" aria-label="Question ${i + 1}: ${status}">
           <div class="review-q-head">
             <div class="review-q-num">${i + 1}</div>
             <div class="review-q-text">${escapeHtml(q.question)}</div>
           </div>
           <div class="review-options">${opts}</div>
           ${explanationHtml}
-        </div>`;
+        </article>`;
       }).join('');
+      document.querySelector('.score-hero').classList.add('is-ready');
+    }
+
+    function animateNumber(element, target, denominator, formatter) {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const duration = reduce ? 0 : 480;
+      const start = performance.now();
+      const render = (now) => {
+        const progress = duration ? Math.min(1, (now - start) / duration) : 1;
+        const value = Math.round(target * (1 - Math.pow(1 - progress, 3)));
+        element.textContent = formatter ? formatter(value) : value;
+        if (progress < 1) requestAnimationFrame(render);
+      };
+      requestAnimationFrame(render);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message; toast.classList.add('show');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove('show'), 2800);
     }
 
     function showError(message) {
@@ -451,7 +498,7 @@
         const data = await apiCall(`/results/${resultId}`);
         renderResults(data);
       } catch (e) {
-        showError(e.message);
+        showError("We couldn't load this result right now. Check your connection and try again from your dashboard.");
       }
     }
 

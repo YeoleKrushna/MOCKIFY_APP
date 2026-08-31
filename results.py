@@ -44,7 +44,7 @@ def get_groq_api_key():
 
 def generate_explanations(topic, questions, user_answers):
     """
-    Generate explanations for incorrect/unanswered questions
+    Generate explanations for answered-but-incorrect questions
     in one batched Groq request.
 
     Returns:
@@ -77,8 +77,8 @@ def generate_explanations(topic, questions, user_answers):
         user_answer = user_answers.get(str(i))
         correct_answer = question.get("answer")
 
-        # Correct -> no explanation needed
-        if user_answer == correct_answer:
+        # Only answered-but-incorrect questions receive explanations.
+        if user_answer is None or user_answer == "" or user_answer == correct_answer:
             continue
 
         wrong_items.append({
@@ -103,7 +103,7 @@ mistakes in an MCQ test.
 Topic:
 {topic}
 
-For each incorrect or unanswered question below, explain WHY
+For each answered-but-incorrect question below, explain WHY
 the correct answer is correct.
 
 Use ONLY the question, options, and answer supplied in the data
@@ -289,8 +289,7 @@ def build_detailed(
     """
     Build the complete question-by-question result.
 
-    Explanations are included ONLY for incorrect or
-    unanswered questions.
+    Explanations are included ONLY for answered-but-incorrect questions.
     """
 
     explanations = explanations or {}
@@ -306,23 +305,24 @@ def build_detailed(
 
         correct_answer = question["answer"]
 
+        is_unanswered = user_answer is None or user_answer == ""
         is_correct = (
-            user_answer == correct_answer
+            not is_unanswered and user_answer == correct_answer
         )
+        is_wrong = not is_unanswered and not is_correct
 
         item = {
             "question": question["question"],
             "options": question["options"],
             "correct_answer": correct_answer,
             "user_answer": user_answer,
-            "is_correct": is_correct
+            "is_correct": is_correct,
+            "is_wrong": is_wrong,
+            "is_unanswered": is_unanswered
         }
 
-        # -------------------------------------------------
-        # Explanation only when wrong/unanswered
-        # -------------------------------------------------
-
-        if not is_correct:
+        # Explanation only for answered-but-incorrect questions.
+        if is_wrong:
             item["explanation"] = explanations.get(
                 str(i),
                 ""
@@ -429,18 +429,16 @@ def submit_result():
 
     correct = 0
     wrong = 0
+    unanswered = 0
 
     for i, question in enumerate(questions):
 
-        user_answer = user_answers.get(
-            str(i)
-        )
+        user_answer = user_answers.get(str(i))
+        correct_answer = question.get("answer")
 
-        correct_answer = question.get(
-            "answer"
-        )
-
-        if user_answer == correct_answer:
+        if user_answer is None or user_answer == "":
+            unanswered += 1
+        elif user_answer == correct_answer:
             correct += 1
         else:
             wrong += 1
@@ -498,6 +496,8 @@ def submit_result():
         ),
         "correct_answers": correct,
         "wrong_answers": wrong,
+        "unanswered_answers": unanswered,
+        "answered_answers": correct + wrong,
         "time_taken": time_taken,
         "detailed": detailed,
         "topic": mock.topic
@@ -574,6 +574,11 @@ def get_result(result_id):
         explanations
     )
 
+    unanswered = max(
+        0,
+        result.total - result.correct_answers - result.wrong_answers
+    )
+
     return jsonify({
         "result_id": result.id,
         "score": result.score,
@@ -584,6 +589,8 @@ def get_result(result_id):
         ),
         "correct_answers": result.correct_answers,
         "wrong_answers": result.wrong_answers,
+        "unanswered_answers": unanswered,
+        "answered_answers": result.correct_answers + result.wrong_answers,
         "time_taken": result.time_taken,
         "timestamp": result.timestamp.isoformat(),
         "topic": mock.topic,

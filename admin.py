@@ -1,105 +1,116 @@
-from flask import Blueprint, request, jsonify, session
-from database import db, User, Mock, Result
+"""Private administrator and Super Admin endpoints."""
 from functools import wraps
 
-admin_bp = Blueprint('admin', __name__)
+from flask import Blueprint, jsonify, request, session
+from database import db, Mock, OTPEvent, Result, User
 
-def admin_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        user_id = session.get('user_id')
-        if not user_id:
-            return jsonify({'error': 'Not authenticated'}), 401
-        user = User.query.get(user_id)
-        if not user or not user.is_admin:
-            return jsonify({'error': 'Admin access required'}), 403
-        return f(*args, **kwargs)
-    return decorated
+admin_bp = Blueprint("admin", __name__)
 
-@admin_bp.route('/stats', methods=['GET'])
+
+def current_user():
+    return db.session.get(User, session.get("user_id")) if session.get("user_id") else None
+
+
+def admin_required(fn):
+    @wraps(fn)
+    def wrapped(*args, **kwargs):
+        user = current_user()
+        if not user:
+            return jsonify({"error": "Not authenticated"}), 401
+        if not (user.is_admin or user.is_super_admin):
+            return jsonify({"error": "Admin access required"}), 403
+        return fn(*args, **kwargs)
+    return wrapped
+
+
+def super_admin_required(fn):
+    @wraps(fn)
+    def wrapped(*args, **kwargs):
+        user = current_user()
+        if not user:
+            return jsonify({"error": "Not authenticated"}), 401
+        if not user.is_super_admin:
+            return jsonify({"error": "Super Admin access required"}), 403
+        return fn(*args, **kwargs)
+    return wrapped
+
+
+@admin_bp.route("/stats")
 @admin_required
 def get_stats():
-    total_users = User.query.filter_by(is_admin=False).count()
-    total_mocks = Mock.query.count()
-    total_results = Result.query.count()
-    avg_score = db.session.query(db.func.avg(Result.score)).scalar() or 0
-    return jsonify({
-        'total_users': total_users,
-        'total_mocks': total_mocks,
-        'total_results': total_results,
-        'avg_score': round(float(avg_score), 1)
-    }), 200
+    return jsonify({"total_users": User.query.filter_by(is_admin=False).count(), "total_mocks": Mock.query.count(), "total_results": Result.query.count(), "avg_score": round(float(db.session.query(db.func.avg(Result.score)).scalar() or 0), 1)}), 200
 
-@admin_bp.route('/users', methods=['GET'])
-@admin_required
+
+def user_metrics(user):
+    results = Result.query.filter_by(user_id=user.id).all()
+    average = db.session.query(db.func.avg(Result.score)).filter_by(user_id=user.id).scalar() or 0
+    best = db.session.query(db.func.max(Result.score)).filter_by(user_id=user.id).scalar()
+    return {**user.to_dict(), "total_mocks": Mock.query.filter_by(user_id=user.id).count(), "completed_tests": len(results), "average_score": round(float(average), 1), "best_score": best, "questions_answered": sum(result.total or 0 for result in results), "correct_answers": sum(result.correct_answers or 0 for result in results), "wrong_answers": sum(result.wrong_answers or 0 for result in results)}
+
+
+@admin_bp.route("/users")
+@super_admin_required
 def list_users():
     users = User.query.filter_by(is_admin=False).order_by(User.created_at.desc()).all()
-    result = []
-    for u in users:
-        u.reset_daily_count_if_needed()
-        mock_count = Mock.query.filter_by(user_id=u.id).count()
-        result.append({**u.to_dict(), 'total_mocks': mock_count})
-    return jsonify({'users': result}), 200
+    return jsonify({"users": [user_metrics(user) for user in users]}), 200
 
-@admin_bp.route('/users/<int:user_id>/limit', methods=['PUT'])
-@admin_required
+
+@admin_bp.route("/users/<int:user_id>")
+@super_admin_required
+def user_detail(user_id):
+    user = db.session.get(User, user_id)
+    if not user or user.is_admin or user.is_super_admin:
+        return jsonify({"error": "User not found"}), 404
+    return jsonify({"user": user.to_dict(), "summary": user_metrics(user)}), 200
+
+
+@admin_bp.route("/users/<int:user_id>/limit", methods=["PUT"])
+@super_admin_required
 def update_limit(user_id):
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
-    data = request.get_json()
-    limit = data.get('daily_mock_limit')
-    if limit is None or not isinstance(limit, int) or limit < 0:
-        return jsonify({'error': 'Invalid limit value'}), 400
+    user = db.session.get(User, user_id)
+    limit = (request.get_json(silent=True) or {}).get("daily_mock_limit")
+    if not user or user.is_admin or user.is_super_admin:
+        return jsonify({"error": "User not found"}), 404
+    if not isinstance(limit, int) or not 0 <= limit <= 999:
+        return jsonify({"error": "Invalid limit value"}), 400
     user.daily_mock_limit = limit
     db.session.commit()
-    return jsonify({'message': 'Limit updated', 'user': user.to_dict()}), 200
+    return jsonify({"message": "Limit updated", "user": user.to_dict()}), 200
 
-@admin_bp.route('/users/<int:user_id>', methods=['DELETE'])
-@admin_required
+
+@admin_bp.route("/users/<int:user_id>", methods=["DELETE"])
+@super_admin_required
 def delete_user(user_id):
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
     if not user:
-        return jsonify({'error': 'User not found'}), 404
-    if user.is_admin:
-        return jsonify({'error': 'Cannot delete admin'}), 403
-    Result.query.filter_by(user_id=user_id).delete()
-    Mock.query.filter_by(user_id=user_id).delete()
+        return jsonify({"error": "User not found"}), 404
+    if user.is_admin or user.is_super_admin:
+        return jsonify({"error": "Cannot delete an admin user"}), 403
     db.session.delete(user)
     db.session.commit()
-    return jsonify({'message': 'User deleted'}), 200
+    return jsonify({"message": "User and related data deleted"}), 200
 
-@admin_bp.route('/mocks', methods=['GET'])
+
+@admin_bp.route("/mocks")
 @admin_required
 def list_mocks():
-    mocks = Mock.query.order_by(Mock.created_at.desc()).limit(50).all()
-    result = []
-    for m in mocks:
-        user = User.query.get(m.user_id)
-        result.append({
-            'id': m.id,
-            'user_name': user.name if user else 'Unknown',
-            'user_email': user.email if user else 'Unknown',
-            'topic': m.topic,
-            'created_at': m.created_at.isoformat()
-        })
-    return jsonify({'mocks': result}), 200
+    mocks = Mock.query.order_by(Mock.created_at.desc()).limit(100).all()
+    return jsonify({"mocks": [{"id": m.id, "user_name": m.user.name if m.user else "Unknown", "user_email": m.user.email if m.user else "Unknown", "topic": m.topic, "timer_minutes": m.timer_minutes or 15, "created_at": m.created_at.isoformat()} for m in mocks]}), 200
 
-@admin_bp.route('/results', methods=['GET'])
+
+@admin_bp.route("/results")
 @admin_required
 def list_results():
-    results = Result.query.order_by(Result.timestamp.desc()).limit(50).all()
-    data = []
-    for r in results:
-        user = User.query.get(r.user_id)
-        mock = Mock.query.get(r.mock_id)
-        data.append({
-            'id': r.id,
-            'user_name': user.name if user else 'Unknown',
-            'topic': mock.topic if mock else 'Unknown',
-            'score': r.score,
-            'total': r.total,
-            'percentage': round((r.score / r.total) * 100, 1),
-            'timestamp': r.timestamp.isoformat()
-        })
-    return jsonify({'results': data}), 200
+    rows = Result.query.order_by(Result.timestamp.desc()).limit(100).all()
+    return jsonify({"results": [{"id": r.id, "user_name": r.user.name if r.user else "Unknown", "user_email": r.user.email if r.user else "Unknown", "topic": r.mock.topic if r.mock else "Unknown", "score": r.score, "total": r.total, "percentage": round(r.score / r.total * 100, 1) if r.total else 0, "timestamp": r.timestamp.isoformat()} for r in rows]}), 200
+
+
+@admin_bp.route("/otp-events")
+@super_admin_required
+def otp_events():
+    try:
+        limit = max(1, min(int(request.args.get("limit", "100")), 250))
+    except ValueError:
+        limit = 100
+    events = OTPEvent.query.order_by(OTPEvent.requested_at.desc()).limit(limit).all()
+    return jsonify({"events": [{"id": e.id, "email": e.email, "event_type": e.event_type, "status": e.status, "brevo_message_id": e.brevo_message_id, "requested_at": e.requested_at.isoformat()} for e in events]}), 200

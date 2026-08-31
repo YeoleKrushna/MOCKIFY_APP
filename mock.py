@@ -6,11 +6,8 @@ import os
 import time
 import re
 from datetime import datetime, timedelta
-from dotenv import load_dotenv
 
 mock_bp = Blueprint('mock', __name__)
-
-load_dotenv(override=True)
 
 GROQ_API_URL = os.environ.get('GROQ_API_URL', 'https://api.groq.com/openai/v1/chat/completions').strip()
 GROQ_MODEL = os.environ.get('GROQ_MODEL', 'openai/gpt-oss-20b').strip()
@@ -349,8 +346,7 @@ def call_groq_once(prompt):
         return json.loads(text)
 
     except (ValueError, KeyError, IndexError, TypeError) as exc:
-        print("RAW GROQ RESPONSE:")
-        print(response.text)
+        # Do not log provider response bodies: they can contain user prompts.
 
         raise GroqAPIError(
             "AI returned an unexpected JSON response. Please try again."
@@ -469,9 +465,9 @@ def generate_mock():
     except (TypeError, ValueError):
         return jsonify({'error': 'Please select a valid test duration.'}), 400
 
-    allowed_timer_minutes = {5, 10, 15, 20, 30, 45, 60}
-    if timer_minutes not in allowed_timer_minutes:
-        return jsonify({'error': 'Invalid test duration selected.'}), 400
+    # Presets are a UI convenience; any practical whole-minute session is valid.
+    if not 1 <= timer_minutes <= 180:
+        return jsonify({'error': 'Test duration must be between 1 and 180 minutes.'}), 400
 
     cached_mock = get_cached_mock(user_id, topic)
     if cached_mock:
