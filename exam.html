@@ -215,6 +215,20 @@
       gap: 12px;
     }
 
+    .last-question-hint {
+      flex: 1;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.82rem;
+      line-height: 1.45;
+      padding: 0 8px;
+      display: none;
+    }
+
+    .last-question-hint.visible {
+      display: block;
+    }
+
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       padding: 13px 24px;
@@ -329,6 +343,7 @@
       .question-area { padding: 22px; }
       .exam-nav { flex-direction: column; }
       .exam-nav .btn { width: 100%; }
+      .last-question-hint { width: 100%; padding: 0; order: 0; }
       .exam-title { max-width: calc(100% - 58px); }
       .timer-display { order: 3; flex: 1; justify-content: center; }
     }
@@ -400,8 +415,9 @@
         <div class="q-text" id="q-text">Loading question...</div>
         <div class="options-grid" id="options-grid"></div>
         <div class="exam-nav">
-          <button type="button" class="btn btn-secondary" onclick="prevQuestion()">← Previous</button>
-          <button type="button" class="btn btn-secondary" onclick="nextQuestion()">Next →</button>
+          <button type="button" class="btn btn-secondary" id="prev-question-btn" onclick="prevQuestion()">← Previous</button>
+          <div class="last-question-hint" id="last-question-hint" aria-live="polite">If you have finished, you can simply submit the test.</div>
+          <button type="button" class="btn btn-secondary" id="next-question-btn" onclick="nextQuestion()">Next →</button>
         </div>
       </div>
     </div>
@@ -568,6 +584,17 @@
       });
 
       currentQuestion = idx;
+
+      const isLastQuestion = idx === examQuestions.length - 1;
+      const nextButton = document.getElementById('next-question-btn');
+      const lastQuestionHint = document.getElementById('last-question-hint');
+      if (nextButton) {
+        nextButton.style.display = isLastQuestion ? 'none' : '';
+      }
+      if (lastQuestionHint) {
+        lastQuestionHint.classList.toggle('visible', isLastQuestion);
+      }
+
       const area = document.querySelector('.question-area');
       area.classList.remove('is-changing');
       requestAnimationFrame(() => area.classList.add('is-changing'));
