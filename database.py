@@ -28,6 +28,11 @@ class User(db.Model, OTPFields):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(256), nullable=False)
+    password_set = db.Column(db.Boolean, default=False, nullable=False, index=True)
+    auth_provider = db.Column(db.String(20), default="email", nullable=False, index=True)
+    google_sub = db.Column(db.String(255), unique=True, index=True)
+    password_setup_token_hash = db.Column(db.String(128), index=True)
+    password_setup_expires_at = db.Column(db.DateTime)
     email_verified = db.Column(db.Boolean, default=True, nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
     is_super_admin = db.Column(db.Boolean, default=False, nullable=False)
@@ -56,7 +61,11 @@ class User(db.Model, OTPFields):
         return {
             "id": self.id, "name": self.name, "email": self.email,
             "is_admin": self.is_admin, "is_super_admin": self.is_super_admin,
-            "email_verified": self.email_verified, "daily_mock_limit": self.daily_mock_limit,
+            "email_verified": self.email_verified,
+            "password_set": bool(self.password_set),
+            "auth_provider": self.auth_provider,
+            "google_linked": bool(self.google_sub),
+            "daily_mock_limit": self.daily_mock_limit,
             "mocks_taken_today": self.mocks_taken_today,
             "mocks_remaining": None if self.is_admin else max(0, self.daily_mock_limit - self.mocks_taken_today),
             "can_take_mock": self.can_take_mock(),
@@ -137,6 +146,11 @@ def _column_additions():
             "otp_last_sent_at": datetime_type, "otp_request_count": "INTEGER NOT NULL DEFAULT 0",
             "otp_request_window_started_at": datetime_type, "last_seen_at": datetime_type,
             "last_login_at": datetime_type,
+            "password_set": "BOOLEAN NOT NULL DEFAULT FALSE" if pg else "INTEGER NOT NULL DEFAULT 0",
+            "auth_provider": "VARCHAR(20) NOT NULL DEFAULT 'email'",
+            "google_sub": "VARCHAR(255)",
+            "password_setup_token_hash": "VARCHAR(128)",
+            "password_setup_expires_at": datetime_type,
         },
         "otp_events": {
             "event_type": "VARCHAR(50) NOT NULL DEFAULT 'verification'",
@@ -157,6 +171,12 @@ def _upgrade_existing_tables():
             if name not in existing:
                 db.session.execute(text(f"ALTER TABLE {table} ADD COLUMN {name} {definition}"))
     false = "FALSE" if db.engine.dialect.name == "postgresql" else "0"
+    true = "TRUE" if db.engine.dialect.name == "postgresql" else "1"
+    db.session.execute(text(f"UPDATE users SET password_set = {true} WHERE is_admin = {true}"))
+    db.session.execute(text(f"UPDATE users SET password_set = {false} WHERE is_admin = {false} AND password_set IS NULL"))
+    db.session.execute(text("CREATE UNIQUE INDEX IF NOT EXISTS ux_users_google_sub ON users (google_sub)"))
+    db.session.execute(text("UPDATE users SET auth_provider = 'email' WHERE auth_provider IS NULL"))
+    db.session.execute(text("UPDATE users SET password_setup_token_hash = NULL WHERE password_set = TRUE"))
     db.session.execute(text(f"UPDATE users SET daily_mock_limit = 3 WHERE is_admin = {false} AND daily_mock_limit = 5"))
     db.session.commit()
 
@@ -172,6 +192,8 @@ def init_db():
             name=os.environ.get("BOOTSTRAP_ADMIN_NAME", "Administrator").strip() or "Administrator",
             email=email,
             password_hash=generate_password_hash(password),
+            password_set=True,
+            auth_provider="email",
             email_verified=True,
             is_admin=True,
             is_super_admin=os.environ.get("BOOTSTRAP_SUPER_ADMIN", "false").lower() == "true",

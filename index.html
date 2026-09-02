@@ -899,6 +899,13 @@
     box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
   }
 
+  .auth-divider { display:flex; align-items:center; gap:12px; margin:18px 0; color:var(--text-faint); font-size:.76rem; text-transform:uppercase; letter-spacing:.06em; }
+  .auth-divider::before, .auth-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+  .google-btn { width:100%; background:#fff; color:#202124; border:1px solid #dadce0; border-radius:var(--radius-sm); padding:12px 16px; font-family:'DM Sans',sans-serif; font-size:.92rem; font-weight:600; cursor:pointer; }
+  .google-btn:hover { background:#f8f9fa; }
+  .auth-link-btn { display:inline-block; width:100%; margin-top:12px; padding:0; border:none; background:transparent; color:var(--accent); font-family:'DM Sans',sans-serif; font-size:.82rem; cursor:pointer; }
+  .auth-link-btn:hover { text-decoration:underline; }
+
   /* ─── NAVBAR (app) ─── */
   .navbar {
     position: sticky; top: 0; z-index: 100;
@@ -2199,7 +2206,7 @@
           </div>
           <div class="faq-item">
             <button type="button" class="faq-q" aria-expanded="false">Do I need an account to use Mockify?<span class="plus">+</span></button>
-            <div class="faq-a"><p>Yes — you'll sign in with just your email and a one-time verification code before generating your first mock.</p></div>
+            <div class="faq-a"><p>You can sign in with Google or your Mockify password. You can also choose email OTP sign-in when you need it.</p></div>
           </div>
         </div>
       </div>
@@ -2299,109 +2306,39 @@
 
       <!-- Login Form -->
       <div id="login-form">
-        <div class="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            id="login-email"
-            placeholder="you@gmail.com"
-            autocomplete="email"
-          >
-        </div>
-
-        <button
-          type="button"
-          class="btn btn-primary btn-block"
-          id="login-send-btn"
-          onclick="handleLogin()"
-        >
-          Send verification code
-        </button>
+        <button type="button" class="google-btn" onclick="startGoogleLogin()">Continue with Google</button>
+        <div class="auth-divider">or</div>
+        <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="you@gmail.com" autocomplete="email"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password"></div>
+        <button type="button" class="btn btn-primary btn-block" id="login-password-btn" onclick="handlePasswordLogin()">Sign In</button>
+        <button type="button" class="auth-link-btn" id="login-otp-link" onclick="handleLoginOtp()">Sign in with OTP instead</button>
       </div>
 
       <!-- Register Form -->
       <div id="register-form" style="display:none">
-        <div class="form-group">
-          <label>Full Name</label>
-          <input
-            type="text"
-            id="reg-name"
-            placeholder="Jane Doe"
-          >
-        </div>
-
-        <div class="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            id="reg-email"
-            placeholder="you@gmail.com"
-            autocomplete="email"
-          >
-        </div>
-
-        <button
-          type="button"
-          class="btn btn-primary btn-block"
-          id="register-send-btn"
-          onclick="handleRegister()"
-        >
-          Send verification code
-        </button>
+        <button type="button" class="google-btn" onclick="startGoogleLogin()">Continue with Google</button>
+        <div class="auth-divider">or</div>
+        <div class="form-group"><label>Full Name</label><input type="text" id="reg-name" placeholder="Jane Doe" autocomplete="name"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="reg-email" placeholder="you@gmail.com" autocomplete="email"></div>
+        <button type="button" class="btn btn-primary btn-block" id="register-send-btn" onclick="handleRegister()">Verify Email &amp; Register</button>
       </div>
 
       <!-- OTP Form -->
       <div id="otp-form" style="display:none">
-        <p
-          style="color:var(--text-dim);font-size:.9rem;margin-bottom:8px"
-          id="otp-instructions"
-        ></p>
+        <p style="color:var(--text-dim);font-size:.9rem;margin-bottom:8px" id="otp-instructions"></p>
+        <p style="color:var(--text-dim);font-size:.82rem;margin-bottom:18px" id="otp-expiry"></p>
+        <div class="form-group"><label>Verification code</label><input type="text" id="otp-code" inputmode="numeric" maxlength="6" placeholder="6-digit code" autocomplete="one-time-code"></div>
+        <button type="button" class="btn btn-primary btn-block" id="verify-otp-btn" onclick="handleVerifyOtp()">Verify</button>
+        <button type="button" class="btn btn-secondary" id="resend-otp-btn" onclick="resendOtp()" style="margin-top:10px;width:100%">Resend code</button>
+        <button type="button" class="btn btn-secondary" onclick="backToEmailEntry()" style="margin-top:10px;width:100%">← Use a different email</button>
+      </div>
 
-        <p
-          style="color:var(--text-dim);font-size:.82rem;margin-bottom:18px"
-          id="otp-expiry"
-        ></p>
-
-        <div class="form-group">
-          <label>Verification code</label>
-
-          <input
-            type="text"
-            id="otp-code"
-            inputmode="numeric"
-            maxlength="6"
-            placeholder="6-digit code"
-            autocomplete="one-time-code"
-          >
-        </div>
-
-        <button
-          type="button"
-          class="btn btn-primary btn-block"
-          id="verify-otp-btn"
-          onclick="handleVerifyOtp()"
-        >
-          Verify and continue
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-secondary"
-          id="resend-otp-btn"
-          onclick="resendOtp()"
-          style="margin-top:10px;width:100%"
-        >
-          Resend code
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-secondary"
-          onclick="backToEmailEntry()"
-          style="margin-top:10px;width:100%"
-        >
-          ← Use a different email
-        </button>
+      <!-- Password Setup Form -->
+      <div id="password-setup-form" style="display:none">
+        <p style="color:var(--text-dim);font-size:.9rem;line-height:1.6;margin-bottom:18px" id="password-setup-instructions">Create a password for your Mockify account.</p>
+        <div class="form-group"><label>New Password</label><input type="password" id="setup-password" placeholder="At least 8 characters" autocomplete="new-password"></div>
+        <div class="form-group"><label>Confirm Password</label><input type="password" id="setup-password-confirm" placeholder="Re-enter your password" autocomplete="new-password"></div>
+        <button type="button" class="btn btn-primary btn-block" id="password-setup-btn" onclick="handleSetPassword()">Set Password</button>
       </div>
     </div>
   </div>
@@ -2685,6 +2622,8 @@
       <button type="button" class="admin-tab" onclick="switchAdminTab('results')">Results</button>
     </div>
 
+    <button type="button" class="btn btn-secondary btn-sm" style="margin:0 0 16px" onclick="sendPasswordSetupLinks()">Email password setup links to existing users</button>
+
     <!-- Users tab -->
     <div class="admin-section active" id="admin-users">
       <div class="table-wrap">
@@ -2695,12 +2634,13 @@
               <th>Email</th>
               <th>Mocks Today</th>
               <th>Daily Limit</th>
+              <th>Password</th>
               <th>Joined</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody id="users-table-body">
-            <tr><td colspan="6" style="text-align:center;color:var(--text-dim)">Loading…</td></tr>
+            <tr><td colspan="7" style="text-align:center;color:var(--text-dim)">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -3046,192 +2986,27 @@ document.querySelectorAll('.faq-q').forEach(btn => {
 })();
 
 // ─── AUTH ───
-let otpMode = null;
-let otpEmail = '';
-let otpName = '';
-let otpResendUntil = 0;
-let otpExpiresUntil = 0;
-let otpCountdownTimer = null;
-let authRequestInFlight = false;
-
-function switchAuthTab(tab) {
-  document.getElementById('auth-tab-login').classList.toggle('active', tab === 'login');
-  document.getElementById('auth-tab-register').classList.toggle('active', tab === 'register');
-  document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
-  resetOtpFlow();
-  hideError('auth-error'); hideError('auth-success');
-}
-
-function authButton(id, disabled, label) {
-  const button = document.getElementById(id);
-  button.disabled = disabled;
-  button.textContent = label;
-}
-
-function formatOtpTime(milliseconds) {
-  const totalSeconds = Math.max(0, Math.ceil(milliseconds / 1000));
-  return `${Math.floor(totalSeconds / 60)}:${String(totalSeconds % 60).padStart(2, '0')}`;
-}
-
-function refreshOtpTimers() {
-  const now = Date.now();
-  const resendRemaining = otpResendUntil - now;
-  const expiryRemaining = otpExpiresUntil - now;
-  const resendButton = document.getElementById('resend-otp-btn');
-
-  if (resendRemaining > 0) {
-    resendButton.disabled = true;
-    resendButton.textContent = `Resend code (${Math.ceil(resendRemaining / 1000)}s)`;
-  } else if (!authRequestInFlight) {
-    resendButton.disabled = false;
-    resendButton.textContent = 'Resend code';
-  }
-
-  document.getElementById('otp-expiry').textContent = expiryRemaining > 0
-    ? `Code expires in ${formatOtpTime(expiryRemaining)}`
-    : 'Code expired. Request a new code.';
-
-  if (resendRemaining <= 0 && expiryRemaining <= 0) {
-    clearInterval(otpCountdownTimer);
-    otpCountdownTimer = null;
-  }
-}
-
-function startOtpCountdown(expiresIn = 600) {
-  clearInterval(otpCountdownTimer);
-  otpResendUntil = Date.now() + 60 * 1000;
-  otpExpiresUntil = Date.now() + expiresIn * 1000;
-  refreshOtpTimers();
-  otpCountdownTimer = setInterval(refreshOtpTimers, 1000);
-}
-
-function showOtpForm(mode, email, name, expiresIn) {
-  otpMode = mode;
-  otpEmail = email;
-  otpName = name || '';
-  document.getElementById('login-form').style.display = 'none';
-  document.getElementById('register-form').style.display = 'none';
-  document.getElementById('otp-form').style.display = 'block';
-  document.getElementById('otp-code').value = '';
-  document.getElementById('otp-instructions').textContent = `We sent a 6-digit code to ${email}.`;
-  startOtpCountdown(expiresIn || 600);
-  document.getElementById('otp-code').focus();
-}
-
-function resetOtpFlow() {
-  clearInterval(otpCountdownTimer);
-  otpCountdownTimer = null;
-  otpMode = null;
-  otpEmail = '';
-  otpName = '';
-  document.getElementById('otp-form').style.display = 'none';
-}
-
-function backToEmailEntry() {
-  const tab = otpMode === 'register' ? 'register' : 'login';
-  resetOtpFlow();
-  document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
-  document.getElementById('auth-tab-login').classList.toggle('active', tab === 'login');
-  document.getElementById('auth-tab-register').classList.toggle('active', tab === 'register');
-  hideError('auth-error');
-  hideError('auth-success');
-}
-
-async function handleLogin() {
-  if (authRequestInFlight) return;
-  const email = document.getElementById('login-email').value.trim();
-  if (!email) return showError('auth-error', 'Please enter your email');
-  authRequestInFlight = true;
-  authButton('login-send-btn', true, 'Sending…');
-  hideError('auth-error');
-  try {
-    const data = await apiCall('POST', '/auth/request-otp', { email });
-    showOtpForm('login', email, '', data.expires_in);
-  } catch (e) {
-    showError('auth-error', e.message);
-  } finally {
-    authRequestInFlight = false;
-    authButton('login-send-btn', false, 'Send verification code');
-  }
-}
-
-async function handleRegister() {
-  if (authRequestInFlight) return;
-  const name = document.getElementById('reg-name').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
-  if (!name || !email) return showError('auth-error', 'Please fill in all fields');
-  authRequestInFlight = true;
-  authButton('register-send-btn', true, 'Sending…');
-  hideError('auth-error');
-  try {
-    const data = await apiCall('POST', '/auth/register', { name, email });
-    showOtpForm('register', email, name, data.expires_in);
-  } catch (e) {
-    showError('auth-error', e.message);
-  } finally {
-    authRequestInFlight = false;
-    authButton('register-send-btn', false, 'Send verification code');
-  }
-}
-
-async function handleVerifyOtp() {
-  if (!otpMode || authRequestInFlight) return;
-  const otp = document.getElementById('otp-code').value.trim();
-  if (!/^\d{6}$/.test(otp)) return showError('auth-error', 'Enter the 6-digit verification code');
-  authRequestInFlight = true;
-  authButton('verify-otp-btn', true, 'Verifying…');
-  hideError('auth-error');
-  try {
-    const data = await apiCall('POST', '/auth/verify-otp', { email: otpEmail, otp });
-    currentUser = data.user;
-    resetOtpFlow();
-    afterLogin();
-  } catch (e) {
-    showError('auth-error', e.message);
-  } finally {
-    authRequestInFlight = false;
-    authButton('verify-otp-btn', false, 'Verify and continue');
-  }
-}
-
-async function resendOtp() {
-  if (!otpMode || authRequestInFlight || Date.now() < otpResendUntil) return;
-  authRequestInFlight = true;
-  authButton('resend-otp-btn', true, 'Sending…');
-  hideError('auth-error');
-  try {
-    const path = otpMode === 'register' ? '/auth/register' : '/auth/request-otp';
-    const body = otpMode === 'register' ? { name: otpName, email: otpEmail } : { email: otpEmail };
-    const data = await apiCall('POST', path, body);
-    showSuccess('auth-success', 'A new verification code was sent.');
-    startOtpCountdown(data.expires_in);
-  } catch (e) {
-    showError('auth-error', e.message);
-  } finally {
-    authRequestInFlight = false;
-    refreshOtpTimers();
-  }
-}
-
-async function handleLogout() {
-  try { await apiCall('POST', '/auth/logout'); } catch (e) {}
-  currentUser = null;
-  showPage('home-page');
-}
-
-function afterLogin() {
-  loadDashboard();
-  loadFeedbackHistory();
-  showPage('dashboard-page');
-  if (currentUser.is_admin) document.getElementById('admin-btn').style.display = 'inline-flex';
-  else document.getElementById('admin-btn').style.display = 'none';
-  document.getElementById('nav-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
-  document.getElementById('nav-username').textContent = currentUser.name;
-  document.getElementById('nav-user-role').textContent = currentUser.is_admin ? 'Admin' : 'User';
-  document.getElementById('nav-user-role').style.display = 'inline-flex';
-}
+let otpMode=null, otpEmail='', otpName='', otpResendUntil=0, otpExpiresUntil=0, otpCountdownTimer=null, authRequestInFlight=false;
+function switchAuthTab(tab){document.getElementById('auth-tab-login').classList.toggle('active',tab==='login');document.getElementById('auth-tab-register').classList.toggle('active',tab==='register');document.getElementById('login-form').style.display=tab==='login'?'block':'none';document.getElementById('register-form').style.display=tab==='register'?'block':'none';document.getElementById('password-setup-form').style.display='none';resetOtpFlow();hideError('auth-error');hideSuccess('auth-success');}
+function authButton(id,disabled,label){const b=document.getElementById(id);if(b){b.disabled=disabled;b.textContent=label;}}
+function formatOtpTime(ms){const t=Math.max(0,Math.ceil(ms/1000));return `${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;}
+function refreshOtpTimers(){const now=Date.now(),rr=otpResendUntil-now,er=otpExpiresUntil-now,b=document.getElementById('resend-otp-btn');if(rr>0){b.disabled=true;b.textContent=`Resend code (${Math.ceil(rr/1000)}s)`;}else if(!authRequestInFlight){b.disabled=false;b.textContent='Resend code';}document.getElementById('otp-expiry').textContent=er>0?`Code expires in ${formatOtpTime(er)}`:'Code expired. Request a new code.';if(rr<=0&&er<=0){clearInterval(otpCountdownTimer);otpCountdownTimer=null;}}
+function startOtpCountdown(expiresIn=600){clearInterval(otpCountdownTimer);otpResendUntil=Date.now()+60000;otpExpiresUntil=Date.now()+expiresIn*1000;refreshOtpTimers();otpCountdownTimer=setInterval(refreshOtpTimers,1000);}
+function showOtpForm(mode,email,name,expiresIn){otpMode=mode;otpEmail=email;otpName=name||'';document.getElementById('login-form').style.display='none';document.getElementById('register-form').style.display='none';document.getElementById('password-setup-form').style.display='none';document.getElementById('otp-form').style.display='block';document.getElementById('otp-code').value='';document.getElementById('otp-instructions').textContent=`We sent a 6-digit code to ${email}.`;startOtpCountdown(expiresIn||600);document.getElementById('otp-code').focus();}
+function showPasswordSetupForm(instructions){resetOtpFlow();document.getElementById('login-form').style.display='none';document.getElementById('register-form').style.display='none';document.getElementById('password-setup-form').style.display='block';document.getElementById('password-setup-instructions').textContent=instructions||'Create a password for your Mockify account.';document.getElementById('setup-password').value='';document.getElementById('setup-password-confirm').value='';document.getElementById('setup-password').focus();}
+function resetOtpFlow(){clearInterval(otpCountdownTimer);otpCountdownTimer=null;otpMode=null;otpEmail='';otpName='';document.getElementById('otp-form').style.display='none';}
+function backToEmailEntry(){const tab=otpMode==='register'?'register':'login';resetOtpFlow();document.getElementById('login-form').style.display=tab==='login'?'block':'none';document.getElementById('register-form').style.display=tab==='register'?'block':'none';document.getElementById('password-setup-form').style.display='none';document.getElementById('auth-tab-login').classList.toggle('active',tab==='login');document.getElementById('auth-tab-register').classList.toggle('active',tab==='register');hideError('auth-error');hideSuccess('auth-success');}
+function startGoogleLogin(){window.location.href='/api/auth/google/start';}
+async function handlePasswordLogin(){if(authRequestInFlight)return;const email=document.getElementById('login-email').value.trim(),password=document.getElementById('login-password').value;if(!email||!password)return showError('auth-error','Enter your email and password.');authRequestInFlight=true;authButton('login-password-btn',true,'Signing in…');hideError('auth-error');try{const data=await apiCall('POST','/auth/login',{email,password});currentUser=data.user;afterLogin();}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('login-password-btn',false,'Sign In');}}
+async function handleLoginOtp(){if(authRequestInFlight)return;const email=document.getElementById('login-email').value.trim();if(!email)return showError('auth-error','Enter your email first.');authRequestInFlight=true;authButton('login-otp-link',true,'Sending OTP…');hideError('auth-error');try{const data=await apiCall('POST','/auth/request-otp',{email});showOtpForm('login',email,'',data.expires_in);}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('login-otp-link',false,'Sign in with OTP instead');}}
+async function handleRegister(){if(authRequestInFlight)return;const name=document.getElementById('reg-name').value.trim(),email=document.getElementById('reg-email').value.trim();if(!name||!email)return showError('auth-error','Please fill in all fields.');authRequestInFlight=true;authButton('register-send-btn',true,'Sending verification code…');hideError('auth-error');try{const data=await apiCall('POST','/auth/register',{name,email});showOtpForm('register',email,name,data.expires_in);}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('register-send-btn',false,'Verify Email & Register');}}
+async function handleVerifyOtp(){if(!otpMode||authRequestInFlight)return;const otp=document.getElementById('otp-code').value.trim();if(!/^\d{6}$/.test(otp))return showError('auth-error','Enter the 6-digit verification code');authRequestInFlight=true;authButton('verify-otp-btn',true,'Verifying…');hideError('auth-error');try{const data=await apiCall('POST','/auth/verify-otp',{email:otpEmail,otp});resetOtpFlow();if(data.needs_password_setup){showPasswordSetupForm(data.message);return;}currentUser=data.user;afterLogin();}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('verify-otp-btn',false,'Verify');}}
+async function resendOtp(){if(!otpMode||authRequestInFlight||Date.now()<otpResendUntil)return;authRequestInFlight=true;authButton('resend-otp-btn',true,'Sending…');hideError('auth-error');try{const path=otpMode==='register'?'/auth/register':'/auth/request-otp';const body=otpMode==='register'?{name:otpName,email:otpEmail}:{email:otpEmail};const data=await apiCall('POST',path,body);showSuccess('auth-success','A new verification code was sent.');startOtpCountdown(data.expires_in);}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;refreshOtpTimers();}}
+async function handleSetPassword(){if(authRequestInFlight)return;const password=document.getElementById('setup-password').value,confirmPassword=document.getElementById('setup-password-confirm').value;if(password.length<8)return showError('auth-error','Password must be at least 8 characters.');if(password!==confirmPassword)return showError('auth-error','Passwords do not match.');authRequestInFlight=true;authButton('password-setup-btn',true,'Saving…');hideError('auth-error');try{const data=await apiCall('POST','/auth/set-password',{password,confirm_password:confirmPassword});currentUser=data.user;history.replaceState({},document.title,window.location.pathname);afterLogin();}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('password-setup-btn',false,'Set Password');}}
+async function handlePasswordSetupLink(){const params=new URLSearchParams(window.location.search),token=params.get('password_setup');if(!token)return false;showPage('auth-page');document.getElementById('auth-tab-login').classList.remove('active');document.getElementById('auth-tab-register').classList.remove('active');document.getElementById('login-form').style.display='none';document.getElementById('register-form').style.display='none';document.getElementById('otp-form').style.display='none';document.getElementById('password-setup-form').style.display='none';hideError('auth-error');hideSuccess('auth-success');try{const data=await apiCall('POST','/auth/prepare-password-setup',{token});history.replaceState({},document.title,window.location.pathname);showPasswordSetupForm(`Hi ${data.name||'there'}. Create a password for your Mockify account.`);}catch(e){history.replaceState({},document.title,window.location.pathname);showError('auth-error',e.message);}return true;}
+async function handleGoogleResultQuery(){const params=new URLSearchParams(window.location.search);if(params.get('google')==='success'){history.replaceState({},document.title,window.location.pathname);try{const data=await apiCall('GET','/auth/me');currentUser=data.user;afterLogin();}catch(e){showPage('home-page');}return true;}if(params.get('google_error')){history.replaceState({},document.title,window.location.pathname);showPage('home-page');openAuth('login');showError('auth-error','Google sign-in could not be completed. Please try again.');return true;}return false;}
+async function handleLogout(){try{await apiCall('POST','/auth/logout');}catch(e){}currentUser=null;showPage('home-page');}
+function afterLogin(){loadDashboard();loadFeedbackHistory();showPage('dashboard-page');document.getElementById('admin-btn').style.display=currentUser.is_admin?'inline-flex':'none';document.getElementById('nav-avatar').textContent=currentUser.name.charAt(0).toUpperCase();document.getElementById('nav-username').textContent=currentUser.name;document.getElementById('nav-user-role').textContent=currentUser.is_admin?'Admin':'User';document.getElementById('nav-user-role').style.display='inline-flex';}
 
 // ─── DASHBOARD ───
 async function loadDashboard() {
@@ -3666,7 +3441,7 @@ async function loadAdminUsers() {
   try {
     const data = await apiCall('GET', '/admin/users');
     const tbody = document.getElementById('users-table-body');
-    if (!data.users.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-dim)">No users</td></tr>'; return; }
+    if (!data.users.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-dim)">No users</td></tr>'; return; }
     tbody.innerHTML = data.users.map(u => `<tr>
       <td>${escapeHtml(u.name)}</td>
       <td style="color:var(--text-dim)">${escapeHtml(u.email)}</td>
@@ -3675,6 +3450,7 @@ async function loadAdminUsers() {
         <input class="limit-input" type="number" min="0" max="99" value="${u.daily_mock_limit}" id="limit-${u.id}">
         <button type="button" class="btn btn-secondary btn-sm" style="margin-left:6px" onclick="updateLimit(${u.id})">Set</button>
       </td>
+      <td>${u.password_set ? 'Set' : 'Not set'}</td>
       <td style="color:var(--text-dim)">${formatDate(u.created_at)}</td>
       <td>
         <button type="button" class="btn btn-danger btn-sm" onclick="deleteUser(${u.id},'${escapeHtml(u.name)}')">Delete</button>
@@ -3736,6 +3512,8 @@ function deleteUser(id, name) {
   });
 }
 
+async function sendPasswordSetupLinks(){openModal('Email password setup links','This will email a one-time password setup link to every verified existing user who does not have a password. Continue?',async()=>{try{const data=await apiCall('POST','/auth/admin/send-password-setup-links');toast(`Sent ${data.sent} password setup link(s).`,'success');if(data.failed)toast(`${data.failed} email(s) failed.`,'error');loadAdminUsers();}catch(e){toast(e.message,'error');}});}
+
 function switchAdminTab(tab) {
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
@@ -3754,19 +3532,21 @@ window.showPage = function(id) {
 
 // ─── INIT ───
 (async () => {
+  if (await handlePasswordSetupLink()) return;
+  if (await handleGoogleResultQuery()) return;
   try {
     const data = await apiCall('GET', '/auth/me');
     currentUser = data.user;
     afterLogin();
-  } catch (e) {
-    showPage('home-page');
-  }
+  } catch (e) { showPage('home-page'); }
 })();
 
 // Enter key on login
-document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') handlePasswordLogin(); });
+document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') handlePasswordLogin(); });
 document.getElementById('reg-email').addEventListener('keydown', e => { if (e.key === 'Enter') handleRegister(); });
 document.getElementById('otp-code').addEventListener('keydown', e => { if (e.key === 'Enter') handleVerifyOtp(); });
+document.getElementById('setup-password-confirm').addEventListener('keydown', e => { if (e.key === 'Enter') handleSetPassword(); });
 </script>
 <script src="/public_stats.js"></script>
 </body>

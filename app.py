@@ -38,11 +38,7 @@ if is_production and not secret_key:
 
 database_url = os.environ.get("DATABASE_URL", "").strip()
 if database_url.startswith("postgres://"):
-    database_url = "postgresql+psycopg://" + database_url[len("postgres://"):]
-
-elif database_url.startswith("postgresql://"):
-    database_url = "postgresql+psycopg://" + database_url[len("postgresql://"):]
-    
+    database_url = "postgresql://" + database_url[len("postgres://"):]
 if not database_url:
     database_url = f"sqlite:///{BASE_DIR / 'instance' / 'mockify.db'}"
 
@@ -87,8 +83,10 @@ def secure_response(response):
         "Referrer-Policy": "strict-origin-when-cross-origin",
         "X-Frame-Options": "DENY",
         "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-        "Content-Security-Policy": "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'",
+        "Content-Security-Policy": "default-src 'self'; connect-src 'self' https://accounts.google.com https://oauth2.googleapis.com https://openidconnect.googleapis.com; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self' https://accounts.google.com",
     })
+    if is_production:
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     if request.path.startswith("/api/") and ("auth" in request.path or "admin" in request.path or "results" in request.path or "feedback" in request.path):
         response.headers["Cache-Control"] = "no-store, private"
     return response
