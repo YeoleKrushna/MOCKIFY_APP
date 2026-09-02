@@ -36,7 +36,7 @@ class User(db.Model, OTPFields):
     email_verified = db.Column(db.Boolean, default=True, nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
     is_super_admin = db.Column(db.Boolean, default=False, nullable=False)
-    daily_mock_limit = db.Column(db.Integer, default=3, nullable=False)
+    daily_mock_limit = db.Column(db.Integer, default=10, nullable=False)
     mocks_taken_today = db.Column(db.Integer, default=0, nullable=False)
     last_reset_date = db.Column(db.Date, default=date.today, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
@@ -177,7 +177,7 @@ def _upgrade_existing_tables():
     db.session.execute(text("CREATE UNIQUE INDEX IF NOT EXISTS ux_users_google_sub ON users (google_sub)"))
     db.session.execute(text("UPDATE users SET auth_provider = 'email' WHERE auth_provider IS NULL"))
     db.session.execute(text("UPDATE users SET password_setup_token_hash = NULL WHERE password_set = TRUE"))
-    db.session.execute(text(f"UPDATE users SET daily_mock_limit = 3 WHERE is_admin = {false} AND daily_mock_limit = 5"))
+    db.session.execute(text(f"UPDATE users SET daily_mock_limit = 10 WHERE is_admin = {false} AND daily_mock_limit = 5"))
     db.session.commit()
 
 

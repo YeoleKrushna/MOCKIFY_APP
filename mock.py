@@ -7,6 +7,8 @@ import time
 import re
 from datetime import datetime, timedelta
 
+from groq_client import GroqAPIError as ClientGroqAPIError, call_groq_http
+
 mock_bp = Blueprint('mock', __name__)
 
 GROQ_API_URL = os.environ.get('GROQ_API_URL', 'https://api.groq.com/openai/v1/chat/completions').strip()
@@ -19,12 +21,6 @@ MOCK_CACHE_WINDOW_SECONDS = max(0, int(os.environ.get('MOCK_CACHE_WINDOW_SECONDS
 
 last_generate_attempts = {}
 
-
-def get_groq_api_key():
-    api_key = os.environ.get('GROQ_API_KEY', '').strip()
-    if not api_key:
-        raise ValueError("GROQ_API_KEY not configured")
-    return api_key
 
 MOCK_PROMPT = """You are an expert exam and interview question designer.
 
@@ -79,11 +75,7 @@ Output shape:
 """
 
 
-class GroqAPIError(Exception):
-    def __init__(self, message, status_code=502):
-        super().__init__(message)
-        self.message = message
-        self.status_code = status_code
+GroqAPIError = ClientGroqAPIError
 
 
 def normalize_topic_label(topic):
@@ -255,89 +247,30 @@ def call_groq_once(prompt):
         "messages": [
             {
                 "role": "user",
-                "content": prompt
+                "content": prompt,
             }
         ],
         "temperature": 0.2,
         "max_completion_tokens": GROQ_MAX_OUTPUT_TOKENS,
         "reasoning_format": "hidden",
         "response_format": {
-            "type": "json_object"
+            "type": "json_object",
         },
-        "stream": False
+        "stream": False,
     }
 
     try:
-        response = requests.post(
-            GROQ_API_URL,
-            headers={
-                "Authorization": f"Bearer {get_groq_api_key()}",
-                "Content-Type": "application/json"
-            },
-            json=payload,
-            timeout=60
-        )
-
-        response.raise_for_status()
-
-    except requests.exceptions.Timeout as exc:
+        data = call_groq_http(payload)
+    except GroqAPIError:
+        raise
+    except Exception as exc:
         raise GroqAPIError(
-            "AI request timed out. Please try again."
-        ) from exc
-
-    except requests.exceptions.HTTPError as exc:
-        status_code = (
-            exc.response.status_code
-            if exc.response is not None
-            else 502
-        )
-
-        error_message = "AI service request failed. Please try again."
-
-        if exc.response is not None:
-            try:
-                error_payload = exc.response.json()
-
-                if isinstance(error_payload, dict):
-                    raw_error = error_payload.get("error")
-
-                    if isinstance(raw_error, dict):
-                        api_message = raw_error.get("message")
-                    elif isinstance(raw_error, str):
-                        api_message = raw_error
-                    else:
-                        api_message = error_payload.get("message")
-
-                    if api_message:
-                        error_message = api_message
-
-            except ValueError:
-                pass
-
-        if status_code == 429:
-            error_message = (
-                "AI service is rate-limited right now. "
-                "Please wait and try again."
-            )
-        elif status_code >= 500:
-            error_message = (
-                "AI service is temporarily unavailable. "
-                "Please try again shortly."
-            )
-
-        raise GroqAPIError(
-            error_message,
-            status_code=status_code
-        ) from exc
-
-    except requests.exceptions.RequestException as exc:
-        raise GroqAPIError(
-            "Could not reach the AI service. Please try again."
+            "Could not reach the AI service. Please try again.",
+            status_code=502,
+            retryable=True,
         ) from exc
 
     try:
-        data = response.json()
-
         text = data["choices"][0]["message"]["content"]
 
         if not isinstance(text, str):
@@ -346,10 +279,10 @@ def call_groq_once(prompt):
         return json.loads(text)
 
     except (ValueError, KeyError, IndexError, TypeError) as exc:
-        # Do not log provider response bodies: they can contain user prompts.
-
         raise GroqAPIError(
-            "AI returned an unexpected JSON response. Please try again."
+            "AI returned an unexpected JSON response. Please try again.",
+            status_code=502,
+            retryable=True,
         ) from exc
 
 

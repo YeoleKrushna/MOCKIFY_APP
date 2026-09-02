@@ -411,7 +411,7 @@ def verify_otp():
             email_verified=True,
             is_admin=False,
             is_super_admin=False,
-            daily_mock_limit=3,
+            daily_mock_limit=10,
             mocks_taken_today=0,
             last_reset_date=now.date(),
             last_seen_at=now,
@@ -637,7 +637,7 @@ def google_callback():
         user.google_sub=google_sub; user.auth_provider="mixed" if user.password_set else "google"; user.email_verified=True
         if not user.name.strip(): user.name=name[:100] or "Mockify User"
     else:
-        user=User(name=name[:100] or "Mockify User",email=email,password_hash=generate_password_hash(secrets.token_urlsafe(32)),password_set=False,auth_provider="google",google_sub=google_sub,email_verified=True,is_admin=False,is_super_admin=False,daily_mock_limit=3,mocks_taken_today=0,last_reset_date=datetime.utcnow().date())
+        user=User(name=name[:100] or "Mockify User",email=email,password_hash=generate_password_hash(secrets.token_urlsafe(32)),password_set=False,auth_provider="google",google_sub=google_sub,email_verified=True,is_admin=False,is_super_admin=False,daily_mock_limit=10,mocks_taken_today=0,last_reset_date=datetime.utcnow().date())
         db.session.add(user)
     # Google identity itself is sufficient authentication; do not force a password setup.
     for key in (

@@ -3,7 +3,7 @@ from database import db, User, Mock, Result
 
 import json
 import os
-import requests
+from groq_client import call_groq_http
 
 
 results_bp = Blueprint("results", __name__)
@@ -38,10 +38,6 @@ except (TypeError, ValueError):
 # GROQ HELPERS
 # =========================================================
 
-def get_groq_api_key():
-    return os.environ.get("GROQ_API_KEY", "").strip()
-
-
 def generate_explanations(topic, questions, user_answers):
     """
     Generate explanations for answered-but-incorrect questions
@@ -57,14 +53,8 @@ def generate_explanations(topic, questions, user_answers):
     is still saved without explanations.
     """
 
-    api_key = get_groq_api_key()
-
-    if not api_key:
-        print(
-            "[EXPLANATIONS] GROQ_API_KEY is missing",
-            flush=True
-        )
-        return {}
+    # Groq authentication and API-key failover are handled centrally by
+    # groq_client.call_groq_http(). Do not read a single GROQ_API_KEY here.
 
     # -----------------------------------------------------
     # Collect only incorrect / unanswered questions
@@ -166,32 +156,7 @@ Questions:
             flush=True
         )
 
-        response = requests.post(
-            GROQ_API_URL,
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
-            },
-            json=payload,
-            timeout=30
-        )
-
-        # -------------------------------------------------
-        # Provider error
-        # -------------------------------------------------
-
-        if not response.ok:
-
-            print(
-                "[EXPLANATIONS] Groq HTTP error:",
-                response.status_code,
-                response.text[:500],
-                flush=True
-            )
-
-            return {}
-
-        data = response.json()
+        data = call_groq_http(payload)
 
         content = (
             data
@@ -256,10 +221,10 @@ Questions:
 
         return cleaned
 
-    except requests.RequestException as exc:
+    except Exception as exc:
 
         print(
-            "[EXPLANATIONS] Request failed:",
+            "[EXPLANATIONS] Groq request failed:",
             repr(exc),
             flush=True
         )
