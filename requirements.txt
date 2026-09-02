@@ -5,4 +5,5 @@ requests
 python-dotenv
 gunicorn
 psycopg[binary]
+psycopg2-binary
 google-auth>=2.0,<3
