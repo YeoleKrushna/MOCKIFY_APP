@@ -139,6 +139,11 @@ def serve_public_stats():
     return static_file("public_stats.js", mimetype="application/javascript", cache_control="public, max-age=3600")
 
 
+@app.route("/logo.svg")
+def serve_logo():
+    return static_file("logo.svg", mimetype="image/svg+xml", cache_control="public, max-age=86400")
+
+
 @app.route("/robots.txt")
 def serve_robots():
     return static_file("robots.txt", mimetype="text/plain", cache_control="public, max-age=3600")
