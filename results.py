@@ -245,9 +245,6 @@ Questions:
         ],
         "temperature": 0.15,
         "max_completion_tokens": EXPLANATION_MAX_TOKENS,
-        "response_format": {
-            "type": "json_object"
-        },
         "stream": False
     }
 
@@ -274,7 +271,26 @@ Questions:
             )
             return {}
 
-        parsed = json.loads(content)
+        # Some Groq models reject enforced JSON mode even when the prompt
+        # requests JSON. Ask normally, then safely extract the JSON locally.
+        text = str(content).strip()
+
+        if text.startswith("```"):
+            match = re.fullmatch(
+                r"```(?:json)?\s*(.*?)\s*```",
+                text,
+                flags=re.IGNORECASE | re.DOTALL,
+            )
+            if match:
+                text = match.group(1).strip()
+
+        try:
+            parsed = json.loads(text)
+        except json.JSONDecodeError:
+            start = text.find("{")
+            if start < 0:
+                raise
+            parsed, _ = json.JSONDecoder().raw_decode(text[start:])
 
         explanations = parsed.get(
             "explanations",
