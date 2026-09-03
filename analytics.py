@@ -17,7 +17,7 @@ def public_stats():
 
     total_users = User.query.filter_by(is_admin=False).count()
     total_mocks = Mock.query.count()
-    total_results = Result.query.count()
+    total_results = db.session.query(db.func.count(db.distinct(Result.mock_id))).scalar() or 0
     active_users = (
         User.query
         .filter(
@@ -74,7 +74,7 @@ def private_stats():
 
     total_users = User.query.filter_by(is_admin=False).count()
     total_mocks = Mock.query.count()
-    total_results = Result.query.count()
+    total_results = db.session.query(db.func.count(db.distinct(Result.mock_id))).scalar() or 0
     active_now = User.query.filter(
         User.is_admin.is_(False),
         User.last_seen_at.isnot(None),

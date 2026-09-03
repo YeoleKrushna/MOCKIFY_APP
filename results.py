@@ -3,7 +3,9 @@ from database import db, User, Mock, Result
 
 import json
 import os
+import re
 from groq_client import call_groq_http
+from sarvam_client import SarvamAPIError, call_sarvam_http
 
 
 results_bp = Blueprint("results", __name__)
@@ -38,36 +40,19 @@ except (TypeError, ValueError):
 # GROQ HELPERS
 # =========================================================
 
-def generate_explanations(topic, questions, user_answers):
+def generate_explanations(topic, questions, user_answers, language="English"):
     """
-    Generate explanations for answered-but-incorrect questions
-    in one batched Groq request.
+    Generate explanations for answered-but-incorrect questions.
 
-    Returns:
-        {
-            "0": "Explanation...",
-            "3": "Explanation..."
-        }
-
-    Never raises. If Groq is unavailable, the exam result
-    is still saved without explanations.
+    English continues to use the existing Groq explanation path.
+    Hindi/Marathi use Sarvam so the explanation stays in the selected language.
     """
-
-    # Groq authentication and API-key failover are handled centrally by
-    # groq_client.call_groq_http(). Do not read a single GROQ_API_KEY here.
-
-    # -----------------------------------------------------
-    # Collect only incorrect / unanswered questions
-    # -----------------------------------------------------
-
     wrong_items = []
 
     for i, question in enumerate(questions):
-
         user_answer = user_answers.get(str(i))
         correct_answer = question.get("answer")
 
-        # Only answered-but-incorrect questions receive explanations.
         if user_answer is None or user_answer == "" or user_answer == correct_answer:
             continue
 
@@ -82,10 +67,128 @@ def generate_explanations(topic, questions, user_answers):
     if not wrong_items:
         return {}
 
-    # -----------------------------------------------------
-    # Prompt
-    # -----------------------------------------------------
+    is_sarvam = language in ("Hindi", "Marathi")
 
+    if is_sarvam:
+        language_name = "Hindi" if language == "Hindi" else "Marathi"
+
+        prompt = f"""
+You are a precise {language_name}-language tutor helping a student learn from mistakes in an MCQ test.
+
+Topic:
+{topic}
+
+For each answered-but-incorrect question below, explain WHY the correct answer is correct.
+
+LANGUAGE:
+- Write every explanation completely in {language_name}.
+- Use natural, standard {language_name} suitable for competitive-exam preparation.
+- Do not switch to English.
+- English technical/proper terms may remain only when they are standard terminology.
+
+CONTENT:
+- Use ONLY the supplied question, options, correct answer, and user answer as the source of truth.
+- Explain the underlying concept clearly.
+- Explain why the correct option is correct.
+- Briefly explain why the student's selected answer is wrong.
+- Keep each explanation to 2-5 useful sentences.
+- Do not invent facts or add unrelated information.
+
+Return ONLY valid JSON in exactly this format:
+{{
+  "explanations": {{
+    "0": "Explanation in {language_name}"
+  }}
+}}
+
+Questions:
+{json.dumps(wrong_items, ensure_ascii=False)}
+"""
+
+        payload = {
+            "model": "sarvam-105b",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": (
+                        f"You are a precise {language_name} tutor. "
+                        "Return only the requested JSON object. "
+                        f"Every explanation must be written in {language_name}."
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": prompt,
+                },
+            ],
+            "temperature": 0.15,
+            "max_tokens": int(os.environ.get("SARVAM_EXPLANATION_MAX_OUTPUT_TOKENS", "2200")),
+            "reasoning_effort": None,
+            "stream": False,
+        }
+
+        try:
+            print(
+                f"[EXPLANATIONS] Generating {language_name} explanations "
+                f"for {len(wrong_items)} question(s)...",
+                flush=True,
+            )
+
+            data = call_sarvam_http(payload)
+            content = (
+                data.get("choices", [{}])[0]
+                .get("message", {})
+                .get("content", "")
+            )
+
+            if isinstance(content, list):
+                content = "".join(
+                    str(item.get("text", ""))
+                    for item in content
+                    if isinstance(item, dict) and item.get("type") == "text"
+                )
+
+            text = str(content or "").strip()
+
+            if text.startswith("```"):
+                match = re.fullmatch(
+                    r"```(?:json)?\s*(.*?)\s*```",
+                    text,
+                    flags=re.IGNORECASE | re.DOTALL,
+                )
+                if match:
+                    text = match.group(1).strip()
+
+            parsed = json.loads(text)
+            explanations = parsed.get("explanations", {})
+
+            if not isinstance(explanations, dict):
+                return {}
+
+            valid_indexes = {
+                str(item["index"])
+                for item in wrong_items
+            }
+
+            return {
+                str(key): value.strip()
+                for key, value in explanations.items()
+                if str(key) in valid_indexes
+                and isinstance(value, str)
+                and value.strip()
+            }
+
+        except Exception as exc:
+            print(
+                "[EXPLANATIONS] Sarvam explanation request failed:",
+                repr(exc),
+                flush=True,
+            )
+            return {}
+
+    # -----------------------------------------------------
+    # Existing English/Groq explanation path
+    # -----------------------------------------------------
     prompt = f"""
 You are a precise technical tutor helping a student learn from
 mistakes in an MCQ test.
@@ -149,7 +252,6 @@ Questions:
     }
 
     try:
-
         print(
             f"[EXPLANATIONS] Generating explanations for "
             f"{len(wrong_items)} question(s)...",
@@ -186,10 +288,6 @@ Questions:
             )
             return {}
 
-        # -------------------------------------------------
-        # Only accept indexes we actually requested
-        # -------------------------------------------------
-
         valid_indexes = {
             str(item["index"])
             for item in wrong_items
@@ -225,16 +323,6 @@ Questions:
 
         print(
             "[EXPLANATIONS] Groq request failed:",
-            repr(exc),
-            flush=True
-        )
-
-        return {}
-
-    except (ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
-
-        print(
-            "[EXPLANATIONS] Response parsing failed:",
             repr(exc),
             flush=True
         )
@@ -389,6 +477,68 @@ def submit_result():
         }), 500
 
     # -----------------------------------------------------
+    # One submission per mock
+    # -----------------------------------------------------
+    # Mobile browsers can retry a POST or restore an old exam page.
+    # Treat a previously completed mock as immutable and return the
+    # original result instead of creating another attempt.
+    existing_result = (
+        Result.query
+        .filter_by(user_id=user_id, mock_id=mock_id)
+        .order_by(Result.timestamp.desc())
+        .first()
+    )
+
+    if existing_result:
+        try:
+            existing_answers = json.loads(existing_result.user_answers)
+            existing_explanations = json.loads(
+                existing_result.explanations or "{}"
+            )
+        except (
+            TypeError,
+            ValueError,
+            json.JSONDecodeError,
+        ):
+            return jsonify({
+                "error": "Existing result data is invalid"
+            }), 500
+
+        existing_unanswered = max(
+            0,
+            existing_result.total
+            - existing_result.correct_answers
+            - existing_result.wrong_answers
+        )
+
+        detailed = build_detailed(
+            questions,
+            existing_answers,
+            existing_explanations,
+        )
+
+        return jsonify({
+            "result_id": existing_result.id,
+            "score": existing_result.score,
+            "total": existing_result.total,
+            "percentage": round(
+                (existing_result.score / existing_result.total) * 100,
+                1
+            ),
+            "correct_answers": existing_result.correct_answers,
+            "wrong_answers": existing_result.wrong_answers,
+            "unanswered_answers": existing_unanswered,
+            "answered_answers": (
+                existing_result.correct_answers
+                + existing_result.wrong_answers
+            ),
+            "time_taken": existing_result.time_taken,
+            "detailed": detailed,
+            "topic": mock.topic,
+            "already_submitted": True,
+        }), 200
+
+    # -----------------------------------------------------
     # Calculate score
     # -----------------------------------------------------
 
@@ -409,13 +559,23 @@ def submit_result():
             wrong += 1
 
     # -----------------------------------------------------
-    # Generate explanations in ONE Groq request
+    # Generate explanations in the language stored with this mock.
+    # The session may be missing or may reflect a different mock generated
+    # later in the same browser session.
     # -----------------------------------------------------
+
+    language = str(
+        getattr(mock, "language", "English") or "English"
+    ).strip().title()
+
+    if language not in ("English", "Hindi", "Marathi"):
+        language = "English"
 
     explanations = generate_explanations(
         mock.topic,
         questions,
-        user_answers
+        user_answers,
+        language=language,
     )
 
     # -----------------------------------------------------
@@ -563,6 +723,22 @@ def get_result(result_id):
     }), 200
 
 
+@results_bp.route("/<int:result_id>", methods=["DELETE"])
+def delete_result(result_id):
+    """Allow a learner to remove only their own result history entry."""
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Not authenticated"}), 401
+
+    result = db.session.get(Result, result_id)
+    if not result or result.user_id != user_id:
+        return jsonify({"error": "Result not found"}), 404
+
+    db.session.delete(result)
+    db.session.commit()
+    return jsonify({"message": "Result removed from your history"}), 200
+
+
 # =========================================================
 # HISTORY
 # =========================================================
@@ -577,29 +753,54 @@ def result_history():
             "error": "Not authenticated"
         }), 401
 
-    results = (
-        Result.query
-        .filter_by(user_id=user_id)
-        .order_by(Result.timestamp.desc())
-        .limit(20)
-        .all()
+    try:
+        page = max(1, int(request.args.get("page", 1)))
+        per_page = min(50, max(1, int(request.args.get("per_page", 12))))
+    except (TypeError, ValueError):
+        return jsonify({"error": "Invalid history pagination."}), 400
+
+    search = str(request.args.get("q", "")).strip()[:120]
+    topic = str(request.args.get("topic", "")).strip()[:500]
+    score_band = str(request.args.get("score", "all")).strip().lower()
+    sort = str(request.args.get("sort", "recent")).strip().lower()
+
+    query = Result.query.join(Mock, Result.mock_id == Mock.id).filter(
+        Result.user_id == user_id
+    )
+    if search:
+        query = query.filter(Mock.topic.ilike(f"%{search}%"))
+    if topic:
+        query = query.filter(Mock.topic == topic)
+    if score_band == "strong":
+        query = query.filter((Result.score * 100.0 / Result.total) >= 80)
+    elif score_band == "steady":
+        query = query.filter((Result.score * 100.0 / Result.total) >= 50, (Result.score * 100.0 / Result.total) < 80)
+    elif score_band == "review":
+        query = query.filter((Result.score * 100.0 / Result.total) < 50)
+
+    if sort == "score_high":
+        query = query.order_by(Result.score.desc(), Result.timestamp.desc())
+    elif sort == "score_low":
+        query = query.order_by(Result.score.asc(), Result.timestamp.desc())
+    else:
+        sort = "recent"
+        query = query.order_by(Result.timestamp.desc())
+
+    total = query.count()
+    results = query.offset((page - 1) * per_page).limit(per_page).all()
+    best_score = (
+        db.session.query(db.func.max(Result.score))
+        .filter(Result.user_id == user_id)
+        .scalar()
     )
 
     history = []
 
     for result in results:
 
-        mock = Mock.query.get(
-            result.mock_id
-        )
-
         history.append({
             "result_id": result.id,
-            "topic": (
-                mock.topic
-                if mock
-                else "Unknown"
-            ),
+            "topic": result.mock.topic,
             "score": result.score,
             "total": result.total,
             "percentage": round(
@@ -609,6 +810,22 @@ def result_history():
             "timestamp": result.timestamp.isoformat()
         })
 
+    topics = [row[0] for row in (
+        db.session.query(Mock.topic)
+        .join(Result, Result.mock_id == Mock.id)
+        .filter(Result.user_id == user_id)
+        .distinct()
+        .order_by(Mock.topic.asc())
+        .all()
+    )]
+
     return jsonify({
-        "history": history
+        "history": history,
+        "topics": topics,
+        "page": page,
+        "per_page": per_page,
+        "total": total,
+        "best_score": best_score,
+        "has_more": page * per_page < total,
+        "sort": sort,
     }), 200

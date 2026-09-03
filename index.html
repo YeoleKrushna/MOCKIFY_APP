@@ -3,8 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark light">
+<script>
+(function () {
+  try {
+    const saved = localStorage.getItem('mockify-theme');
+    document.documentElement.setAttribute('data-theme', saved === 'light' ? 'light' : 'dark');
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+})();
+</script>
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" content="Mockify turns any topic into a focused AI-generated mock test — choose your time, take the test, and learn from every mistake.">
+<meta name="description" content="Mockify turns any topic into a focused AI-generated mock test â€” choose your time, take the test, and learn from every mistake.">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://mockify.tech/">
 <meta property="og:title" content="Mockify | AI Mock Test Generator & MCQ Practice">
@@ -72,7 +83,7 @@
     border-radius: 4px;
   }
 
-  /* ─── GRID NOISE ─── */
+  /* â”€â”€â”€ GRID NOISE â”€â”€â”€ */
   body::before {
     content: '';
     position: fixed; inset: 0;
@@ -83,10 +94,63 @@
     pointer-events: none; z-index: 0;
   }
 
-  /* ─── PAGE SYSTEM ─── */
+  /* â”€â”€â”€ PAGE SYSTEM â”€â”€â”€ */
   .page { display: none; min-height: 100vh; position: relative; z-index: 1; }
   .page.active { display: flex; }
   #home-page.active, #dashboard-page.active, #admin-page.active { flex-direction: column; }
+
+  /* â”€â”€â”€ APP BOOT GATE â”€â”€â”€
+     Keep Home/Dashboard hidden until the session has been resolved. */
+  #app-boot-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    opacity: 1;
+    visibility: visible;
+    transition: opacity .18s ease, visibility .18s ease;
+  }
+
+  #app-boot-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .app-boot-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .app-boot-logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    box-shadow: 0 8px 28px rgba(108,99,255,.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .app-boot-logo svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .app-boot-spinner {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .75s linear infinite;
+  }
 
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -145,9 +209,9 @@
     display: none;
   }
 
-  /* ══════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      LOGO
-  ══════════════════════════════════════════ */
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .logo-mark { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .logo-mark svg { display: block; }
 
@@ -160,9 +224,9 @@
     color: var(--text);
   }
 
-  /* ══════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      PUBLIC NAVBAR
-  ══════════════════════════════════════════ */
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .site-nav {
     position: sticky; top: 0; z-index: 200;
     display: flex; align-items: center; gap: 8px;
@@ -266,9 +330,9 @@
     .site-nav { padding: 0 18px; }
   }
 
-  /* ══════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      SHARED SECTION LAYOUT
-  ══════════════════════════════════════════ */
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .home-main { position: relative; z-index: 1; }
 
   .wrap {
@@ -321,9 +385,9 @@
 
   .section-head { margin-bottom: 44px; }
 
-  /* ══════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      HERO
-  ══════════════════════════════════════════ */
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .hero {
     position: relative;
     padding: 76px 0 90px;
@@ -380,7 +444,7 @@
     color: var(--text-faint);
   }
 
-  /* ─── Product preview mock ─── */
+  /* â”€â”€â”€ Product preview mock â”€â”€â”€ */
   .preview-shell {
     position: relative;
     perspective: 1400px;
@@ -499,9 +563,9 @@
     50% { transform: translateY(-8px); }
   }
 
-  /* ══════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      LIVE STATS
-  ══════════════════════════════════════════ */
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .stats-section { padding: 50px 0 70px; }
 
   .public-stats {
@@ -535,9 +599,9 @@
 
   @media (max-width: 760px) { .public-stats { grid-template-columns: repeat(2, 1fr); } }
 
-  /* ══════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      FEATURES (bento)
-  ══════════════════════════════════════════ */
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .features-section { padding: 50px 0 90px; }
 
   .bento {
@@ -575,19 +639,19 @@
   .feature-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 8px; }
   .feature-card p { color: var(--text-dim); font-size: 0.88rem; line-height: 1.6; font-weight: 300; }
 
-  /* ══════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      HOW IT WORKS
-  ══════════════════════════════════════════ */
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .how-section { padding: 50px 0 90px; }
 
   .steps-row {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 0;
     position: relative;
   }
 
-  @media (max-width: 860px) { .steps-row { grid-template-columns: 1fr 1fr; row-gap: 34px; } }
+  @media (max-width: 980px) { .steps-row { grid-template-columns: repeat(2, 1fr); row-gap: 34px; } }
   @media (max-width: 520px) { .steps-row { grid-template-columns: 1fr; } }
 
   .step-item { position: relative; padding: 0 20px 0 0; }
@@ -618,9 +682,9 @@
   .step-item h4 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
   .step-item p { color: var(--text-dim); font-size: 0.87rem; line-height: 1.6; font-weight: 300; max-width: 240px; }
 
-  /* ══════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      WHY MOCKIFY
-  ══════════════════════════════════════════ */
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .why-section { padding: 50px 0 90px; }
 
   .why-grid {
@@ -649,9 +713,9 @@
   .why-item h4 { font-size: 0.98rem; font-weight: 600; margin-bottom: 4px; }
   .why-item p { color: var(--text-dim); font-size: 0.87rem; line-height: 1.6; font-weight: 300; }
 
-  /* ══════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      USE CASES
-  ══════════════════════════════════════════ */
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .usecases-section { padding: 50px 0 90px; }
 
   .usecase-chips { display: flex; flex-wrap: wrap; gap: 12px; }
@@ -669,9 +733,9 @@
   .usecase-chip:hover { border-color: rgba(108,99,255,0.4); transform: translateY(-2px); }
   .usecase-chip .uc-icon { font-size: 1.05rem; }
 
-  /* ══════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      FAQ
-  ══════════════════════════════════════════ */
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .faq-section { padding: 50px 0 90px; }
 
   .faq-list { max-width: 760px; display: flex; flex-direction: column; gap: 10px; }
@@ -718,9 +782,9 @@
 
   .faq-a p { color: var(--text-dim); font-size: 0.87rem; line-height: 1.65; font-weight: 300; }
 
-  /* ══════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      FINAL CTA
-  ══════════════════════════════════════════ */
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .final-cta {
     padding: 70px 0 90px;
   }
@@ -761,9 +825,9 @@
 
   .final-cta-actions { position: relative; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 
-  /* ══════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      FOOTER
-  ══════════════════════════════════════════ */
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   .site-footer { border-top: 1px solid var(--border); padding: 50px 0 34px; }
 
   .footer-grid {
@@ -790,9 +854,9 @@
     color: var(--text-faint); font-size: 0.8rem;
   }
 
-  /* ═══════════════════════════════════════════
+  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      AUTH PAGE
-  ═══════════════════════════════════════════ */
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
   #auth-page {
     align-items: center; justify-content: center;
     padding: 20px; flex-direction: column;
@@ -902,11 +966,25 @@
   .auth-divider { display:flex; align-items:center; gap:12px; margin:18px 0; color:var(--text-faint); font-size:.76rem; text-transform:uppercase; letter-spacing:.06em; }
   .auth-divider::before, .auth-divider::after { content:''; flex:1; height:1px; background:var(--border); }
   .google-btn { width:100%; background:#fff; color:#202124; border:1px solid #dadce0; border-radius:var(--radius-sm); padding:12px 16px; font-family:'DM Sans',sans-serif; font-size:.92rem; font-weight:600; cursor:pointer; }
+  .google-btn { width:100%; background:#fff; color:#202124; border:1px solid #dadce0; border-radius:var(--radius-sm); padding:12px 16px; font-family:'DM Sans',sans-serif; font-size:.92rem; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; }
   .google-btn:hover { background:#f8f9fa; }
+  .google-icon { width:18px; height:18px; flex:0 0 18px; display:block; }
   .auth-link-btn { display:inline-block; width:100%; margin-top:12px; padding:0; border:none; background:transparent; color:var(--accent); font-family:'DM Sans',sans-serif; font-size:.82rem; cursor:pointer; }
   .auth-link-btn:hover { text-decoration:underline; }
+  .terms-check { display:flex; align-items:flex-start; gap:10px; margin:4px 0 18px; color:var(--text-dim); font-size:.78rem; line-height:1.55; }
+  .terms-check input { width:16px; height:16px; margin-top:2px; flex:0 0 16px; accent-color:var(--accent); cursor:pointer; }
+  .terms-check a { color:var(--accent); text-decoration:none; }
+  .terms-check a:hover { text-decoration:underline; }
+  .terms-check .required-mark { color:var(--danger); margin-left:2px; }
+  .footer-company { margin-top:14px; display:flex; flex-direction:column; gap:7px; color:var(--text-dim); font-size:.82rem; line-height:1.5; }
+  .footer-company-label { color:var(--text-faint); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; font-weight:600; }
+  .footer-social-link { display:inline-flex !important; align-items:center; gap:7px; margin-bottom:0 !important; }
+  .footer-social-link svg { width:16px; height:16px; flex:0 0 16px; }
+  @media (max-width:640px) {
+    .terms-check { font-size:.76rem; }
+  }
 
-  /* ─── NAVBAR (app) ─── */
+  /* â”€â”€â”€ NAVBAR (app) â”€â”€â”€ */
   .navbar {
     position: sticky; top: 0; z-index: 100;
     display: flex; align-items: center;
@@ -949,6 +1027,7 @@
   .nav-user > span {
     display: none !important;
   }
+  .nav-profile-name { display: none !important; }
 
   .navbar {
     height: 58px;
@@ -1000,11 +1079,14 @@
     display: flex; align-items: center; justify-content: center;
     font-weight: 700; font-size: 0.85rem; color: #fff;
   }
+  button.nav-avatar { border: 0; cursor: pointer; }
+  .nav-profile-name { border: 0; padding: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+  .nav-profile-name:hover, .nav-profile-name:focus-visible { color: var(--accent); }
 
-  /* ─── DASHBOARD ─── */
+  /* â”€â”€â”€ DASHBOARD â”€â”€â”€ */
   #dashboard-page { flex-direction: column; }
 
-  /* ─── FEEDBACK ─── */
+  /* â”€â”€â”€ FEEDBACK â”€â”€â”€ */
   .feedback-card {
     grid-column: 1 / -1;
     width: 100%;
@@ -1065,7 +1147,7 @@
     .dashboard-body { grid-template-columns: 1fr; padding: 20px 16px; }
   }
 
-  /* ─── DASHBOARD VISUAL ALIGNMENT ─── */
+  /* â”€â”€â”€ DASHBOARD VISUAL ALIGNMENT â”€â”€â”€ */
   .dashboard-main {
     min-width: 0;
   }
@@ -1287,6 +1369,58 @@
   .duration-presets button { padding:6px 10px; border:1px solid var(--border); border-radius:999px; background:var(--surface2); color:var(--text-dim); cursor:pointer; font:inherit; font-size:.78rem; transition:border-color .16s,color .16s,transform .16s; }
   .duration-presets button:hover { border-color:var(--accent); color:var(--text); transform:translateY(-1px); }
 
+  .language-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 2px;
+  }
+
+  .language-option {
+    min-height: 46px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    color: var(--text-dim);
+    font: inherit;
+    font-size: .9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color .16s, background .16s, color .16s, transform .16s;
+  }
+
+  .language-option:hover {
+    border-color: var(--accent);
+    color: var(--text);
+    transform: translateY(-1px);
+  }
+
+  .language-option.active {
+    border-color: var(--accent);
+    background: rgba(108,99,255,.12);
+    color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(108,99,255,.08);
+  }
+
+  .language-help { margin-top: 7px; color: var(--text-dim); font-size: .76rem; line-height: 1.5; }
+
+  html[data-theme="light"] .language-option {
+    background: #eeece6;
+    border-color: #d2cec4;
+    color: #595764;
+  }
+
+  html[data-theme="light"] .language-option.active {
+    background: rgba(85,72,217,.08);
+    border-color: #5548d9;
+    color: #4c42bd;
+  }
+
+  @media (max-width: 520px) {
+    .language-options { grid-template-columns: 1fr; }
+  }
+
   .hint-chip {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -1379,6 +1513,18 @@
 
   .history-list { display: flex; flex-direction: column; gap: 8px; }
 
+  .history-toolbar { display:grid; grid-template-columns:minmax(180px,1fr) minmax(150px,.7fr) minmax(130px,.5fr); gap:10px; margin-bottom:12px; }
+  .history-search, .history-select { min-width:0; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface2); color:var(--text); font:inherit; font-size:.84rem; }
+  .history-search:focus, .history-select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(108,99,255,.12); }
+  .history-filter-row { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+  .history-filter-chips { display:flex; gap:7px; flex-wrap:wrap; }
+  .history-chip { border:1px solid var(--border); background:var(--surface2); color:var(--text-dim); border-radius:99px; padding:6px 10px; font:inherit; font-size:.75rem; cursor:pointer; }
+  .history-chip.active, .history-chip:hover { color:var(--accent); border-color:var(--accent); }
+  .history-count { color:var(--text-dim); font-size:.76rem; }
+  .history-load-more { display:block; margin:16px auto 0; }
+  .history-empty { color:var(--text-dim); font-size:.875rem; padding:24px 16px; text-align:center; }
+  @media (max-width:768px) { .history-toolbar { grid-template-columns:1fr; } }
+
   .history-item {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -1392,6 +1538,9 @@
   }
 
   .history-item:hover { border-color: var(--accent); }
+  .history-item { display: flex; align-items: center; gap: 12px; }
+  .history-item-main { flex: 1; min-width: 0; border: 0; padding: 0; background: transparent; color: inherit; text-align: left; font: inherit; cursor: pointer; }
+  .history-actions { display: flex; gap: 7px; flex: 0 0 auto; }
 
   .history-topic {
     font-size: 0.875rem; font-weight: 500;
@@ -1415,7 +1564,7 @@
   .badge-yellow { background: rgba(255,209,102,0.12); color: var(--warn); }
   .badge-purple { background: rgba(108,99,255,0.12); color: var(--accent); }
 
-  /* ─── LOADING OVERLAY ─── */
+  /* â”€â”€â”€ LOADING OVERLAY â”€â”€â”€ */
   .loading-overlay {
     position: fixed; inset: 0;
     background: rgba(10,10,15,0.9);
@@ -1445,7 +1594,7 @@
 
   .loading-sub { color: var(--text-dim); font-size: 0.875rem; }
 
-  /* ─── EXAM PAGE ─── */
+  /* â”€â”€â”€ EXAM PAGE â”€â”€â”€ */
   #exam-page { flex-direction: column; }
 
   .exam-header {
@@ -1602,7 +1751,7 @@
 
   .submit-exam-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(67,233,123,0.4); }
 
-  /* ─── RESULT PAGE ─── */
+  /* â”€â”€â”€ RESULT PAGE â”€â”€â”€ */
   #result-page { flex-direction: column; }
 
   .result-body {
@@ -1706,7 +1855,7 @@
     display: flex; gap: 12px; justify-content: center; margin-top: 28px; flex-wrap: wrap;
   }
 
-  /* ─── ADMIN PAGE ─── */
+  /* â”€â”€â”€ ADMIN PAGE â”€â”€â”€ */
   #admin-page { flex-direction: column; }
 
   .admin-body {
@@ -1802,7 +1951,7 @@
 
   .limit-input:focus { border-color: var(--accent); }
 
-  /* ─── TOAST ─── */
+  /* â”€â”€â”€ TOAST â”€â”€â”€ */
   .toast-container {
     position: fixed; top: 20px; right: 20px;
     display: flex; flex-direction: column; gap: 10px;
@@ -1827,7 +1976,7 @@
   .toast.success { border-left: 3px solid var(--success); }
   .toast.info { border-left: 3px solid var(--accent); }
 
-  /* ─── CONFIRM MODAL ─── */
+  /* â”€â”€â”€ CONFIRM MODAL â”€â”€â”€ */
   .modal-overlay {
     position: fixed; inset: 0;
     background: rgba(10,10,15,0.85);
@@ -1855,12 +2004,23 @@
   .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.4rem; margin-bottom: 10px; }
   .modal-body { color: var(--text-dim); font-size: 0.9rem; line-height: 1.6; margin-bottom: 24px; }
   .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+  .profile-card { display: grid; gap: 14px; }
+  .profile-email { color: var(--text-dim); font-size: .88rem; overflow-wrap: anywhere; }
+  .profile-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .profile-detail { padding: 11px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface2); min-width: 0; }
+  .profile-detail-label { display: block; color: var(--text-dim); font-size: .72rem; margin-bottom: 3px; }
+  .profile-detail-value { display: block; color: var(--text); font-size: .84rem; font-weight: 600; overflow-wrap: anywhere; }
+  .profile-usage { padding: 12px; border-radius: var(--radius-sm); background: rgba(108,99,255,.08); border: 1px solid rgba(108,99,255,.2); }
+  .profile-usage-head { display: flex; justify-content: space-between; gap: 12px; color: var(--text); font-size: .82rem; font-weight: 600; }
+  .profile-usage-bar { height: 6px; margin-top: 9px; overflow: hidden; border-radius: 999px; background: var(--border); }
+  .profile-usage-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  @media (max-width: 520px) { .profile-grid { grid-template-columns: 1fr; } }
 
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-  /* ─── FINAL DASHBOARD ALIGNMENT ─── */
+  /* â”€â”€â”€ FINAL DASHBOARD ALIGNMENT â”€â”€â”€ */
   @media (min-width: 769px) {
     /* Keep the heading at the top, but align the first stats card with the generator card. */
     .dashboard-body > .stats-sidebar {
@@ -1891,36 +2051,354 @@
     }
   }
 
-</style>
+
+
+  /* â”€â”€â”€ REQUIRED GENERATION FIELDS â”€â”€â”€ */
+  .required-field-label {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--text) !important;
+    font-size: .92rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -.005em;
+    margin-bottom: 9px !important;
+  }
+
+  .required-field-label > span:first-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .required-field-label > span:first-child::before {
+    content: '';
+    width: 4px;
+    height: 17px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+    box-shadow: 0 2px 8px rgba(108,99,255,.22);
+    flex: 0 0 auto;
+  }
+
+  .required-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(108,99,255,.22);
+    background: rgba(108,99,255,.08);
+    color: var(--accent);
+    font-size: .68rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: .045em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  html[data-theme="light"] .required-badge {
+    border-color: rgba(85,72,217,.22);
+    background: rgba(85,72,217,.08);
+    color: #4c42bd;
+  }
+
+  html[data-theme="light"] .generate-card .required-field-label {
+    color: #1b1b24 !important;
+  }
+
+  /* â”€â”€â”€ MOCKIFY THEME TOGGLE + LIGHT THEME â”€â”€â”€ */
+    .theme-toggle {
+      width: 38px;
+      height: 38px;
+      min-width: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: var(--surface2);
+      color: var(--text);
+      cursor: pointer;
+      line-height: 1;
+      position: relative;
+      isolation: isolate;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease;
+    }
+    .theme-toggle:hover {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .theme-toggle:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .theme-toggle .theme-icon {
+      width: 17px;
+      height: 17px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: block; }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f3ee;
+      --surface: #fffdf9;
+      --surface2: #eeece6;
+      --border: #d7d3ca;
+      --accent: #5548d9;
+      --accent2: #c25f78;
+      --accent3: #188653;
+      --text: #1b1b24;
+      --text-dim: #5f6270;
+      --text-faint: #7d808d;
+      --danger: #c83b55;
+      --warn: #9b6700;
+      --success: #188653;
+      --shadow: 0 12px 34px rgba(33, 31, 25, 0.08);
+      --glow: 0 0 44px rgba(85, 72, 217, 0.08);
+    }
+
+    html[data-theme="light"] body {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    html[data-theme="light"] body::before {
+      background-image:
+        linear-gradient(rgba(85,72,217,0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(85,72,217,0.055) 1px, transparent 1px);
+    }
+
+    html[data-theme="light"] .hero-glow {
+      background: radial-gradient(ellipse at center, rgba(85,72,217,0.13) 0%, rgba(194,95,120,0.055) 42%, transparent 72%);
+    }
+
+    html[data-theme="light"] .btn-primary {
+      background: #5548d9;
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(85,72,217,0.22);
+    }
+    html[data-theme="light"] .btn-primary:hover {
+      background: #493dca;
+      box-shadow: 0 10px 28px rgba(85,72,217,0.27);
+    }
+    html[data-theme="light"] .btn-secondary {
+      background: rgba(255,253,249,0.72);
+      border-color: var(--border);
+      color: var(--text);
+      box-shadow: 0 2px 10px rgba(33,31,25,0.03);
+    }
+    html[data-theme="light"] .btn-secondary:hover {
+      background: #fffdf9;
+      border-color: rgba(85,72,217,0.45);
+      color: var(--accent);
+    }
+
+    html[data-theme="light"] .site-nav.scrolled {
+      background: rgba(255,253,249,0.86);
+      border-bottom-color: rgba(215,211,202,0.9);
+      box-shadow: 0 6px 24px rgba(33,31,25,0.04);
+    }
+    html[data-theme="light"] .site-nav-links a:hover {
+      color: var(--text);
+      background: rgba(85,72,217,0.06);
+    }
+    html[data-theme="light"] .mobile-nav {
+      background: rgba(245,243,238,0.98);
+    }
+    html[data-theme="light"] .mobile-nav-links a {
+      border-bottom-color: var(--border);
+    }
+
+    html[data-theme="light"] .navbar {
+      background: rgba(255,253,249,0.9);
+      border-bottom-color: rgba(215,211,202,0.9);
+      box-shadow: 0 6px 24px rgba(33,31,25,0.045);
+    }
+    html[data-theme="light"] .nav-pill {
+      background: rgba(85,72,217,0.08);
+      border-color: rgba(85,72,217,0.2);
+      color: var(--accent);
+    }
+    html[data-theme="light"] .theme-toggle {
+      background: #fffdf9;
+      box-shadow: 0 3px 12px rgba(33,31,25,0.06);
+    }
+    html[data-theme="light"] .theme-toggle .icon-sun { display: block; }
+    html[data-theme="light"] .theme-toggle .icon-moon { display: none; }
+
+    html[data-theme="light"] .auth-card,
+    html[data-theme="light"] .generate-card,
+    html[data-theme="light"] .feedback-card,
+    html[data-theme="light"] .stat-box,
+    html[data-theme="light"] .table-wrap,
+    html[data-theme="light"] .score-hero,
+    html[data-theme="light"] .review-card,
+    html[data-theme="light"] .nav-panel,
+    html[data-theme="light"] .question-area {
+      background: var(--surface);
+      border-color: var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    html[data-theme="light"] .tab-switcher,
+    html[data-theme="light"] .form-group input,
+    html[data-theme="light"] .topic-input,
+    html[data-theme="light"] .duration-select,
+    html[data-theme="light"] .feedback-select,
+    html[data-theme="light"] .feedback-textarea,
+    html[data-theme="light"] .q-nav-btn,
+    html[data-theme="light"] .option-key,
+    html[data-theme="light"] .review-q-num,
+    html[data-theme="light"] .admin-tabs,
+    html[data-theme="light"] .limit-input {
+      background: #eeece6;
+      border-color: #d2cec4;
+      color: var(--text);
+    }
+    html[data-theme="light"] .form-group input:focus,
+    html[data-theme="light"] .topic-input:focus,
+    html[data-theme="light"] .feedback-select:focus,
+    html[data-theme="light"] .feedback-textarea:focus,
+    html[data-theme="light"] .limit-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(85,72,217,0.12);
+    }
+
+    html[data-theme="light"] .option-btn {
+      background: #eeece6;
+      border-color: #d2cec4;
+      color: var(--text);
+    }
+    html[data-theme="light"] .option-btn:hover:not(.selected) {
+      border-color: rgba(85,72,217,0.42);
+      background: #f3f1ec;
+    }
+    html[data-theme="light"] .option-btn.selected {
+      background: rgba(85,72,217,0.09);
+      border-color: var(--accent);
+    }
+    html[data-theme="light"] .q-nav-btn.answered {
+      background: rgba(85,72,217,0.08);
+    }
+    html[data-theme="light"] .q-nav-btn.current {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    html[data-theme="light"] .score-hero::before {
+      background: radial-gradient(circle at 50% 0%, rgba(85,72,217,0.08) 0%, transparent 60%);
+    }
+    html[data-theme="light"] .review-opt {
+      background: #eeece6;
+      border-color: #d2cec4;
+      color: var(--text);
+    }
+    html[data-theme="light"] .review-opt.is-correct {
+      background: rgba(24,134,83,0.07);
+      border-color: rgba(24,134,83,0.28);
+    }
+    html[data-theme="light"] .review-opt.is-wrong {
+      background: rgba(200,59,85,0.07);
+      border-color: rgba(200,59,85,0.28);
+    }
+    html[data-theme="light"] .explanation-box {
+      background: rgba(85,72,217,0.055);
+      border-color: rgba(85,72,217,0.2);
+    }
+    html[data-theme="light"] .toast,
+    html[data-theme="light"] .modal-box {
+      background: var(--surface);
+      border-color: var(--border);
+      box-shadow: 0 16px 40px rgba(33,31,25,0.14);
+    }
+    html[data-theme="light"] .modal-overlay {
+      background: rgba(35,34,30,0.32);
+    }
+    html[data-theme="light"] .loading-overlay {
+      background: rgba(245,243,238,0.92);
+    }
+
+    html[data-theme="light"] th {
+      background: #eeece6;
+    }
+    html[data-theme="light"] td {
+      border-bottom-color: rgba(215,211,202,0.75);
+    }
+    html[data-theme="light"] tr:hover td {
+      background: rgba(85,72,217,0.035);
+    }
+
+    @media (max-width: 700px) {
+      .theme-toggle {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+      }
+      .theme-toggle .theme-icon {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+  </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"Mockify","url":"https://mockify.tech/","description":"An AI-powered mock test platform for topic-based MCQ practice."},{"@type":"Organization","name":"Mockify","url":"https://mockify.tech/"},{"@type":"SoftwareApplication","name":"Mockify","applicationCategory":"EducationalApplication","url":"https://mockify.tech/","description":"An AI-powered mock test platform that generates topic-based multiple-choice practice tests with timed sessions and answer review."}]}
 </script>
 </head>
 <body>
 
-<!-- ─── LOADING OVERLAY ─── -->
+<!-- â”€â”€â”€ APP BOOT OVERLAY â”€â”€â”€ -->
+<div id="app-boot-overlay" aria-hidden="true">
+  <div class="app-boot-inner">
+    <div class="app-boot-logo" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none">
+        <path d="M9 20V12L16 17L23 12V20"
+              stroke="white"
+              stroke-width="2.3"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="app-boot-spinner" aria-hidden="true"></div>
+  </div>
+</div>
+
+
+<!-- â”€â”€â”€ LOADING OVERLAY â”€â”€â”€ -->
 <div class="loading-overlay" id="loading-overlay">
   <div class="loading-icon"></div>
-  <div class="loading-text">Generating your mock…</div>
+  <div class="loading-text">Generating your mockâ€¦</div>
   <div class="loading-sub" id="loading-sub">Asking AI to craft 10 expert questions</div>
 </div>
 
-<!-- ─── TOAST CONTAINER ─── -->
+<!-- â”€â”€â”€ TOAST CONTAINER â”€â”€â”€ -->
 <div class="toast-container" id="toast-container"></div>
 
-<!-- ─── CONFIRM MODAL ─── -->
+<!-- â”€â”€â”€ CONFIRM MODAL â”€â”€â”€ -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Are you sure?</div>
     <div class="modal-body" id="modal-body">This action cannot be undone.</div>
     <div class="modal-actions">
-      <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
+      <button type="button" class="btn btn-secondary btn-sm" id="modal-cancel-btn" onclick="closeModal()">Cancel</button>
       <button type="button" class="btn btn-danger btn-sm" id="modal-confirm-btn">Confirm</button>
     </div>
   </div>
 </div>
 
-<!-- ─── MOBILE NAV ─── -->
+<!-- â”€â”€â”€ MOBILE NAV â”€â”€â”€ -->
 <div class="mobile-nav" id="mobile-nav">
   <div class="mobile-nav-head">
     <span class="brand"><span class="logo-mark" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="9" fill="url(#mg1)"/><path d="M9 20V12L16 17L23 12V20" stroke="white" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="mg1" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#6c63ff"/><stop offset="1" stop-color="#ff6584"/></linearGradient></defs></svg></span>Mockify</span>
@@ -1939,9 +2417,9 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      PUBLIC HOME / LANDING PAGE
-═══════════════════════════════════════════ -->
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="page active" id="home-page">
 
   <header>
@@ -1965,6 +2443,10 @@
     </div>
     <div class="nav-spacer"></div>
     <div class="site-nav-actions">
+      <button type="button" class="theme-toggle" onclick="toggleMockifyTheme()" aria-label="Switch to light mode" title="Switch to light mode" aria-pressed="false">
+  <svg class="theme-icon icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.6A8.6 8.6 0 0 1 8.4 3.8 8.6 8.6 0 1 0 20.2 15.6Z"/></svg>
+  <svg class="theme-icon icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
+</button>
       <button type="button" class="btn btn-secondary btn-sm desktop-only" onclick="openAuth('login')">Sign In</button>
       <button type="button" class="btn btn-primary btn-sm" onclick="openAuth('register')">Get Started Free</button>
       <button type="button" class="nav-toggle" id="nav-toggle-btn" aria-label="Open menu" onclick="openMobileNav()"><span></span></button>
@@ -1981,7 +2463,7 @@
         <div>
           <span class="eyebrow-badge"><span class="dot"></span>AI-powered mock testing</span>
           <h1 class="hero-headline">AI mock tests and MCQ practice for any topic.</h1>
-          <p class="hero-sub">Describe what you want to practice. Mockify writes a focused set of questions, lets you pick your own time limit, and shows you exactly what to review afterward.</p>
+          <p class="hero-sub">Describe what you want to practice. Mockify turns any topic into a focused mock in English, Hindi, or Marathi. Practice programming, data science, aptitude, interview topics, academic subjects, or government-exam areas such as MPSC, UPSC, Talathi, and police recruitment â€” then review exactly what you missed.</p>
           <div class="hero-ctas">
             <button type="button" class="btn btn-primary btn-lg" onclick="openAuth('register')">Start Practicing Free</button>
             <button type="button" class="btn btn-secondary btn-lg" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})">See How It Works</button>
@@ -1996,7 +2478,7 @@
                 <div class="preview-topic-label">Topic</div>
                 <div class="preview-topic" id="hero-preview-topic">Linear Regression in ML</div>
               </div>
-              <div class="preview-timer"><span>⏱</span><span id="hero-preview-timer">05:00</span></div>
+              <div class="preview-timer"><span>â±</span><span id="hero-preview-timer">05:00</span></div>
             </div>
             <div class="preview-progress-track"><div class="preview-progress-fill" id="hero-preview-progress"></div></div>
             <div class="preview-q" id="hero-preview-q">Which loss function is most commonly minimized in ordinary least squares regression?</div>
@@ -2012,11 +2494,11 @@
             </div>
           </div>
           <div class="float-card float-explain">
-            <span class="fc-icon">💡</span>
+            <span class="fc-icon">ðŸ’¡</span>
             <span>Explanation ready</span>
           </div>
           <div class="float-card float-streak">
-            <span class="fc-icon">✓</span>
+            <span class="fc-icon">âœ“</span>
             <span>Answer saved</span>
           </div>
         </div>
@@ -2057,34 +2539,34 @@
         </div>
         <div class="bento">
           <div class="feature-card">
-            <div class="feature-icon">✦</div>
+            <div class="feature-icon">âœ¦</div>
             <h3>AI-generated questions</h3>
-            <p>Type a topic and Mockify writes a set of multiple-choice questions built around it — from a single concept to a broad subject.</p>
+            <p>Type a topic and Mockify writes a set of multiple-choice questions built around it â€” from a single concept to a broad subject.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">⏱</div>
+            <div class="feature-icon">â±</div>
             <h3>Choose your own time</h3>
             <p>Set the clock before you start, from a quick 5-minute drill to a full 60-minute session. The test paces itself to your limit.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">💡</div>
+            <div class="feature-icon">ðŸ’¡</div>
             <h3>Learn from mistakes</h3>
             <p>Every wrong or skipped answer comes with an explanation, so you understand the reasoning, not just the correct letter.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🗂</div>
+            <div class="feature-icon">ðŸ—‚</div>
             <h3>Any topic, any format</h3>
-            <p>Technical subjects, interview concepts, aptitude questions, or academic revision — describe it in your own words.</p>
+            <p>Technical subjects, interview concepts, aptitude questions, or academic revision â€” describe it in your own words.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">📈</div>
+            <div class="feature-icon">ðŸ“ˆ</div>
             <h3>Track your results</h3>
             <p>Every mock you take is saved, so you can look back at past scores and see which topics need another pass.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🎯</div>
+            <div class="feature-icon">ðŸŽ¯</div>
             <h3>Built for active recall</h3>
-            <p>Mockify is designed around testing yourself rather than re-reading notes — the practice that actually sticks.</p>
+            <p>Mockify is designed around testing yourself rather than re-reading notes â€” the practice that actually sticks.</p>
           </div>
         </div>
       </div>
@@ -2095,7 +2577,7 @@
       <div class="wrap">
         <div class="section-head">
           <h2 class="headline">From topic to insight in four steps</h2>
-          <p class="section-copy">The whole loop — write, test, submit, review — takes minutes.</p>
+          <p class="section-copy">The whole loop â€” write, test, submit, review â€” takes minutes.</p>
         </div>
         <div class="steps-row">
           <div class="step-item">
@@ -2105,16 +2587,21 @@
           </div>
           <div class="step-item">
             <div class="step-num">2</div>
+            <h4>Choose a language</h4>
+            <p>Take the mock in English, Hindi, or Marathi.</p>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
             <h4>Set your timer</h4>
             <p>Pick a preset or enter a custom duration that fits the time you actually have.</p>
           </div>
           <div class="step-item">
-            <div class="step-num">3</div>
+            <div class="step-num">4</div>
             <h4>Take the mock</h4>
             <p>Answer 10 questions, navigate freely, and submit when ready.</p>
           </div>
           <div class="step-item">
-            <div class="step-num">4</div>
+            <div class="step-num">5</div>
             <h4>Review and improve</h4>
             <p>See your score and read explanations for everything you missed.</p>
           </div>
@@ -2132,19 +2619,19 @@
         </div>
         <div class="why-list">
           <div class="why-item">
-            <div class="why-check">✓</div>
-            <div><h4>Faster setup</h4><p>No browsing a catalog — describe a topic and your test is ready.</p></div>
+            <div class="why-check">âœ“</div>
+            <div><h4>Faster setup</h4><p>No browsing a catalog â€” describe a topic and your test is ready.</p></div>
           </div>
           <div class="why-item">
-            <div class="why-check">✓</div>
+            <div class="why-check">âœ“</div>
             <div><h4>Personalized topics</h4><p>Practice the exact subject you're studying, worded your way.</p></div>
           </div>
           <div class="why-item">
-            <div class="why-check">✓</div>
-            <div><h4>Duration on your terms</h4><p>A 10-minute gap between classes or a full hour — you decide.</p></div>
+            <div class="why-check">âœ“</div>
+            <div><h4>Duration on your terms</h4><p>A 10-minute gap between classes or a full hour â€” you decide.</p></div>
           </div>
           <div class="why-item">
-            <div class="why-check">✓</div>
+            <div class="why-check">âœ“</div>
             <div><h4>Mistake-first review</h4><p>The review screen puts explanations right where the wrong answers are.</p></div>
           </div>
         </div>
@@ -2156,15 +2643,18 @@
       <div class="wrap">
         <div class="section-head">
           <h2 class="headline">Practice for whatever you're preparing for</h2>
-          <p class="section-copy">Use Mockify as a topic-based practice test generator for academic revision, technical interview preparation, developer concepts, data science and ML, aptitude, or general learning. Choose the topic and a preset or custom duration; Mockify creates a focused 10-question MCQ practice session.</p>
+          <p class="section-copy">Use Mockify for programming, developer concepts, data science and ML, technical interview preparation, aptitude, academic revision, or any subject you want to practice. For government-exam preparation, you can also create topic-based mocks for MPSC, UPSC, Talathi, police recruitment, banking, and more in Hindi or Marathi.</p>
         </div>
         <div class="usecase-chips">
-          <div class="usecase-chip"><span class="uc-icon">🎓</span>Students & academics</div>
-          <div class="usecase-chip"><span class="uc-icon">💼</span>Interview preparation</div>
-          <div class="usecase-chip"><span class="uc-icon">👨‍💻</span>Developers</div>
-          <div class="usecase-chip"><span class="uc-icon">🧠</span>Data science & ML</div>
-          <div class="usecase-chip"><span class="uc-icon">🧮</span>Aptitude practice</div>
-          <div class="usecase-chip"><span class="uc-icon">📚</span>Technical revision</div>
+          <div class="usecase-chip"><span class="uc-icon">ðŸŽ“</span>Students & academics</div>
+          <div class="usecase-chip"><span class="uc-icon">ðŸ’¼</span>Interview preparation</div>
+          <div class="usecase-chip"><span class="uc-icon">ðŸ‘¨â€ðŸ’»</span>Developers & programming</div>
+          <div class="usecase-chip"><span class="uc-icon">ðŸ§ </span>Data science & ML</div>
+          <div class="usecase-chip"><span class="uc-icon">ðŸ§®</span>Aptitude practice</div>
+          <div class="usecase-chip"><span class="uc-icon">ðŸ“š</span>Technical revision</div>
+          <div class="usecase-chip"><span class="uc-icon">ðŸ›ï¸</span>MPSC & UPSC preparation</div>
+          <div class="usecase-chip"><span class="uc-icon">ðŸ“</span>Talathi & police exams</div>
+          <div class="usecase-chip"><span class="uc-icon">ðŸŒ</span>Hindi & Marathi exam practice</div>
         </div>
       </div>
     </section>
@@ -2184,9 +2674,17 @@
             <button type="button" class="faq-q" aria-expanded="false">How are mock tests generated?<span class="plus">+</span></button>
             <div class="faq-a"><p>You describe a topic in your own words, and Mockify's AI writes a set of multiple-choice questions based on it.</p></div>
           </div>
+                    <div class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">Can I take a mock in Hindi or Marathi?<span class="plus">+</span></button>
+            <div class="faq-a"><p>Yes. Choose English, Hindi, or Marathi before generating your mock. Hindi and Marathi questions, options, and explanations are generated in the selected language.</p></div>
+          </div>
+                    <div class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">Can I use Hindi or Marathi for government-exam preparation?<span class="plus">+</span></button>
+            <div class="faq-a"><p>Yes. Practice topics for exams such as MPSC, UPSC, Talathi, police recruitment, banking, and other competitive exams, then choose Hindi or Marathi as your mock language.</p></div>
+          </div>
           <div class="faq-item">
             <button type="button" class="faq-q" aria-expanded="false">Can I choose my test duration?<span class="plus">+</span></button>
-            <div class="faq-a"><p>Yes. Choose a quick preset or select “Custom time” and enter any whole number of minutes from 1 to 180.</p></div>
+            <div class="faq-a"><p>Yes. Choose a quick preset or select â€œCustom timeâ€ and enter any whole number of minutes from 1 to 180.</p></div>
           </div>
           <div class="faq-item">
             <button type="button" class="faq-q" aria-expanded="false">How many questions are in a mock?<span class="plus">+</span></button>
@@ -2194,7 +2692,7 @@
           </div>
           <div class="faq-item">
             <button type="button" class="faq-q" aria-expanded="false">Can I practice any topic?<span class="plus">+</span></button>
-            <div class="faq-a"><p>Yes — technical subjects, interview prep, aptitude, academic revision, or anything else you can describe.</p></div>
+            <div class="faq-a"><p>Yes â€” technical subjects, interview prep, aptitude, academic revision, or anything else you can describe.</p></div>
           </div>
           <div class="faq-item">
             <button type="button" class="faq-q" aria-expanded="false">What happens after I submit a test?<span class="plus">+</span></button>
@@ -2243,6 +2741,16 @@
             Mockify
           </span>
           <p class="footer-desc">AI-powered mock tests, tailored for you. Turn any topic into a focused practice session.</p>
+          <div class="footer-company">
+            <span class="footer-company-label">Company</span>
+            <span>Pune, Maharashtra, India, 411052</span>
+            <a class="footer-social-link" href="https://www.linkedin.com/company/mockify-ai" target="_blank" rel="noopener noreferrer" aria-label="Mockify on LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V8.99h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.3ZM5.32 7.43A2.07 2.07 0 1 1 5.32 3.3a2.07 2.07 0 0 1 0 4.13ZM3.54 20.45H7.1V8.99H3.54v11.46ZM22.22 0H1.78C.8 0 0 .77 0 1.72v20.56C0 23.23.8 24 1.78 24h20.44c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0Z"/>
+              </svg>
+              LinkedIn
+            </a>
+          </div>
         </div>
         <div class="footer-col">
           <h5>Navigate</h5>
@@ -2258,23 +2766,23 @@
         </div>
         <div class="footer-col">
           <h5>Legal</h5>
-          <span>Privacy policy coming soon</span>
-          <span>Terms coming soon</span>
+          <a href="/privacy.html">Privacy Policy</a>
+          <a href="/terms.html">Terms of Service</a>
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© <span id="footer-year">2026</span> Mockify. All rights reserved.</span>
+        <span>Â© <span id="footer-year">2026</span> Mockify. All rights reserved.</span>
       </div>
     </div>
   </footer>
 </div>
 
-<!-- ═══════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      AUTH PAGE
-═══════════════════════════════════════════ -->
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="page" id="auth-page">
   <div class="auth-topbar">
-    <button type="button" class="auth-back" onclick="showPage('home-page')">← Back to Home</button>
+    <button type="button" class="auth-back" onclick="showPage('home-page')">â† Back to Home</button>
   </div>
   <div class="auth-container">
 
@@ -2306,7 +2814,15 @@
 
       <!-- Login Form -->
       <div id="login-form">
-        <button type="button" class="google-btn" onclick="startGoogleLogin()">Continue with Google</button>
+        <button type="button" class="google-btn" onclick="startGoogleLogin()">
+          <svg class="google-icon" viewBox="0 0 18 18" aria-hidden="true">
+            <path fill="#EA4335" d="M17.64 9.205c0-.638-.057-1.252-.164-1.841H9v3.482h4.844a4.14 4.14 0 0 1-1.797 2.716v2.258h2.908c1.703-1.568 2.685-3.878 2.685-6.615Z"/>
+            <path fill="#4285F4" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.258c-.806.54-1.835.86-3.048.86-2.344 0-4.33-1.584-5.04-3.71H.954v2.332A9 9 0 0 0 9 18Z"/>
+            <path fill="#FBBC05" d="M3.96 10.712A5.4 5.4 0 0 1 3.677 9c0-.594.102-1.17.283-1.712V4.956H.954A9 9 0 0 0 0 9c0 1.453.348 2.827.954 4.044l3.006-2.332Z"/>
+            <path fill="#34A853" d="M9 3.578c1.322 0 2.508.454 3.441 1.345l2.582-2.582C13.463.868 11.426 0 9 0A9 9 0 0 0 .954 4.956L3.96 7.288C4.67 5.162 6.656 3.578 9 3.578Z"/>
+          </svg>
+          Continue with Google
+        </button>
         <div class="auth-divider">or</div>
         <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="you@gmail.com" autocomplete="email"></div>
         <div class="form-group"><label>Password</label><input type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password"></div>
@@ -2316,10 +2832,22 @@
 
       <!-- Register Form -->
       <div id="register-form" style="display:none">
-        <button type="button" class="google-btn" onclick="startGoogleLogin()">Continue with Google</button>
+        <button type="button" class="google-btn" onclick="startGoogleLogin()">
+          <svg class="google-icon" viewBox="0 0 18 18" aria-hidden="true">
+            <path fill="#EA4335" d="M17.64 9.205c0-.638-.057-1.252-.164-1.841H9v3.482h4.844a4.14 4.14 0 0 1-1.797 2.716v2.258h2.908c1.703-1.568 2.685-3.878 2.685-6.615Z"/>
+            <path fill="#4285F4" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.258c-.806.54-1.835.86-3.048.86-2.344 0-4.33-1.584-5.04-3.71H.954v2.332A9 9 0 0 0 9 18Z"/>
+            <path fill="#FBBC05" d="M3.96 10.712A5.4 5.4 0 0 1 3.677 9c0-.594.102-1.17.283-1.712V4.956H.954A9 9 0 0 0 0 9c0 1.453.348 2.827.954 4.044l3.006-2.332Z"/>
+            <path fill="#34A853" d="M9 3.578c1.322 0 2.508.454 3.441 1.345l2.582-2.582C13.463.868 11.426 0 9 0A9 9 0 0 0 .954 4.956L3.96 7.288C4.67 5.162 6.656 3.578 9 3.578Z"/>
+          </svg>
+          Continue with Google
+        </button>
         <div class="auth-divider">or</div>
         <div class="form-group"><label>Full Name</label><input type="text" id="reg-name" placeholder="Jane Doe" autocomplete="name"></div>
         <div class="form-group"><label>Email</label><input type="email" id="reg-email" placeholder="you@gmail.com" autocomplete="email"></div>
+        <label class="terms-check">
+          <input type="checkbox" id="reg-terms" required>
+          <span>I agree to Mockify's <a href="/terms.html" target="_blank" rel="noopener noreferrer">Terms of Service</a> and acknowledge the <a href="/privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.<span class="required-mark">*</span></span>
+        </label>
         <button type="button" class="btn btn-primary btn-block" id="register-send-btn" onclick="handleRegister()">Verify Email &amp; Register</button>
       </div>
 
@@ -2330,7 +2858,7 @@
         <div class="form-group"><label>Verification code</label><input type="text" id="otp-code" inputmode="numeric" maxlength="6" placeholder="6-digit code" autocomplete="one-time-code"></div>
         <button type="button" class="btn btn-primary btn-block" id="verify-otp-btn" onclick="handleVerifyOtp()">Verify</button>
         <button type="button" class="btn btn-secondary" id="resend-otp-btn" onclick="resendOtp()" style="margin-top:10px;width:100%">Resend code</button>
-        <button type="button" class="btn btn-secondary" onclick="backToEmailEntry()" style="margin-top:10px;width:100%">← Use a different email</button>
+        <button type="button" class="btn btn-secondary" onclick="backToEmailEntry()" style="margin-top:10px;width:100%">â† Use a different email</button>
       </div>
 
       <!-- Password Setup Form -->
@@ -2343,9 +2871,9 @@
     </div>
   </div>
 </div>
-<!-- ═══════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      DASHBOARD PAGE
-═══════════════════════════════════════════ -->
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="page" id="dashboard-page">
   <nav class="navbar">
     <span class="nav-logo">
@@ -2364,11 +2892,15 @@
       class="btn btn-secondary btn-sm navbar-feedback-link"
       onclick="openFeedbackSection()"
       aria-label="Open feedback form"
-    >♡ Feedback / Report a Bug</button>
+    >â™¡ Feedback / Report a Bug</button>
     <div class="nav-spacer"></div>
     <div class="nav-user">
-      <div class="nav-avatar" id="nav-avatar">U</div>
-      <span id="nav-username">User</span>
+      <button type="button" class="theme-toggle" onclick="toggleMockifyTheme()" aria-label="Switch to light mode" title="Switch to light mode" aria-pressed="false">
+  <svg class="theme-icon icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.6A8.6 8.6 0 0 1 8.4 3.8 8.6 8.6 0 1 0 20.2 15.6Z"/></svg>
+  <svg class="theme-icon icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
+</button>
+      <button type="button" class="nav-avatar" id="nav-avatar" onclick="showProfile()" aria-label="Open profile" title="Open profile">U</button>
+      <button type="button" class="nav-profile-name" id="nav-username" onclick="showProfile()">User</button>
       <button type="button" class="btn btn-secondary btn-sm" onclick="handleLogout()">Sign Out</button>
       <button type="button" class="btn btn-secondary btn-sm" id="admin-btn" style="display:none" onclick="showPage('admin-page')">Admin Panel</button>
     </div>
@@ -2379,8 +2911,8 @@
     <div class="dashboard-main">
       <div class="dashboard-heading-row">
         <div>
-          <h2 class="section-title">Generate Mock Test</h2>
-          <p class="section-sub">Describe any topic and get 10 AI-crafted MCQs instantly</p>
+          <h2 class="section-title">Create Your Mock Test</h2>
+          <p class="section-sub">Enter <strong>any topic you want</strong> and get 10 AI-crafted MCQs instantly.</p>
         </div>
       </div>
 
@@ -2388,25 +2920,52 @@
         <div id="gen-error" class="error-msg"></div>
 
         <div class="form-group">
-          <label>What do you want to be tested on?</label>
-          <textarea class="topic-input" id="topic-input" aria-describedby="topic-help"
-            placeholder="e.g. OOP concepts in Python, TCS NQT aptitude, Operating System basics, React hooks…"
+          <label for="topic-input" class="required-field-label">
+            <span>What do you want to be tested on?</span>
+            <span class="required-badge">Required</span>
+          </label>
+          <textarea class="topic-input" id="topic-input" aria-required="true" aria-describedby="topic-help"
+            placeholder="Type any topic â€” e.g. Java Multithreading, React Hooks, DBMS normalization, Python decorators, AWS basics, Data Science, Marathi Vyakaran, à¤ªà¥à¤°à¤¾à¤šà¥€à¤¨ à¤­à¤¾à¤°à¤¤â€¦"
             rows="3"></textarea>
-          <div id="topic-help" style="margin-top:8px;color:var(--text-dim);font-size:.78rem">Choose a specific topic for a more focused set of questions.</div>
+          <div id="topic-help" style="margin-top:8px;color:var(--text-dim);font-size:.78rem">
+            ðŸ’¡ You can enter any subject, concept, exam, technology, or skill. Examples include programming, data science, interview prep, academic subjects, and Hindi/Marathi exam topics.
+          </div>
         </div>
+<div style="margin:4px 0 10px;color:var(--text-faint);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em">Try an example</div>
 
         <div class="topic-hints">
-          <span class="hint-chip" onclick="setTopic('OOP in Python')">OOP in Python</span>
-          <span class="hint-chip" onclick="setTopic('TCS NQT aptitude')">TCS NQT Aptitude</span>
-          <span class="hint-chip" onclick="setTopic('Operating Systems basics')">Operating Systems</span>
-          <span class="hint-chip" onclick="setTopic('SQL queries and joins')">SQL & Joins</span>
-          <span class="hint-chip" onclick="setTopic('React hooks and state management')">React Hooks</span>
-          <span class="hint-chip" onclick="setTopic('Data Structures: arrays and linked lists')">Data Structures</span>
+          <span class="hint-chip" onclick="setTopic('Python OOP')">Python OOP</span>
+          <span class="hint-chip" onclick="setTopic('React Hooks')">React Hooks</span>
+          <span class="hint-chip" onclick="setTopic('DBMS Normalization')">DBMS Normalization</span>
+          <span class="hint-chip" onclick="setTopic('Machine Learning basics')">Machine Learning</span>
+          <span class="hint-chip" onclick="setTopic('AWS fundamentals')">AWS fundamentals</span>
+          <span class="hint-chip" onclick="setTopic('Marathi Vyakaran Â· MPSC Prelims')">Marathi Vyakaran Â· MPSC Prelims</span>
+          <span class="hint-chip" onclick="setTopic('à¤ªà¥à¤°à¤¾à¤šà¥€à¤¨ à¤­à¤¾à¤°à¤¤ Â· UPSC Prelims')">à¤ªà¥à¤°à¤¾à¤šà¥€à¤¨ à¤­à¤¾à¤°à¤¤ Â· UPSC Prelims</span>
+          <span class="hint-chip" onclick="setTopic('à¤®à¤°à¤¾à¤ à¥€à¤¤à¥€à¤² à¤­à¤¾à¤°à¤¤à¥€à¤¯ à¤°à¤¾à¤œà¥à¤¯à¤˜à¤Ÿà¤¨à¤¾ Â· MPSC')">à¤®à¤°à¤¾à¤ à¥€à¤¤à¥€à¤² à¤­à¤¾à¤°à¤¤à¥€à¤¯ à¤°à¤¾à¤œà¥à¤¯à¤˜à¤Ÿà¤¨à¤¾ Â· MPSC</span>
         </div>
 
+
+
         <div class="form-group">
-          <label for="timer-select">Test Duration</label>
-          <input id="timer-select" class="duration-input" type="number" inputmode="numeric" min="1" max="180" step="1" placeholder="Enter minutes, e.g. 12" aria-describedby="duration-help">
+          <label class="required-field-label">
+            <span>Language</span>
+            <span class="required-badge">Required</span>
+          </label>
+          <div class="language-options" role="group" aria-label="Mock language">
+            <button type="button" class="language-option active" data-language="English" aria-pressed="true" onclick="setLanguage('English')">English</button>
+            <button type="button" class="language-option" data-language="Hindi" aria-pressed="false" onclick="setLanguage('Hindi')">à¤¹à¤¿à¤¨à¥à¤¦à¥€</button>
+            <button type="button" class="language-option" data-language="Marathi" aria-pressed="false" onclick="setLanguage('Marathi')">à¤®à¤°à¤¾à¤ à¥€</button>
+          </div>
+          <div class="language-help" id="language-help">Questions, options, and explanations will be generated in English.</div>
+        </div>
+
+
+        <div class="form-group">
+          <label for="timer-select" class="required-field-label">
+            <span>Test Duration</span>
+            <span class="required-badge">Required</span>
+          </label>
+          <input id="timer-select" class="duration-input" type="number" aria-required="true" inputmode="numeric" min="1" max="180" step="1" placeholder="Enter minutes, e.g. 12" aria-describedby="duration-help">
           <div class="duration-presets" aria-label="Quick duration suggestions">
             <button type="button" onclick="setDuration(5)">5 min</button><button type="button" onclick="setDuration(10)">10 min</button><button type="button" onclick="setDuration(15)">15 min</button><button type="button" onclick="setDuration(30)">30 min</button><button type="button" onclick="setDuration(60)">60 min</button>
           </div>
@@ -2415,7 +2974,7 @@
 
         <button type="button" class="generate-btn" id="generate-btn" onclick="handleGenerate()">
           <div class="spinner" id="gen-spinner"></div>
-          <span id="gen-btn-text">✦ Generate Mock Test</span>
+          <span id="gen-btn-text">âœ¦ Create Mock Test</span>
         </button>
       </div>
 
@@ -2425,19 +2984,19 @@
     <div class="stats-sidebar">
       <div class="stat-card">
         <div class="stat-label">Mocks Remaining Today</div>
-        <div class="stat-value" id="mocks-remaining">—</div>
-        <div class="stat-sub" id="mocks-sub">of 1 daily limit</div>
+        <div class="stat-value" id="mocks-remaining">â€”</div>
+        <div class="stat-sub" id="mocks-sub">of 10 daily limit</div>
         <div class="limit-bar">
           <div class="limit-bar-fill" id="limit-bar" style="width:100%"></div>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Total Mocks Taken</div>
-        <div class="stat-value" id="total-mocks-stat">—</div>
+        <div class="stat-value" id="total-mocks-stat">â€”</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Best Score</div>
-        <div class="stat-value" id="best-score-stat">—</div>
+        <div class="stat-value" id="best-score-stat">â€”</div>
         <div class="stat-sub">out of 10</div>
       </div>
     </div>
@@ -2445,9 +3004,28 @@
     <!-- Full-width history -->
     <div class="history-section dashboard-history">
       <h3 class="history-section-title">Past Results</h3>
+      <div class="history-toolbar" aria-label="Search and sort past results">
+        <input id="history-search" class="history-search" type="search" placeholder="Search a topic" autocomplete="off">
+        <select id="history-topic-filter" class="history-select" aria-label="Filter by topic"><option value="">All topics</option></select>
+        <select id="history-sort" class="history-select" aria-label="Sort results">
+          <option value="recent">Newest first</option>
+          <option value="score_high">Highest score</option>
+          <option value="score_low">Needs review</option>
+        </select>
+      </div>
+      <div class="history-filter-row">
+        <div class="history-filter-chips" aria-label="Filter by score">
+          <button class="history-chip active" type="button" data-score-filter="all">All</button>
+          <button class="history-chip" type="button" data-score-filter="strong">Strong (80%+)</button>
+          <button class="history-chip" type="button" data-score-filter="steady">Steady (50â€“79%)</button>
+          <button class="history-chip" type="button" data-score-filter="review">Review (&lt;50%)</button>
+        </div>
+        <span id="history-count" class="history-count"></span>
+      </div>
       <div id="history-list" class="history-list">
         <div style="color:var(--text-dim);font-size:0.875rem;padding:16px;text-align:center;">No results yet. Take your first mock!</div>
       </div>
+      <button id="history-load-more" class="btn btn-secondary history-load-more" type="button" style="display:none">Load more results</button>
     </div>
 
     <section class="feedback-card" id="feedback-section" aria-labelledby="feedback-title">
@@ -2473,7 +3051,7 @@
             id="feedback-message"
             class="feedback-textarea"
             maxlength="2000"
-            placeholder="Tell us what happened, what you expected, or what you'd improve…"
+            placeholder="Tell us what happened, what you expected, or what you'd improveâ€¦"
             required
             oninput="updateFeedbackCount()"
           ></textarea>
@@ -2489,7 +3067,7 @@
         <div class="feedback-actions">
           <button type="submit" class="btn btn-primary" id="feedback-submit-btn">Send Feedback</button>
           <span style="color:var(--text-dim);font-size:.76rem;">
-            Up to 2 MB · PNG, JPG, or WebP · 3 submissions per day
+            Up to 2 MB Â· PNG, JPG, or WebP Â· 3 submissions per day
           </span>
         </div>
       </form>
@@ -2497,24 +3075,24 @@
       <div class="feedback-history">
         <div style="font-size:.82rem;font-weight:600;margin-bottom:8px;">Your recent feedback</div>
         <div id="feedback-history-list">
-          <div style="color:var(--text-dim);font-size:.82rem;">Loading…</div>
+          <div style="color:var(--text-dim);font-size:.82rem;">Loadingâ€¦</div>
         </div>
       </div>
     </section>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      EXAM PAGE
-═══════════════════════════════════════════ -->
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="page" id="exam-page">
   <div class="exam-header">
     <div class="exam-title">
       <span>Mockify Exam</span>
-      <strong id="exam-topic">Loading…</strong>
+      <strong id="exam-topic">Loadingâ€¦</strong>
     </div>
     <div class="timer-display" id="timer-display">
-      <span>⏱</span>
+      <span>â±</span>
       <span id="timer-text">--:--</span>
     </div>
     <button type="button" class="submit-exam-btn" onclick="confirmSubmit(event)">Submit Exam</button>
@@ -2540,22 +3118,26 @@
     <!-- Question display -->
     <div class="question-area">
       <div class="q-counter" id="q-counter">Question 1 of 10</div>
-      <div class="q-text" id="q-text">Loading question…</div>
+      <div class="q-text" id="q-text">Loading questionâ€¦</div>
       <div class="options-grid" id="options-grid"></div>
       <div class="exam-nav">
-        <button type="button" class="btn btn-secondary" onclick="prevQuestion()">← Previous</button>
-        <button type="button" class="btn btn-secondary" onclick="nextQuestion()">Next →</button>
+        <button type="button" class="btn btn-secondary" onclick="prevQuestion()">â† Previous</button>
+        <button type="button" class="btn btn-secondary" onclick="nextQuestion()">Next â†’</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      RESULT PAGE
-═══════════════════════════════════════════ -->
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="page" id="result-page">
   <nav class="navbar">
     <span class="nav-logo">Mockify</span>
+    <button type="button" class="theme-toggle" onclick="toggleMockifyTheme()" aria-label="Switch to light mode" title="Switch to light mode" aria-pressed="false">
+  <svg class="theme-icon icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.6A8.6 8.6 0 0 1 8.4 3.8 8.6 8.6 0 1 0 20.2 15.6Z"/></svg>
+  <svg class="theme-icon icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
+</button>
     <div class="nav-spacer"></div>
   </nav>
 
@@ -2578,7 +3160,7 @@
           <div class="score-stat-lbl">Score</div>
         </div>
         <div class="score-stat">
-          <div class="score-stat-val" id="res-time" style="color:var(--text-dim)">—</div>
+          <div class="score-stat-val" id="res-time" style="color:var(--text-dim)">â€”</div>
           <div class="score-stat-lbl">Time</div>
         </div>
       </div>
@@ -2588,21 +3170,21 @@
     <div id="questions-review" class="questions-review"></div>
 
     <div class="result-actions">
-      <button type="button" class="btn btn-secondary" onclick="showPage('dashboard-page');loadDashboard()">← Dashboard</button>
+      <button type="button" class="btn btn-secondary" onclick="showPage('dashboard-page');loadDashboard()">â† Dashboard</button>
       <button type="button" class="btn btn-primary" onclick="showPage('dashboard-page');loadDashboard()">Take Another Mock</button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      ADMIN PAGE
-═══════════════════════════════════════════ -->
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="page" id="admin-page">
   <nav class="navbar">
     <span class="nav-logo">Mockify</span>
     <span class="nav-pill">Admin Panel</span>
     <div class="nav-spacer"></div>
-    <button type="button" class="btn btn-secondary btn-sm" onclick="showPage('dashboard-page');loadDashboard()">← Dashboard</button>
+    <button type="button" class="btn btn-secondary btn-sm" onclick="showPage('dashboard-page');loadDashboard()">â† Dashboard</button>
     <button type="button" class="btn btn-secondary btn-sm" onclick="handleLogout()">Sign Out</button>
   </nav>
 
@@ -2610,10 +3192,10 @@
     <h2 class="section-title" style="margin-bottom:20px">Admin Dashboard</h2>
 
     <div class="stats-grid" id="admin-stats-grid">
-      <div class="stat-box"><div class="stat-label">Total Users</div><div class="stat-value" id="a-total-users">—</div></div>
-      <div class="stat-box"><div class="stat-label">Total Mocks</div><div class="stat-value" id="a-total-mocks">—</div></div>
-      <div class="stat-box"><div class="stat-label">Total Results</div><div class="stat-value" id="a-total-results">—</div></div>
-      <div class="stat-box"><div class="stat-label">Avg Score</div><div class="stat-value" id="a-avg-score">—</div></div>
+      <div class="stat-box"><div class="stat-label">Total Users</div><div class="stat-value" id="a-total-users">â€”</div></div>
+      <div class="stat-box"><div class="stat-label">Total Mocks</div><div class="stat-value" id="a-total-mocks">â€”</div></div>
+      <div class="stat-box"><div class="stat-label">Total Results</div><div class="stat-value" id="a-total-results">â€”</div></div>
+      <div class="stat-box"><div class="stat-label">Avg Score</div><div class="stat-value" id="a-avg-score">â€”</div></div>
     </div>
 
     <div class="admin-tabs">
@@ -2640,7 +3222,7 @@
             </tr>
           </thead>
           <tbody id="users-table-body">
-            <tr><td colspan="7" style="text-align:center;color:var(--text-dim)">Loading…</td></tr>
+            <tr><td colspan="7" style="text-align:center;color:var(--text-dim)">Loadingâ€¦</td></tr>
           </tbody>
         </table>
       </div>
@@ -2659,7 +3241,7 @@
             </tr>
           </thead>
           <tbody id="mocks-table-body">
-            <tr><td colspan="4" style="text-align:center;color:var(--text-dim)">Loading…</td></tr>
+            <tr><td colspan="4" style="text-align:center;color:var(--text-dim)">Loadingâ€¦</td></tr>
           </tbody>
         </table>
       </div>
@@ -2676,10 +3258,11 @@
               <th>Score</th>
               <th>Percentage</th>
               <th>Date</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody id="results-table-body">
-            <tr><td colspan="5" style="text-align:center;color:var(--text-dim)">Loading…</td></tr>
+            <tr><td colspan="5" style="text-align:center;color:var(--text-dim)">Loadingâ€¦</td></tr>
           </tbody>
         </table>
       </div>
@@ -2687,14 +3270,14 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      JAVASCRIPT
-═══════════════════════════════════════════ -->
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <script>
-// ─── CONFIG ───
+// â”€â”€â”€ CONFIG â”€â”€â”€
 const API = '/api';
 
-// ─── STATE ───
+// â”€â”€â”€ STATE â”€â”€â”€
 let currentUser = null;
 let examQuestions = [];
 let examAnswers = {};
@@ -2708,8 +3291,15 @@ let generateInFlight = false;
 let generateCooldownUntil = 0;
 let generateCooldownTimer = null;
 let examSubmitInFlight = false;
+let navigatingToExam = false;
 
-// ─── UTILS ───
+// â”€â”€â”€ APP BOOT â”€â”€â”€
+function hideBootOverlay() {
+  const overlay = document.getElementById('app-boot-overlay');
+  if (overlay) overlay.classList.add('hidden');
+}
+
+// â”€â”€â”€ UTILS â”€â”€â”€
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -2755,7 +3345,7 @@ function showSuccess(id, msg) {
   el.style.display = 'block';
 }
 
-function showLoading(msg = 'Generating your mock…', sub = 'Asking AI to craft 10 expert questions') {
+function showLoading(msg = 'Generating your mockâ€¦', sub = 'Asking AI to craft 10 expert questions') {
   document.getElementById('loading-overlay').classList.add('active');
   document.querySelector('.loading-text').textContent = msg;
   document.getElementById('loading-sub').textContent = sub;
@@ -2774,7 +3364,8 @@ function openResultPage(resultId, resultData = null) {
 
 function openExamPage(mockData) {
   sessionStorage.setItem('mockify_latest_exam', JSON.stringify(mockData));
-  window.location.href = `exam.html?mock_id=${mockData.mock_id}`;
+  navigatingToExam = true;
+  window.location.replace(`exam.html?mock_id=${mockData.mock_id}`);
 }
 
 function setGenerateButtonState({ disabled = false, label = 'Generate Mock Test', showSpinner = false } = {}) {
@@ -2832,12 +3423,30 @@ function parseCooldownSeconds(message) {
 function openModal(title, body, onConfirm) {
   document.getElementById('modal-title').textContent = title;
   document.getElementById('modal-body').textContent = body;
+  document.getElementById('modal-confirm-btn').style.display = '';
+  document.getElementById('modal-cancel-btn').textContent = 'Cancel';
   document.getElementById('modal-overlay').classList.add('active');
   document.getElementById('modal-confirm-btn').onclick = () => { closeModal(); onConfirm(); };
 }
 
 function closeModal() {
   document.getElementById('modal-overlay').classList.remove('active');
+  document.getElementById('modal-confirm-btn').style.display = '';
+  document.getElementById('modal-cancel-btn').textContent = 'Cancel';
+}
+
+function showProfile() {
+  if (!currentUser) return;
+  const role = currentUser.is_super_admin ? 'Super Admin' : currentUser.is_admin ? 'Admin' : 'User';
+  const access = currentUser.is_admin || currentUser.is_super_admin ? 'Unlimited' : `${currentUser.mocks_remaining}/${currentUser.daily_mock_limit} remaining`;
+  const used = Math.max(0, (currentUser.daily_mock_limit || 0) - (currentUser.mocks_remaining || 0));
+  const usagePercent = currentUser.is_admin || currentUser.is_super_admin ? 100 : Math.min(100, Math.round((used / Math.max(1, currentUser.daily_mock_limit || 1)) * 100));
+  const detail = (label, value) => `<div class="profile-detail"><span class="profile-detail-label">${label}</span><span class="profile-detail-value">${escapeHtml(value)}</span></div>`;
+  document.getElementById('modal-title').textContent = currentUser.name || 'Your profile';
+  document.getElementById('modal-body').innerHTML = `<div class="profile-card"><div class="profile-email">${escapeHtml(currentUser.email || 'Email unavailable')}</div><div class="profile-grid">${detail('Account type', role)}${detail('Sign-in method', currentUser.auth_provider || 'Email')}${detail('Email status', currentUser.email_verified ? 'Verified' : 'Pending verification')}${detail('Member since', currentUser.created_at ? formatDate(currentUser.created_at) : 'â€”')}</div><div class="profile-usage"><div class="profile-usage-head"><span>Mock access today</span><span>${escapeHtml(access)}</span></div><div class="profile-usage-bar"><div class="profile-usage-fill" style="width:${usagePercent}%"></div></div></div></div>`;
+  document.getElementById('modal-confirm-btn').style.display = 'none';
+  document.getElementById('modal-cancel-btn').textContent = 'Close';
+  document.getElementById('modal-overlay').classList.add('active');
 }
 
 async function apiCall(method, path, body) {
@@ -2874,7 +3483,7 @@ function escapeHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ─── PUBLIC HOME / NAV ───
+// â”€â”€â”€ PUBLIC HOME / NAV â”€â”€â”€
 function openAuth(tab) {
   showPage('auth-page');
   switchAuthTab(tab);
@@ -2935,7 +3544,9 @@ document.querySelectorAll('.faq-q').forEach(btn => {
 (function heroPreview() {
   const demo = [
     { topic: 'Linear Regression in ML', q: 'Which loss function is most commonly minimized in ordinary least squares regression?', opts: ['Hinge loss', 'Mean squared error', 'Cross-entropy', 'KL divergence'], answer: 1, count: 3, timer: '05:00', progress: 30 },
+    { topic: 'MPSC Prelims Â· à¤®à¤°à¤¾à¤ à¥€ à¤µà¥à¤¯à¤¾à¤•à¤°à¤£', q: 'à¤–à¤¾à¤²à¥€à¤²à¤ªà¥ˆà¤•à¥€ à¤•à¥‹à¤£à¤¤à¤¾ à¤¶à¤¬à¥à¤¦ à¤¤à¤¤à¥à¤¸à¤® à¤¶à¤¬à¥à¤¦à¤¾à¤šà¥‡ à¤‰à¤¦à¤¾à¤¹à¤°à¤£ à¤†à¤¹à¥‡?', opts: ['à¤¸à¥‚à¤°à¥à¤¯', 'à¤†à¤—', 'à¤ªà¤¾à¤Šà¤¸', 'à¤˜à¤°'], answer: 0, count: 4, timer: '04:25', progress: 40 },
     { topic: 'React Hooks', q: 'Which hook lets you persist a value across renders without causing a re-render?', opts: ['useState', 'useEffect', 'useRef', 'useMemo'], answer: 2, count: 6, timer: '03:20', progress: 60 },
+    { topic: 'UPSC Prelims Â· à¤ªà¥à¤°à¤¾à¤šà¥€à¤¨ à¤­à¤¾à¤°à¤¤', q: 'à¤¸à¤¿à¤‚à¤§à¥ à¤˜à¤¾à¤Ÿà¥€ à¤¸à¤­à¥à¤¯à¤¤à¤¾ à¤•à¥‡ à¤¨à¤¿à¤®à¥à¤¨à¤²à¤¿à¤–à¤¿à¤¤ à¤¸à¥à¤¥à¤²à¥‹à¤‚ à¤®à¥‡à¤‚ à¤¸à¥‡ à¤•à¥Œà¤¨-à¤¸à¤¾ à¤—à¥à¤œà¤°à¤¾à¤¤ à¤®à¥‡à¤‚ à¤¸à¥à¤¥à¤¿à¤¤ à¤¹à¥ˆ?', opts: ['à¤¹à¤¡à¤¼à¤ªà¥à¤ªà¤¾', 'à¤²à¥‹à¤¥à¤²', 'à¤®à¥‹à¤¹à¤¨à¤œà¥‹à¤¦à¤¡à¤¼à¥‹', 'à¤°à¤¾à¤–à¥€à¤—à¤¢à¤¼à¥€'], answer: 1, count: 7, timer: '02:45', progress: 70 },
     { topic: 'SQL Joins', q: 'Which join returns only the rows with matching values in both tables?', opts: ['LEFT JOIN', 'INNER JOIN', 'FULL JOIN', 'CROSS JOIN'], answer: 1, count: 9, timer: '01:05', progress: 90 }
   ];
   let i = 0;
@@ -2985,7 +3596,7 @@ document.querySelectorAll('.faq-q').forEach(btn => {
   } else schedulePreview();
 })();
 
-// ─── AUTH ───
+// â”€â”€â”€ AUTH â”€â”€â”€
 let otpMode=null, otpEmail='', otpName='', otpResendUntil=0, otpExpiresUntil=0, otpCountdownTimer=null, authRequestInFlight=false;
 function switchAuthTab(tab){document.getElementById('auth-tab-login').classList.toggle('active',tab==='login');document.getElementById('auth-tab-register').classList.toggle('active',tab==='register');document.getElementById('login-form').style.display=tab==='login'?'block':'none';document.getElementById('register-form').style.display=tab==='register'?'block':'none';document.getElementById('password-setup-form').style.display='none';resetOtpFlow();hideError('auth-error');hideSuccess('auth-success');}
 function authButton(id,disabled,label){const b=document.getElementById(id);if(b){b.disabled=disabled;b.textContent=label;}}
@@ -2996,19 +3607,32 @@ function showOtpForm(mode,email,name,expiresIn){otpMode=mode;otpEmail=email;otpN
 function showPasswordSetupForm(instructions){resetOtpFlow();document.getElementById('login-form').style.display='none';document.getElementById('register-form').style.display='none';document.getElementById('password-setup-form').style.display='block';document.getElementById('password-setup-instructions').textContent=instructions||'Create a password for your Mockify account.';document.getElementById('setup-password').value='';document.getElementById('setup-password-confirm').value='';document.getElementById('setup-password').focus();}
 function resetOtpFlow(){clearInterval(otpCountdownTimer);otpCountdownTimer=null;otpMode=null;otpEmail='';otpName='';document.getElementById('otp-form').style.display='none';}
 function backToEmailEntry(){const tab=otpMode==='register'?'register':'login';resetOtpFlow();document.getElementById('login-form').style.display=tab==='login'?'block':'none';document.getElementById('register-form').style.display=tab==='register'?'block':'none';document.getElementById('password-setup-form').style.display='none';document.getElementById('auth-tab-login').classList.toggle('active',tab==='login');document.getElementById('auth-tab-register').classList.toggle('active',tab==='register');hideError('auth-error');hideSuccess('auth-success');}
-function startGoogleLogin(){window.location.href='/api/auth/google/start';}
-async function handlePasswordLogin(){if(authRequestInFlight)return;const email=document.getElementById('login-email').value.trim(),password=document.getElementById('login-password').value;if(!email||!password)return showError('auth-error','Enter your email and password.');authRequestInFlight=true;authButton('login-password-btn',true,'Signing in…');hideError('auth-error');try{const data=await apiCall('POST','/auth/login',{email,password});currentUser=data.user;afterLogin();}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('login-password-btn',false,'Sign In');}}
-async function handleLoginOtp(){if(authRequestInFlight)return;const email=document.getElementById('login-email').value.trim();if(!email)return showError('auth-error','Enter your email first.');authRequestInFlight=true;authButton('login-otp-link',true,'Sending OTP…');hideError('auth-error');try{const data=await apiCall('POST','/auth/request-otp',{email});showOtpForm('login',email,'',data.expires_in);}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('login-otp-link',false,'Sign in with OTP instead');}}
-async function handleRegister(){if(authRequestInFlight)return;const name=document.getElementById('reg-name').value.trim(),email=document.getElementById('reg-email').value.trim();if(!name||!email)return showError('auth-error','Please fill in all fields.');authRequestInFlight=true;authButton('register-send-btn',true,'Sending verification code…');hideError('auth-error');try{const data=await apiCall('POST','/auth/register',{name,email});showOtpForm('register',email,name,data.expires_in);}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('register-send-btn',false,'Verify Email & Register');}}
-async function handleVerifyOtp(){if(!otpMode||authRequestInFlight)return;const otp=document.getElementById('otp-code').value.trim();if(!/^\d{6}$/.test(otp))return showError('auth-error','Enter the 6-digit verification code');authRequestInFlight=true;authButton('verify-otp-btn',true,'Verifying…');hideError('auth-error');try{const data=await apiCall('POST','/auth/verify-otp',{email:otpEmail,otp});resetOtpFlow();if(data.needs_password_setup){showPasswordSetupForm(data.message);return;}currentUser=data.user;afterLogin();}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('verify-otp-btn',false,'Verify');}}
-async function resendOtp(){if(!otpMode||authRequestInFlight||Date.now()<otpResendUntil)return;authRequestInFlight=true;authButton('resend-otp-btn',true,'Sending…');hideError('auth-error');try{const path=otpMode==='register'?'/auth/register':'/auth/request-otp';const body=otpMode==='register'?{name:otpName,email:otpEmail}:{email:otpEmail};const data=await apiCall('POST',path,body);showSuccess('auth-success','A new verification code was sent.');startOtpCountdown(data.expires_in);}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;refreshOtpTimers();}}
-async function handleSetPassword(){if(authRequestInFlight)return;const password=document.getElementById('setup-password').value,confirmPassword=document.getElementById('setup-password-confirm').value;if(password.length<8)return showError('auth-error','Password must be at least 8 characters.');if(password!==confirmPassword)return showError('auth-error','Passwords do not match.');authRequestInFlight=true;authButton('password-setup-btn',true,'Saving…');hideError('auth-error');try{const data=await apiCall('POST','/auth/set-password',{password,confirm_password:confirmPassword});currentUser=data.user;history.replaceState({},document.title,window.location.pathname);afterLogin();}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('password-setup-btn',false,'Set Password');}}
+function startGoogleLogin(){
+  const registerForm = document.getElementById('register-form');
+  const isRegisterMode = registerForm && registerForm.style.display !== 'none';
+  if (isRegisterMode) {
+    const termsBox = document.getElementById('reg-terms');
+    if (!termsBox || !termsBox.checked) {
+      showError('auth-error','Please agree to the Terms of Service and acknowledge the Privacy Policy before continuing with Google.');
+      return;
+    }
+    window.location.href='/api/auth/google/start?mode=register&terms_accepted=true&terms_version=2026-09-03';
+    return;
+  }
+  window.location.href='/api/auth/google/start?mode=login';
+}
+async function handlePasswordLogin(){if(authRequestInFlight)return;const email=document.getElementById('login-email').value.trim(),password=document.getElementById('login-password').value;if(!email||!password)return showError('auth-error','Enter your email and password.');authRequestInFlight=true;authButton('login-password-btn',true,'Signing inâ€¦');hideError('auth-error');try{const data=await apiCall('POST','/auth/login',{email,password});currentUser=data.user;afterLogin();}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('login-password-btn',false,'Sign In');}}
+async function handleLoginOtp(){if(authRequestInFlight)return;const email=document.getElementById('login-email').value.trim();if(!email)return showError('auth-error','Enter your email first.');authRequestInFlight=true;authButton('login-otp-link',true,'Sending OTPâ€¦');hideError('auth-error');try{const data=await apiCall('POST','/auth/request-otp',{email});showOtpForm('login',email,'',data.expires_in);}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('login-otp-link',false,'Sign in with OTP instead');}}
+async function handleRegister(){if(authRequestInFlight)return;const name=document.getElementById('reg-name').value.trim(),email=document.getElementById('reg-email').value.trim(),termsAccepted=document.getElementById('reg-terms').checked;if(!name||!email)return showError('auth-error','Please fill in all fields.');if(!termsAccepted)return showError('auth-error','Please agree to the Terms of Service and acknowledge the Privacy Policy before registering.');authRequestInFlight=true;authButton('register-send-btn',true,'Sending verification codeâ€¦');hideError('auth-error');try{const data=await apiCall('POST','/auth/register',{name,email,terms_accepted:true,terms_version:'2026-09-03'});showOtpForm('register',email,name,data.expires_in);}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('register-send-btn',false,'Verify Email & Register');}}
+async function handleVerifyOtp(){if(!otpMode||authRequestInFlight)return;const otp=document.getElementById('otp-code').value.trim();if(!/^\d{6}$/.test(otp))return showError('auth-error','Enter the 6-digit verification code');authRequestInFlight=true;authButton('verify-otp-btn',true,'Verifyingâ€¦');hideError('auth-error');try{const data=await apiCall('POST','/auth/verify-otp',{email:otpEmail,otp});resetOtpFlow();if(data.needs_password_setup){showPasswordSetupForm(data.message);return;}currentUser=data.user;afterLogin();}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('verify-otp-btn',false,'Verify');}}
+async function resendOtp(){if(!otpMode||authRequestInFlight||Date.now()<otpResendUntil)return;authRequestInFlight=true;authButton('resend-otp-btn',true,'Sendingâ€¦');hideError('auth-error');try{const path=otpMode==='register'?'/auth/register':'/auth/request-otp';const body=otpMode==='register'?{name:otpName,email:otpEmail}:{email:otpEmail};const data=await apiCall('POST',path,body);showSuccess('auth-success','A new verification code was sent.');startOtpCountdown(data.expires_in);}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;refreshOtpTimers();}}
+async function handleSetPassword(){if(authRequestInFlight)return;const password=document.getElementById('setup-password').value,confirmPassword=document.getElementById('setup-password-confirm').value;if(password.length<8)return showError('auth-error','Password must be at least 8 characters.');if(password!==confirmPassword)return showError('auth-error','Passwords do not match.');authRequestInFlight=true;authButton('password-setup-btn',true,'Savingâ€¦');hideError('auth-error');try{const data=await apiCall('POST','/auth/set-password',{password,confirm_password:confirmPassword});currentUser=data.user;history.replaceState({},document.title,window.location.pathname);afterLogin();}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('password-setup-btn',false,'Set Password');}}
 async function handlePasswordSetupLink(){const params=new URLSearchParams(window.location.search),token=params.get('password_setup');if(!token)return false;showPage('auth-page');document.getElementById('auth-tab-login').classList.remove('active');document.getElementById('auth-tab-register').classList.remove('active');document.getElementById('login-form').style.display='none';document.getElementById('register-form').style.display='none';document.getElementById('otp-form').style.display='none';document.getElementById('password-setup-form').style.display='none';hideError('auth-error');hideSuccess('auth-success');try{const data=await apiCall('POST','/auth/prepare-password-setup',{token});history.replaceState({},document.title,window.location.pathname);showPasswordSetupForm(`Hi ${data.name||'there'}. Create a password for your Mockify account.`);}catch(e){history.replaceState({},document.title,window.location.pathname);showError('auth-error',e.message);}return true;}
 async function handleGoogleResultQuery(){const params=new URLSearchParams(window.location.search);if(params.get('google')==='success'){history.replaceState({},document.title,window.location.pathname);try{const data=await apiCall('GET','/auth/me');currentUser=data.user;afterLogin();}catch(e){showPage('home-page');}return true;}if(params.get('google_error')){history.replaceState({},document.title,window.location.pathname);showPage('home-page');openAuth('login');showError('auth-error','Google sign-in could not be completed. Please try again.');return true;}return false;}
 async function handleLogout(){try{await apiCall('POST','/auth/logout');}catch(e){}currentUser=null;showPage('home-page');}
-function afterLogin(){loadDashboard();loadFeedbackHistory();showPage('dashboard-page');document.getElementById('admin-btn').style.display=currentUser.is_admin?'inline-flex':'none';document.getElementById('nav-avatar').textContent=currentUser.name.charAt(0).toUpperCase();document.getElementById('nav-username').textContent=currentUser.name;document.getElementById('nav-user-role').textContent=currentUser.is_admin?'Admin':'User';document.getElementById('nav-user-role').style.display='inline-flex';}
+function afterLogin(){loadDashboard();loadFeedbackHistory();showPage('dashboard-page');const isAdmin=Boolean(currentUser.is_admin||currentUser.is_super_admin);document.getElementById('admin-btn').style.display=isAdmin?'inline-flex':'none';document.getElementById('nav-avatar').textContent=currentUser.name.charAt(0).toUpperCase();document.getElementById('nav-username').textContent=currentUser.name;document.getElementById('nav-user-role').textContent=currentUser.is_super_admin?'Super Admin':isAdmin?'Admin':'User';document.getElementById('nav-user-role').style.display='inline-flex';}
 
-// ─── DASHBOARD ───
+// â”€â”€â”€ DASHBOARD â”€â”€â”€
 async function loadDashboard() {
   try {
     const data = await apiCall('GET', '/auth/me');
@@ -3020,6 +3644,8 @@ async function loadDashboard() {
     document.getElementById('limit-bar').style.width = pct + '%';
   } catch (e) {}
   refreshGenerateButton();
+  resetHistoryLibrary();
+  return;
 
   try {
     const hist = await apiCall('GET', '/results/history');
@@ -3027,7 +3653,7 @@ async function loadDashboard() {
     if (!hist.history.length) {
       list.innerHTML = '<div style="color:var(--text-dim);font-size:0.875rem;padding:16px;text-align:center">No results yet. Take your first mock!</div>';
       document.getElementById('total-mocks-stat').textContent = '0';
-      document.getElementById('best-score-stat').textContent = '—';
+      document.getElementById('best-score-stat').textContent = 'â€”';
       return;
     }
     document.getElementById('total-mocks-stat').textContent = hist.history.length;
@@ -3036,18 +3662,109 @@ async function loadDashboard() {
     list.innerHTML = hist.history.map(r => {
       const pct = r.percentage;
       const cls = pct >= 80 ? 'badge-green' : pct >= 50 ? 'badge-yellow' : 'badge-red';
-      return `<button class="history-item" type="button" onclick="openResultPage(${r.result_id})">
+    return `<div class="history-item"><button class="history-item-main" type="button" onclick="openResultPage(${r.result_id})">
         <div class="history-topic">${escapeHtml(r.topic)}</div>
         <div class="history-meta">
           <span>${formatDate(r.timestamp)}</span>
-          <span class="badge ${cls}">${r.score}/${r.total} · ${r.percentage}%</span>
+          <span class="badge ${cls}">${r.score}/${r.total} Â· ${r.percentage}%</span>
         </div>
       </button>`;
     }).join('');
   } catch (e) {}
 }
 
-// ─── FEEDBACK ───
+// â”€â”€â”€ FEEDBACK â”€â”€â”€
+const historyLibrary = { page: 1, score: 'all', query: '', topic: '', sort: 'recent', loaded: [] };
+let historySearchTimer;
+
+function historyQueryString() {
+  const params = new URLSearchParams({ page: historyLibrary.page, per_page: 12, score: historyLibrary.score, sort: historyLibrary.sort });
+  if (historyLibrary.query) params.set('q', historyLibrary.query);
+  if (historyLibrary.topic) params.set('topic', historyLibrary.topic);
+  return params.toString();
+}
+
+function renderHistoryItems(items, append = false) {
+  const list = document.getElementById('history-list');
+  if (!items.length && !append) {
+    list.innerHTML = '<div class="history-empty">No results match these filters.</div>';
+    return;
+  }
+  const html = items.map(r => {
+    const cls = r.percentage >= 80 ? 'badge-green' : r.percentage >= 50 ? 'badge-yellow' : 'badge-red';
+    return `<button class="history-item" type="button" onclick="openResultPage(${r.result_id})"><div class="history-topic">${escapeHtml(r.topic)}</div><div class="history-meta"><span>${formatDate(r.timestamp)}</span><span class="badge ${cls}">${r.score}/${r.total} Â· ${r.percentage}%</span></div></button>`;
+  }).join('');
+  if (append) list.insertAdjacentHTML('beforeend', html); else list.innerHTML = html;
+}
+
+function fillHistoryTopics(topics) {
+  const select = document.getElementById('history-topic-filter');
+  select.innerHTML = '<option value="">All topics</option>' + topics.map(topic => `<option value="${escapeHtml(topic)}">${escapeHtml(topic)}</option>`).join('');
+  select.value = historyLibrary.topic;
+}
+
+async function loadHistoryPage(append = false) {
+  const list = document.getElementById('history-list');
+  try {
+    if (!append) list.innerHTML = '<div class="history-empty">Loading resultsâ€¦</div>';
+    const hist = await apiCall('GET', `/results/history?${historyQueryString()}`);
+    if (!append) fillHistoryTopics(hist.topics || []);
+    historyLibrary.loaded = append ? historyLibrary.loaded.concat(hist.history) : hist.history;
+    renderHistoryItems(hist.history, append);
+    document.getElementById('history-count').textContent = hist.total ? `${hist.total} result${hist.total === 1 ? '' : 's'} found` : '';
+    document.getElementById('history-load-more').style.display = hist.has_more ? 'block' : 'none';
+    if (!append) {
+      document.getElementById('total-mocks-stat').textContent = hist.total;
+      document.getElementById('best-score-stat').textContent = hist.best_score ?? 'â€”';
+    }
+  } catch (e) {
+    if (!append) list.innerHTML = '<div class="history-empty">Past results are temporarily unavailable.</div>';
+  }
+}
+
+function resetHistoryLibrary() { historyLibrary.page = 1; loadHistoryPage(false); }
+
+function deleteOwnResult(resultId) {
+  openModal('Delete result', 'Remove this result from your history? This cannot be undone.', async () => {
+    try {
+      await apiCall('DELETE', `/results/${resultId}`);
+      toast('Result removed from your history.', 'success');
+      resetHistoryLibrary();
+    } catch (e) { toast(e.message, 'error'); }
+  });
+}
+
+// Override the compact renderer so each history entry has a separate,
+// keyboard-accessible result link and deletion control.
+function renderHistoryItems(items, append = false) {
+  const list = document.getElementById('history-list');
+  if (!items.length && !append) {
+    list.innerHTML = '<div class="history-empty">No results match these filters.</div>';
+    return;
+  }
+  const html = items.map(r => {
+    const cls = r.percentage >= 80 ? 'badge-green' : r.percentage >= 50 ? 'badge-yellow' : 'badge-red';
+    return `<div class="history-item"><button class="history-item-main" type="button" onclick="openResultPage(${r.result_id})"><div class="history-topic">${escapeHtml(r.topic)}</div><div class="history-meta"><span>${formatDate(r.timestamp)}</span><span class="badge ${cls}">${r.score}/${r.total} Â· ${r.percentage}%</span></div></button><div class="history-actions"><button class="btn btn-secondary btn-sm" type="button" onclick="deleteOwnResult(${r.result_id})">Delete</button></div></div>`;
+  }).join('');
+  if (append) list.insertAdjacentHTML('beforeend', html); else list.innerHTML = html;
+}
+
+function initializeHistoryLibrary() {
+  const search = document.getElementById('history-search');
+  search.addEventListener('input', () => {
+    clearTimeout(historySearchTimer);
+    historySearchTimer = setTimeout(() => { historyLibrary.query = search.value.trim(); resetHistoryLibrary(); }, 250);
+  });
+  document.getElementById('history-topic-filter').addEventListener('change', event => { historyLibrary.topic = event.target.value; resetHistoryLibrary(); });
+  document.getElementById('history-sort').addEventListener('change', event => { historyLibrary.sort = event.target.value; resetHistoryLibrary(); });
+  document.querySelectorAll('[data-score-filter]').forEach(button => button.addEventListener('click', () => {
+    historyLibrary.score = button.dataset.scoreFilter;
+    document.querySelectorAll('[data-score-filter]').forEach(item => item.classList.toggle('active', item === button));
+    resetHistoryLibrary();
+  }));
+  document.getElementById('history-load-more').addEventListener('click', () => { historyLibrary.page += 1; loadHistoryPage(true); });
+}
+
 const FEEDBACK_MAX_CHARS = 2000;
 const FEEDBACK_MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 
@@ -3073,7 +3790,7 @@ function renderFeedbackHistory(items) {
   list.innerHTML = items.map(item => `<div class="feedback-history-item">
     <div class="feedback-history-head">
       <span>${escapeHtml(item.category_label)}</span>
-      <span style="color:var(--text-dim)">${escapeHtml(formatDate(item.created_at))} · ${escapeHtml(item.status)}</span>
+      <span style="color:var(--text-dim)">${escapeHtml(formatDate(item.created_at))} Â· ${escapeHtml(item.status)}</span>
     </div>
     <div class="feedback-history-msg">${escapeHtml(item.message)}</div>
   </div>`).join('');
@@ -3138,7 +3855,7 @@ async function submitFeedback(event) {
   }
 
   button.disabled = true;
-  button.textContent = 'Sending…';
+  button.textContent = 'Sendingâ€¦';
 
   try {
     const formData = new FormData();
@@ -3163,7 +3880,7 @@ async function submitFeedback(event) {
     messageEl.value = '';
     imageEl.value = '';
     updateFeedbackCount();
-    feedbackShowSuccess('Thanks — your feedback was sent to the Mockify team.');
+    feedbackShowSuccess('Thanks â€” your feedback was sent to the Mockify team.');
     await loadFeedbackHistory();
   } catch (e) {
     feedbackShowError(e.message);
@@ -3177,6 +3894,37 @@ async function submitFeedback(event) {
 function setTopic(t) {
   document.getElementById('topic-input').value = t;
   hideError('gen-error');
+}
+
+let selectedLanguage = 'English';
+
+function setLanguage(language) {
+  const allowed = ['English', 'Hindi', 'Marathi'];
+  if (!allowed.includes(language)) return;
+
+  selectedLanguage = language;
+
+  document.querySelectorAll('.language-option').forEach(button => {
+    const active = button.dataset.language === language;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', active ? 'true' : 'false');
+  });
+
+  const help = document.getElementById('language-help');
+  if (help) {
+    const labels = {
+      English: 'Questions, options, and explanations will be generated in English.',
+      Hindi: 'Questions, options, and explanations will be generated in Hindi.',
+      Marathi: 'Questions, options, and explanations will be generated in Marathi.'
+    };
+    help.textContent = labels[language];
+  }
+
+  hideError('gen-error');
+}
+
+function getSelectedLanguage() {
+  return selectedLanguage;
 }
 
 function getSelectedDuration() {
@@ -3193,6 +3941,7 @@ async function handleGenerate() {
 
   const topic = document.getElementById('topic-input').value.trim();
   const timerMinutes = getSelectedDuration();
+  const language = getSelectedLanguage();
 
   if (!topic) {
     return showError('gen-error', 'Please enter a topic to generate questions');
@@ -3215,13 +3964,52 @@ async function handleGenerate() {
 
   generateInFlight = true;
   refreshGenerateButton();
-  showLoading('Building your mock...', `Preparing focused questions for “${topic.substring(0, 60)}”`);
+  showLoading('Building your mock...', `Preparing a fresh ${language} question set for â€œ${topic.substring(0, 60)}â€`);
 
   try {
-    const data = await apiCall('POST', '/mock/generate', {
+    const requestBody = {
       topic,
+      language,
       timer_minutes: timerMinutes
-    });
+    };
+
+    let data = null;
+    let lastError = null;
+    const autoRetryCount = language === 'English' ? 0 : 2;
+
+    for (let attempt = 0; attempt <= autoRetryCount; attempt += 1) {
+      try {
+        data = await apiCall('POST', '/mock/generate', requestBody);
+        break;
+      } catch (error) {
+        lastError = error;
+
+        const message = String(error && error.message ? error.message : '');
+        const shouldRetry =
+          language !== 'English' &&
+          (
+            /fresh multilingual mock/i.test(message) ||
+            /could not create this mock/i.test(message) ||
+            /temporarily unavailable/i.test(message) ||
+            /status[=: ]+50[23]/i.test(message)
+          );
+
+        if (!shouldRetry || attempt >= autoRetryCount) {
+          throw error;
+        }
+
+        showLoading(
+          'Still preparing your mock...',
+          `Generating a fresh ${language} question set for â€œ${topic.substring(0, 60)}â€`
+        );
+
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    }
+
+    if (!data) {
+      throw lastError || new Error('Mock generation failed.');
+    }
 
     examQuestions = data.questions;
     examMockId = data.mock_id;
@@ -3247,15 +4035,23 @@ async function handleGenerate() {
   } catch (e) {
     const retryAfter = parseCooldownSeconds(e.message);
     if (retryAfter > 0) startGenerateCooldown(retryAfter);
-    showError('gen-error', 'We could not create this mock right now. Check your connection and try again; your topic is still here.');
+
+    const errorText = String(e && e.message ? e.message : '');
+    const finalMessage =
+      language !== 'English' &&
+      (/fresh multilingual mock/i.test(errorText) || /temporarily unavailable/i.test(errorText))
+        ? `Weâ€™re having trouble generating your ${language} mock right now. Your topic is still here â€” please try again in a moment.`
+        : 'We could not create this mock right now. Check your connection and try again; your topic is still here.';
+
+    showError('gen-error', finalMessage);
   } finally {
     generateInFlight = false;
-    hideLoading();
+    if (!navigatingToExam) hideLoading();
     refreshGenerateButton();
   }
 }
 
-// ─── EXAM ───
+// â”€â”€â”€ EXAM â”€â”€â”€
 function loadExam(data) {
   examQuestions = data.questions || [];
   examMockId = data.mock_id;
@@ -3296,7 +4092,7 @@ function renderQuestion(idx) {
       onclick="selectAnswer(${idx}, '${key}')">
       <span class="option-key">${key}</span>
       <span>${escapeHtml(q.options[key])}</span>
-    </button>`;
+    </button><div class="history-actions"><button class="btn btn-secondary btn-sm" type="button" onclick="deleteOwnResult(${r.result_id})">Delete</button></div></div>`;
   }).join('');
 
   document.querySelectorAll('.q-nav-btn').forEach((b, i) => {
@@ -3368,7 +4164,7 @@ async function submitExam() {
   examSubmitInFlight = true;
   clearInterval(timerInterval);
   const timeTaken = Math.round((Date.now() - examStartTime) / 1000);
-  showLoading('Evaluating answers…', 'Calculating your score');
+  showLoading('Evaluating answersâ€¦', 'Calculating your score');
 
   try {
     const data = await apiCall('POST', '/results/submit', {
@@ -3385,14 +4181,14 @@ async function submitExam() {
   }
 }
 
-// ─── RESULTS ───
+// â”€â”€â”€ RESULTS â”€â”€â”€
 function renderResults(data) {
   const pct = data.percentage;
   const gradeEl = document.getElementById('result-grade');
   gradeEl.textContent = `${data.score}/${data.total}`;
   gradeEl.className = 'score-grade ' + (pct >= 80 ? 'excellent' : pct >= 60 ? 'good' : pct >= 40 ? 'average' : 'poor');
 
-  const labels = { excellent: '🏆 Outstanding!', good: '⭐ Great job!', average: '💪 Keep practicing', poor: '📖 Study more' };
+  const labels = { excellent: 'ðŸ† Outstanding!', good: 'â­ Great job!', average: 'ðŸ’ª Keep practicing', poor: 'ðŸ“– Study more' };
   document.getElementById('result-label').textContent = pct >= 80 ? labels.excellent : pct >= 60 ? labels.good : pct >= 40 ? labels.average : labels.poor;
   document.getElementById('result-topic-label').textContent = `Topic: ${data.topic}`;
   document.getElementById('res-correct').textContent = data.correct_answers;
@@ -3410,8 +4206,8 @@ function renderResults(data) {
       return `<div class="review-opt ${optCls}">
         <span class="review-opt-key">${k}</span>
         <span>${escapeHtml(q.options[k])}</span>
-        ${k === q.correct_answer ? ' ✓' : ''}
-        ${k === q.user_answer && !q.is_correct ? ' ✗' : ''}
+        ${k === q.correct_answer ? ' âœ“' : ''}
+        ${k === q.user_answer && !q.is_correct ? ' âœ—' : ''}
       </div>`;
     }).join('');
     return `<div class="review-card ${cls}">
@@ -3424,7 +4220,7 @@ function renderResults(data) {
   }).join('');
 }
 
-// ─── ADMIN ───
+// â”€â”€â”€ ADMIN â”€â”€â”€
 async function loadAdmin() {
   try {
     const stats = await apiCall('GET', '/admin/stats');
@@ -3442,19 +4238,20 @@ async function loadAdminUsers() {
     const data = await apiCall('GET', '/admin/users');
     const tbody = document.getElementById('users-table-body');
     if (!data.users.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-dim)">No users</td></tr>'; return; }
+    const canManageUsers = Boolean(currentUser && currentUser.is_super_admin);
     tbody.innerHTML = data.users.map(u => `<tr>
       <td>${escapeHtml(u.name)}</td>
       <td style="color:var(--text-dim)">${escapeHtml(u.email)}</td>
       <td><span class="badge badge-purple">${u.mocks_taken_today}/${u.daily_mock_limit}</span></td>
-      <td>
+      <td>${canManageUsers ? `
         <input class="limit-input" type="number" min="0" max="99" value="${u.daily_mock_limit}" id="limit-${u.id}">
         <button type="button" class="btn btn-secondary btn-sm" style="margin-left:6px" onclick="updateLimit(${u.id})">Set</button>
-      </td>
+      ` : `<span class="badge badge-purple">${u.daily_mock_limit}</span>`}</td>
       <td>${u.password_set ? 'Set' : 'Not set'}</td>
       <td style="color:var(--text-dim)">${formatDate(u.created_at)}</td>
-      <td>
+      <td>${canManageUsers ? `
         <button type="button" class="btn btn-danger btn-sm" onclick="deleteUser(${u.id},'${escapeHtml(u.name)}')">Delete</button>
-      </td>
+      ` : 'View only'}</td>
     </tr>`).join('');
   } catch (e) { toast(e.message, 'error'); }
 }
@@ -3477,7 +4274,7 @@ async function loadAdminResults() {
   try {
     const data = await apiCall('GET', '/admin/results');
     const tbody = document.getElementById('results-table-body');
-    if (!data.results.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-dim)">No results yet</td></tr>'; return; }
+    if (!data.results.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-dim)">No results yet</td></tr>'; return; }
     tbody.innerHTML = data.results.map(r => {
       const cls = r.percentage >= 80 ? 'badge-green' : r.percentage >= 50 ? 'badge-yellow' : 'badge-red';
       return `<tr>
@@ -3486,9 +4283,21 @@ async function loadAdminResults() {
         <td><span class="badge ${cls}">${r.score}/${r.total}</span></td>
         <td>${r.percentage}%</td>
         <td style="color:var(--text-dim)">${formatDate(r.timestamp)}</td>
+        <td><button type="button" class="btn btn-danger btn-sm" onclick="deleteAdminResult(${r.id})">Delete</button></td>
       </tr>`;
     }).join('');
   } catch (e) {}
+}
+
+function deleteAdminResult(resultId) {
+  openModal('Delete result', 'Remove this result from the platform history? The user account and mock will remain.', async () => {
+    try {
+      await apiCall('DELETE', `/admin/results/${resultId}`);
+      toast('Result deleted.', 'success');
+      loadAdminResults();
+      loadAdmin();
+    } catch (e) { toast(e.message, 'error'); }
+  });
 }
 
 async function updateLimit(userId) {
@@ -3530,24 +4339,84 @@ window.showPage = function(id) {
   if (id === 'admin-page') loadAdmin();
 };
 
-// ─── INIT ───
+// Refresh dashboard data when the browser restores this page from
+// the mobile back/forward cache. This keeps the daily limit and history
+// synchronized with the server after returning from a completed exam.
+window.addEventListener('pageshow', (event) => {
+  if (!event.persisted) return;
+
+  const dashboard = document.getElementById('dashboard-page');
+  if (!dashboard || !dashboard.classList.contains('active')) return;
+
+  loadDashboard();
+  loadFeedbackHistory();
+});
+
+// â”€â”€â”€ INIT â”€â”€â”€
+
+initializeHistoryLibrary();
+
 (async () => {
-  if (await handlePasswordSetupLink()) return;
-  if (await handleGoogleResultQuery()) return;
+  if (await handlePasswordSetupLink()) {
+    hideBootOverlay();
+    return;
+  }
+
+  if (await handleGoogleResultQuery()) {
+    hideBootOverlay();
+    return;
+  }
+
   try {
     const data = await apiCall('GET', '/auth/me');
     currentUser = data.user;
     afterLogin();
-  } catch (e) { showPage('home-page'); }
+  } catch (e) {
+    currentUser = null;
+    showPage('home-page');
+  } finally {
+    hideBootOverlay();
+  }
 })();
 
 // Enter key on login
 document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') handlePasswordLogin(); });
 document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') handlePasswordLogin(); });
 document.getElementById('reg-email').addEventListener('keydown', e => { if (e.key === 'Enter') handleRegister(); });
+document.getElementById('reg-terms').addEventListener('change', () => hideError('auth-error'));
 document.getElementById('otp-code').addEventListener('keydown', e => { if (e.key === 'Enter') handleVerifyOtp(); });
 document.getElementById('setup-password-confirm').addEventListener('keydown', e => { if (e.key === 'Enter') handleSetPassword(); });
 </script>
 <script src="/public_stats.js"></script>
+
+<script>
+(function () {
+  function getTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  }
+
+  function updateThemeUI() {
+    const light = getTheme() === 'light';
+    document.querySelectorAll('.theme-toggle').forEach(function (button) {
+      button.setAttribute('aria-pressed', String(light));
+      button.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+      button.setAttribute('title', light ? 'Switch to dark mode' : 'Switch to light mode');
+    });
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', light ? '#f5f3ee' : '#0a0a0f');
+  }
+
+  window.toggleMockifyTheme = function () {
+    const next = getTheme() === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('mockify-theme', next); } catch (e) {}
+    updateThemeUI();
+  };
+
+  window.updateMockifyThemeUI = updateThemeUI;
+  updateThemeUI();
+})();
+</script>
+
 </body>
 </html>

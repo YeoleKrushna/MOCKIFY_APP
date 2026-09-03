@@ -14,7 +14,7 @@ python app.py
 
 Without `DATABASE_URL`, development uses `mockify.db` next to `app.py`. Do not use SQLite on Render: its filesystem is ephemeral.
 
-Required production variables are `SECRET_KEY`, `DATABASE_URL`, `BREVO_API_KEY`, `MAIL_FROM`, `MAIL_FROM_NAME`, `GROQ_API_KEY`, and `GROQ_MODEL`. Set `ENVIRONMENT=production`, `SESSION_COOKIE_SECURE=true`, `SESSION_COOKIE_SAMESITE=Lax`, `TRUST_PROXY_HEADERS=true`, and `CORS_ORIGINS=https://mockify.tech` in Render. See `.env.example` for optional tuning variables. Never commit `.env` or database files.
+Required production variables are `SECRET_KEY`, `DATABASE_URL`, `BREVO_API_KEY`, `MAIL_FROM`, `MAIL_FROM_NAME`, `GROQ_API_KEY_1`, `GROQ_MODEL`, and `SARVAM_API_KEY1`. Add further `GROQ_API_KEY_2` … `GROQ_API_KEY_5` and `SARVAM_API_KEY2` … `SARVAM_API_KEY5` only when you want key failover. Google sign-in additionally requires `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `GOOGLE_REDIRECT_URI`. Set `ENVIRONMENT=production`, `SESSION_COOKIE_SECURE=true`, `SESSION_COOKIE_SAMESITE=Lax`, `TRUST_PROXY_HEADERS=true`, and `CORS_ORIGINS=https://mockify.tech` in Render. See `.env.example` for optional tuning variables. Never commit `.env` or database files.
 
 ## PostgreSQL migration
 

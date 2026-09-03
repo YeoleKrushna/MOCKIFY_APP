@@ -99,6 +99,7 @@ class Mock(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     topic = db.Column(db.String(500), nullable=False)
+    language = db.Column(db.String(20), nullable=False, default="English")
     questions = db.Column(db.Text, nullable=False)
     timer_minutes = db.Column(db.Integer, nullable=False, default=15)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False, index=True)
@@ -156,7 +157,10 @@ def _column_additions():
             "event_type": "VARCHAR(50) NOT NULL DEFAULT 'verification'",
             "ip_address": "VARCHAR(64)",
         },
-        "mocks": {"timer_minutes": "INTEGER NOT NULL DEFAULT 15"},
+        "mocks": {
+            "language": "VARCHAR(20) NOT NULL DEFAULT 'English'",
+            "timer_minutes": "INTEGER NOT NULL DEFAULT 15",
+        },
         "results": {"explanations": "TEXT NOT NULL DEFAULT '{}'"},
     }
 

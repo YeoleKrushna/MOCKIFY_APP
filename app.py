@@ -120,6 +120,16 @@ def serve_super_admin():
     return static_file("super_admin.html", cache_control="no-store, private")
 
 
+@app.route("/privacy.html")
+def serve_privacy():
+    return static_file("privacy.html", cache_control="no-store, private")
+
+
+@app.route("/terms.html")
+def serve_terms():
+    return static_file("terms.html", cache_control="no-store, private")
+
+
 @app.route("/public_stats.js")
 def serve_public_stats():
     return static_file("public_stats.js", mimetype="application/javascript", cache_control="public, max-age=3600")

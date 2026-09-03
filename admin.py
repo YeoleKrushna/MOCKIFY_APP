@@ -49,7 +49,7 @@ def user_metrics(user):
 
 
 @admin_bp.route("/users")
-@super_admin_required
+@admin_required
 def list_users():
     users = User.query.filter_by(is_admin=False).order_by(User.created_at.desc()).all()
     return jsonify({"users": [user_metrics(user) for user in users]}), 200
@@ -89,6 +89,19 @@ def delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
     return jsonify({"message": "User and related data deleted"}), 200
+
+
+@admin_bp.route("/results/<int:result_id>", methods=["DELETE"])
+@admin_required
+def delete_result(result_id):
+    """Remove one result entry without deleting the user's account or mock."""
+    result = db.session.get(Result, result_id)
+    if not result:
+        return jsonify({"error": "Result not found"}), 404
+
+    db.session.delete(result)
+    db.session.commit()
+    return jsonify({"message": "Result deleted"}), 200
 
 
 @admin_bp.route("/mocks")

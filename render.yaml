@@ -27,7 +27,31 @@ services:
         sync: false
       - key: MAIL_FROM_NAME
         sync: false
-      - key: GROQ_API_KEY
+      - key: GROQ_API_KEY_1
+        sync: false
+      - key: GROQ_API_KEY_2
+        sync: false
+      - key: GROQ_API_KEY_3
+        sync: false
+      - key: GROQ_API_KEY_4
+        sync: false
+      - key: GROQ_API_KEY_5
+        sync: false
+      - key: SARVAM_API_KEY1
+        sync: false
+      - key: SARVAM_API_KEY2
+        sync: false
+      - key: SARVAM_API_KEY3
+        sync: false
+      - key: SARVAM_API_KEY4
+        sync: false
+      - key: SARVAM_API_KEY5
         sync: false
       - key: GROQ_MODEL
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
         sync: false

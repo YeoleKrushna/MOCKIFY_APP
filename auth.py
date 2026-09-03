@@ -36,6 +36,7 @@ REGISTRATION_PASSWORD_SETUP_TTL_MINUTES = 30
 PASSWORD_LOGIN_MAX_FAILURES = 10
 PASSWORD_LOGIN_WINDOW_MINUTES = 15
 GOOGLE_STATE_TTL_MINUTES = 10
+TERMS_VERSION = "2026-09-03"
 
 _ip_request_times = {}
 _password_login_failures = {}
@@ -523,6 +524,21 @@ def set_password():
 @auth_bp.route("/google/start", methods=["GET"])
 def google_start():
     if not google_configured(): return redirect("/?google_error=not_configured")
+
+    # The register tab requires explicit Terms/Privacy consent before
+    # starting Google OAuth. Login mode remains unchanged.
+    google_mode = (request.args.get("mode") or "login").strip().lower()
+    terms_accepted = (request.args.get("terms_accepted") or "").strip().lower() == "true"
+    terms_version = (request.args.get("terms_version") or "").strip()
+
+    if google_mode not in {"login", "register"}:
+        google_mode = "login"
+
+    if google_mode == "register" and (
+        not terms_accepted or terms_version != TERMS_VERSION
+    ):
+        return redirect("/?google_error=terms_required")
+
     state = secrets.token_urlsafe(32)
     verifier = secrets.token_urlsafe(64)
     nonce = secrets.token_urlsafe(32)
@@ -533,6 +549,14 @@ def google_start():
     session["google_oauth_state_expires_at"] = int(time.time()) + GOOGLE_STATE_TTL_MINUTES * 60
     session["google_oauth_code_verifier"] = verifier
     session["google_oauth_nonce"] = nonce
+    session["google_oauth_mode"] = google_mode
+    session["google_oauth_terms_accepted"] = (
+        google_mode == "register" and terms_accepted
+    )
+    session["google_oauth_terms_version"] = (
+        terms_version if google_mode == "register" else None
+    )
+
     params = {
         "client_id": os.environ["GOOGLE_CLIENT_ID"].strip(),
         "redirect_uri": google_redirect_uri(),
@@ -558,6 +582,9 @@ def google_callback():
     expires = session.get("google_oauth_state_expires_at", 0)
     verifier = session.get("google_oauth_code_verifier")
     nonce = session.get("google_oauth_nonce")
+    google_mode = session.get("google_oauth_mode", "login")
+    google_terms_accepted = bool(session.get("google_oauth_terms_accepted"))
+    google_terms_version = session.get("google_oauth_terms_version")
     if (
         not code
         or not state
@@ -629,9 +656,27 @@ def google_callback():
     if not google_sub or not verified or not valid_email(email):
         session.clear()
         return redirect("/?google_error=unsupported_account")
-    user=User.query.filter_by(google_sub=google_sub).first()
+
+    # A new Google account may only be created from the registration flow
+    # after the user explicitly accepted the current Terms/Privacy version.
+    user = User.query.filter_by(google_sub=google_sub).first()
+    existing_by_email = User.query.filter_by(email=email).first()
+
+    if (
+        user is None
+        and existing_by_email is None
+        and (
+            google_mode != "register"
+            or not google_terms_accepted
+            or google_terms_version != TERMS_VERSION
+        )
+    ):
+        session.clear()
+        return redirect("/?google_error=terms_required")
+
+    if user is None and existing_by_email is not None:
+        user = existing_by_email
     if user and user.email!=email: session.clear(); return redirect("/?google_error=account_mismatch")
-    if not user: user=User.query.filter_by(email=email).first()
     if user:
         if user.google_sub and user.google_sub!=google_sub: session.clear(); return redirect("/?google_error=account_mismatch")
         user.google_sub=google_sub; user.auth_provider="mixed" if user.password_set else "google"; user.email_verified=True
@@ -645,6 +690,9 @@ def google_callback():
         "google_oauth_state_expires_at",
         "google_oauth_code_verifier",
         "google_oauth_nonce",
+        "google_oauth_mode",
+        "google_oauth_terms_accepted",
+        "google_oauth_terms_version",
     ):
         session.pop(key, None)
     db.session.flush()

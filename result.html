@@ -3,6 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark light">
+<script>
+(function () {
+  try {
+    const saved = localStorage.getItem('mockify-theme');
+    document.documentElement.setAttribute('data-theme', saved === 'light' ? 'light' : 'dark');
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+})();
+</script>
   <meta name="theme-color" content="#0a0a0f">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <link rel="canonical" href="https://mockify.tech/result.html">
@@ -305,6 +316,458 @@
       .result-body { padding: 24px 16px 32px; }
       .navbar { padding: 14px 16px; }
     }
+
+
+    /* â”€â”€â”€ RESULT LIGHT-MODE VISUAL HIERARCHY â”€â”€â”€ */
+    html[data-theme="light"] .result-body {
+      color: var(--text);
+    }
+
+    html[data-theme="light"] .score-hero {
+      background: linear-gradient(180deg, #fffefa 0%, #fbf8f2 100%);
+      border-color: #d5d0c5;
+      box-shadow:
+        0 18px 42px rgba(33, 31, 25, .09),
+        0 2px 6px rgba(33, 31, 25, .04);
+    }
+
+    html[data-theme="light"] .score-hero::after {
+      content: '';
+      position: absolute;
+      left: 18%;
+      right: 18%;
+      bottom: 0;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(85,72,217,.26),
+        transparent
+      );
+    }
+
+    html[data-theme="light"] .score-stats {
+      margin-top: 30px;
+      gap: 10px;
+    }
+
+    html[data-theme="light"] .score-stat {
+      min-width: 104px;
+      padding: 14px 12px;
+      border: 1px solid #d8d3ca;
+      border-radius: 12px;
+      background: rgba(246, 243, 237, .82);
+      box-shadow: 0 3px 10px rgba(33, 31, 25, .035);
+    }
+
+    html[data-theme="light"] .score-stat-lbl {
+      color: #6a6d79;
+    }
+
+    html[data-theme="light"] .section-title {
+      margin-top: 34px;
+      margin-bottom: 18px;
+      color: #191a22;
+      letter-spacing: -.01em;
+    }
+
+    html[data-theme="light"] .review-card {
+      background: #fffdf9;
+      border-color: #d5d0c7;
+      box-shadow:
+        0 10px 26px rgba(33, 31, 25, .06),
+        0 1px 3px rgba(33, 31, 25, .04);
+    }
+
+    html[data-theme="light"] .review-card.correct {
+      border-left-color: #188653;
+      background: linear-gradient(180deg, #fffdf9 0%, #fbfdf9 100%);
+    }
+
+    html[data-theme="light"] .review-card.incorrect {
+      border-left-color: #c83b55;
+      background: linear-gradient(180deg, #fffdf9 0%, #fffafa 100%);
+    }
+
+    html[data-theme="light"] .review-card.unanswered {
+      border-left-color: #878b97;
+    }
+
+    html[data-theme="light"] .review-q-num {
+      background: #efebe4;
+      border: 1px solid #d6d1c7;
+      color: #4d5060;
+    }
+
+    html[data-theme="light"] .review-q-text {
+      color: #20212a;
+    }
+
+    html[data-theme="light"] .review-options {
+      gap: 8px;
+    }
+
+    html[data-theme="light"] .review-opt {
+      background: #f5f2ec;
+      border-color: #d8d3c9;
+      color: #2e3039;
+      box-shadow: 0 1px 3px rgba(33, 31, 25, .025);
+    }
+
+    html[data-theme="light"] .review-opt.is-correct {
+      background: #edf8f1;
+      border-color: rgba(24,134,83,.34);
+      color: #126b43;
+    }
+
+    html[data-theme="light"] .review-opt.is-wrong {
+      background: #fff0f2;
+      border-color: rgba(200,59,85,.30);
+      color: #a52e47;
+    }
+
+    html[data-theme="light"] .review-opt-key {
+      background: #e9e5de;
+      color: #575a67;
+    }
+
+    html[data-theme="light"] .review-opt.is-correct .review-opt-key {
+      background: #d7f0e1;
+      color: #126b43;
+    }
+
+    html[data-theme="light"] .review-opt.is-wrong .review-opt-key {
+      background: #f9dce2;
+      color: #a52e47;
+    }
+
+    html[data-theme="light"] .explanation-box {
+      background: #f2effa;
+      border-color: rgba(85,72,217,.19);
+      box-shadow: 0 4px 14px rgba(85,72,217,.045);
+    }
+
+    html[data-theme="light"] .explanation-title {
+      color: #4c42bd;
+    }
+
+    html[data-theme="light"] .explanation-text {
+      color: #292b35;
+    }
+
+    html[data-theme="light"] .your-answer-line {
+      color: #6b6e7b;
+    }
+
+    html[data-theme="light"] .result-actions .btn-secondary {
+      background: #fffdf9;
+      border-color: #c9c5bb;
+      color: #3f424d;
+    }
+
+    html[data-theme="light"] .result-actions .btn-primary {
+      background: linear-gradient(135deg, #5548d9, #6c5ee8);
+      border-color: #5548d9;
+      box-shadow: 0 8px 20px rgba(85,72,217,.20);
+    }
+
+    html[data-theme="light"] .result-actions .btn-primary:hover {
+      background: linear-gradient(135deg, #493dca, #5d50d8);
+    }
+
+    /* Result-page rich/code rendering */
+    .review-q-text .code-block,
+    .explanation-text .code-block {
+      display: block;
+      margin: 14px 0;
+      padding: 14px 16px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #101016;
+      color: #f3f3f7;
+      font-family: 'DM Mono', monospace;
+      font-size: .84rem;
+      line-height: 1.6;
+      white-space: pre;
+      tab-size: 2;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .review-q-text .code-block code,
+    .explanation-text .code-block code {
+      font-family: inherit;
+      white-space: inherit;
+    }
+
+    .review-q-text .inline-code,
+    .explanation-text .inline-code {
+      padding: .1em .35em;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--surface2);
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+      font-size: .92em;
+    }
+
+    html[data-theme="light"] .review-q-text .code-block,
+    html[data-theme="light"] .explanation-text .code-block {
+      background: #1e2028;
+      border-color: #323541;
+      color: #f6f7fb;
+    }
+
+    html[data-theme="light"] .review-q-text .inline-code,
+    html[data-theme="light"] .explanation-text .inline-code {
+      background: #eeeae3;
+      border-color: #d2cdc2;
+      color: #4c42bd;
+    }
+
+    /* â”€â”€â”€ MOCKIFY THEME TOGGLE + LIGHT THEME â”€â”€â”€ */
+    .theme-toggle {
+      width: 38px;
+      height: 38px;
+      min-width: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: var(--surface2);
+      color: var(--text);
+      cursor: pointer;
+      line-height: 1;
+      position: relative;
+      isolation: isolate;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease;
+    }
+    .theme-toggle:hover {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .theme-toggle:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .theme-toggle .theme-icon {
+      width: 17px;
+      height: 17px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: block; }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f3ee;
+      --surface: #fffdf9;
+      --surface2: #eeece6;
+      --border: #d7d3ca;
+      --accent: #5548d9;
+      --accent2: #c25f78;
+      --accent3: #188653;
+      --text: #1b1b24;
+      --text-dim: #5f6270;
+      --text-faint: #7d808d;
+      --danger: #c83b55;
+      --warn: #9b6700;
+      --success: #188653;
+      --shadow: 0 12px 34px rgba(33, 31, 25, 0.08);
+      --glow: 0 0 44px rgba(85, 72, 217, 0.08);
+    }
+
+    html[data-theme="light"] body {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    html[data-theme="light"] body::before {
+      background-image:
+        linear-gradient(rgba(85,72,217,0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(85,72,217,0.055) 1px, transparent 1px);
+    }
+
+    html[data-theme="light"] .hero-glow {
+      background: radial-gradient(ellipse at center, rgba(85,72,217,0.13) 0%, rgba(194,95,120,0.055) 42%, transparent 72%);
+    }
+
+    html[data-theme="light"] .btn-primary {
+      background: #5548d9;
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(85,72,217,0.22);
+    }
+    html[data-theme="light"] .btn-primary:hover {
+      background: #493dca;
+      box-shadow: 0 10px 28px rgba(85,72,217,0.27);
+    }
+    html[data-theme="light"] .btn-secondary {
+      background: rgba(255,253,249,0.72);
+      border-color: var(--border);
+      color: var(--text);
+      box-shadow: 0 2px 10px rgba(33,31,25,0.03);
+    }
+    html[data-theme="light"] .btn-secondary:hover {
+      background: #fffdf9;
+      border-color: rgba(85,72,217,0.45);
+      color: var(--accent);
+    }
+
+    html[data-theme="light"] .site-nav.scrolled {
+      background: rgba(255,253,249,0.86);
+      border-bottom-color: rgba(215,211,202,0.9);
+      box-shadow: 0 6px 24px rgba(33,31,25,0.04);
+    }
+    html[data-theme="light"] .site-nav-links a:hover {
+      color: var(--text);
+      background: rgba(85,72,217,0.06);
+    }
+    html[data-theme="light"] .mobile-nav {
+      background: rgba(245,243,238,0.98);
+    }
+    html[data-theme="light"] .mobile-nav-links a {
+      border-bottom-color: var(--border);
+    }
+
+    html[data-theme="light"] .navbar {
+      background: rgba(255,253,249,0.9);
+      border-bottom-color: rgba(215,211,202,0.9);
+      box-shadow: 0 6px 24px rgba(33,31,25,0.045);
+    }
+    html[data-theme="light"] .nav-pill {
+      background: rgba(85,72,217,0.08);
+      border-color: rgba(85,72,217,0.2);
+      color: var(--accent);
+    }
+    html[data-theme="light"] .theme-toggle {
+      background: #fffdf9;
+      box-shadow: 0 3px 12px rgba(33,31,25,0.06);
+    }
+    html[data-theme="light"] .theme-toggle .icon-sun { display: block; }
+    html[data-theme="light"] .theme-toggle .icon-moon { display: none; }
+
+    html[data-theme="light"] .auth-card,
+    html[data-theme="light"] .generate-card,
+    html[data-theme="light"] .feedback-card,
+    html[data-theme="light"] .stat-box,
+    html[data-theme="light"] .table-wrap,
+    html[data-theme="light"] .score-hero,
+    html[data-theme="light"] .review-card,
+    html[data-theme="light"] .nav-panel,
+    html[data-theme="light"] .question-area {
+      background: var(--surface);
+      border-color: var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    html[data-theme="light"] .tab-switcher,
+    html[data-theme="light"] .form-group input,
+    html[data-theme="light"] .topic-input,
+    html[data-theme="light"] .duration-select,
+    html[data-theme="light"] .feedback-select,
+    html[data-theme="light"] .feedback-textarea,
+    html[data-theme="light"] .q-nav-btn,
+    html[data-theme="light"] .option-key,
+    html[data-theme="light"] .review-q-num,
+    html[data-theme="light"] .admin-tabs,
+    html[data-theme="light"] .limit-input {
+      background: #eeece6;
+      border-color: #d2cec4;
+      color: var(--text);
+    }
+    html[data-theme="light"] .form-group input:focus,
+    html[data-theme="light"] .topic-input:focus,
+    html[data-theme="light"] .feedback-select:focus,
+    html[data-theme="light"] .feedback-textarea:focus,
+    html[data-theme="light"] .limit-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(85,72,217,0.12);
+    }
+
+    html[data-theme="light"] .option-btn {
+      background: #eeece6;
+      border-color: #d2cec4;
+      color: var(--text);
+    }
+    html[data-theme="light"] .option-btn:hover:not(.selected) {
+      border-color: rgba(85,72,217,0.42);
+      background: #f3f1ec;
+    }
+    html[data-theme="light"] .option-btn.selected {
+      background: rgba(85,72,217,0.09);
+      border-color: var(--accent);
+    }
+    html[data-theme="light"] .q-nav-btn.answered {
+      background: rgba(85,72,217,0.08);
+    }
+    html[data-theme="light"] .q-nav-btn.current {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    html[data-theme="light"] .score-hero::before {
+      background: radial-gradient(circle at 50% 0%, rgba(85,72,217,0.08) 0%, transparent 60%);
+    }
+    html[data-theme="light"] .review-opt {
+      background: #eeece6;
+      border-color: #d2cec4;
+      color: var(--text);
+    }
+    html[data-theme="light"] .review-opt.is-correct {
+      background: rgba(24,134,83,0.07);
+      border-color: rgba(24,134,83,0.28);
+    }
+    html[data-theme="light"] .review-opt.is-wrong {
+      background: rgba(200,59,85,0.07);
+      border-color: rgba(200,59,85,0.28);
+    }
+    html[data-theme="light"] .explanation-box {
+      background: rgba(85,72,217,0.055);
+      border-color: rgba(85,72,217,0.2);
+    }
+    html[data-theme="light"] .toast,
+    html[data-theme="light"] .modal-box {
+      background: var(--surface);
+      border-color: var(--border);
+      box-shadow: 0 16px 40px rgba(33,31,25,0.14);
+    }
+    html[data-theme="light"] .modal-overlay {
+      background: rgba(35,34,30,0.32);
+    }
+    html[data-theme="light"] .loading-overlay {
+      background: rgba(245,243,238,0.92);
+    }
+
+    html[data-theme="light"] th {
+      background: #eeece6;
+    }
+    html[data-theme="light"] td {
+      border-bottom-color: rgba(215,211,202,0.75);
+    }
+    html[data-theme="light"] tr:hover td {
+      background: rgba(85,72,217,0.035);
+    }
+
+    @media (max-width: 700px) {
+      .theme-toggle {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+      }
+      .theme-toggle .theme-icon {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -320,46 +783,50 @@
         </span>
         Mockify
       </a>
+      <button type="button" class="theme-toggle" onclick="toggleMockifyTheme()" aria-label="Switch to light mode" title="Switch to light mode" aria-pressed="false">
+  <svg class="theme-icon icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.6A8.6 8.6 0 0 1 8.4 3.8 8.6 8.6 0 1 0 20.2 15.6Z"/></svg>
+  <svg class="theme-icon icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
+</button>
       <div class="nav-spacer"></div>
     </nav>
 
     <div class="result-body">
       <div class="score-hero">
-        <div class="score-grade" id="result-grade" aria-live="polite">—</div>
-        <div class="score-label" id="result-label">Loading your result…</div>
+        <div class="score-grade" id="result-grade" aria-live="polite">â€”</div>
+        <div class="score-label" id="result-label">Loading your resultâ€¦</div>
         <div class="result-topic-label" id="result-topic-label"></div>
         <div class="score-stats">
           <div class="score-stat">
-            <div class="score-stat-val" id="res-correct" style="color:var(--success)">—</div>
+            <div class="score-stat-val" id="res-correct" style="color:var(--success)">â€”</div>
             <div class="score-stat-lbl">Correct</div>
           </div>
           <div class="score-stat">
-            <div class="score-stat-val" id="res-wrong" style="color:var(--danger)">—</div>
+            <div class="score-stat-val" id="res-wrong" style="color:var(--danger)">â€”</div>
             <div class="score-stat-lbl">Wrong</div>
           </div>
           <div class="score-stat">
-            <div class="score-stat-val" id="res-unanswered" style="color:var(--text-dim)">—</div>
+            <div class="score-stat-val" id="res-unanswered" style="color:var(--text-dim)">â€”</div>
             <div class="score-stat-lbl">Unanswered</div>
           </div>
           <div class="score-stat">
-            <div class="score-stat-val" id="res-pct" style="color:var(--accent)">—</div>
+            <div class="score-stat-val" id="res-pct" style="color:var(--accent)">â€”</div>
             <div class="score-stat-lbl">Score</div>
           </div>
           <div class="score-stat">
-            <div class="score-stat-val" id="res-time" style="color:var(--text-dim)">—</div>
+            <div class="score-stat-val" id="res-time" style="color:var(--text-dim)">â€”</div>
             <div class="score-stat-lbl">Time</div>
           </div>
         </div>
       </div>
 
-      
+
 
       <h3 class="section-title">Detailed Review</h3>
       <div id="error-box" class="error-box"></div>
       <div id="questions-review" class="questions-review"></div>
 
       <div class="result-actions">
-        <button type="button" class="btn btn-secondary" onclick="window.location.href='/'">← Dashboard</button>
+        <button type="button" class="btn btn-secondary" onclick="window.location.href='/'">â† Dashboard</button>
         <button type="button" class="btn btn-primary" onclick="window.location.href='/'">Take Another Mock</button>
       </div>
     </div>
@@ -372,6 +839,36 @@
     function escapeHtml(s) {
       if (s == null) return '';
       return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function renderRichText(value) {
+      const source = String(value == null ? '' : value)
+        .replace(/\r\n/g, '\n')
+        .replace(/\r/g, '\n');
+
+      const chunks = source.split(/(```[^\n]*\n[\s\S]*?```)/g);
+
+      return chunks.map(chunk => {
+        const fenced = chunk.match(/^```([^\n]*)\n([\s\S]*?)```$/);
+
+        if (fenced) {
+          const language = escapeHtml(fenced[1].trim());
+          const code = fenced[2].replace(/\n$/, '');
+
+          return `
+            <pre class="code-block"${language ? ` data-language="${language}"` : ''}><code>${escapeHtml(code)}</code></pre>
+          `;
+        }
+
+        let html = escapeHtml(chunk);
+
+        html = html.replace(
+          /`([^`\n]+)`/g,
+          '<code class="inline-code">$1</code>'
+        );
+
+        return html.replace(/\n/g, '<br>');
+      }).join('');
     }
 
     function formatTime(sec) {
@@ -398,7 +895,7 @@
       gradeEl.textContent = `0/${data.total}`;
       gradeEl.className = 'score-grade ' + (pct >= 80 ? 'excellent' : pct >= 60 ? 'good' : pct >= 40 ? 'average' : 'poor');
 
-      const labels = { excellent: '🏆 Outstanding!', good: '⭐ Great job!', average: '💪 Keep practicing', poor: '📖 Study more' };
+      const labels = { excellent: 'ðŸ† Outstanding!', good: 'â­ Great job!', average: 'ðŸ’ª Keep practicing', poor: 'ðŸ“– Study more' };
       document.getElementById('result-label').textContent = pct >= 80 ? labels.excellent : pct >= 60 ? labels.good : pct >= 40 ? labels.average : labels.poor;
       document.getElementById('result-topic-label').textContent = `Topic: ${data.topic}`;
       animateNumber(gradeEl, data.score, data.total, (value) => `${value}/${data.total}`);
@@ -417,19 +914,19 @@
           else if (k === q.user_answer && q.is_wrong) optCls = 'is-wrong';
           return `<div class="review-opt ${optCls}">
             <span class="review-opt-key">${k}</span>
-            <span>${escapeHtml(q.options[k])}</span>
-            ${k === q.correct_answer ? ' ✓' : ''}
-            ${k === q.user_answer && q.is_wrong ? ' ✗' : ''}
+            <span>${renderRichText(q.options[k])}</span>
+            ${k === q.correct_answer ? ' âœ“' : ''}
+            ${k === q.user_answer && q.is_wrong ? ' âœ—' : ''}
           </div>`;
         }).join('');
         const explanationHtml = q.is_wrong ? `
           <div class="explanation-box">
-            <div class="explanation-title">💡 Why this answer is incorrect</div>
-            <div class="explanation-text">${escapeHtml(q.explanation || 'Explanation is unavailable for this question.')}</div>
-            <div class="your-answer-line">Your answer: <strong>${escapeHtml(q.user_answer)}</strong> · Correct answer: <strong>${escapeHtml(q.correct_answer)}</strong></div>
+            <div class="explanation-title">ðŸ’¡ Why this answer is incorrect</div>
+            <div class="explanation-text">${renderRichText(q.explanation || 'Explanation is unavailable for this question.')}</div>
+            <div class="your-answer-line">Your answer: <strong>${escapeHtml(q.user_answer)}</strong> Â· Correct answer: <strong>${escapeHtml(q.correct_answer)}</strong></div>
           </div>` : q.is_unanswered ? `
           <div class="explanation-box">
-            <div class="explanation-title">📌 Unanswered</div>
+            <div class="explanation-title">ðŸ“Œ Unanswered</div>
             <div class="explanation-text">You did not answer this question. Review the correct answer below.</div>
             <div class="your-answer-line">Correct answer: <strong>${escapeHtml(q.correct_answer)}</strong></div>
           </div>` : '';
@@ -438,7 +935,7 @@
         return `<article class="review-card ${cls}" aria-label="Question ${i + 1}: ${status}">
           <div class="review-q-head">
             <div class="review-q-num">${i + 1}</div>
-            <div class="review-q-text">${escapeHtml(q.question)}</div>
+            <div class="review-q-text">${renderRichText(q.question)}</div>
           </div>
           <div class="review-options">${opts}</div>
           ${explanationHtml}
@@ -504,5 +1001,35 @@
 
     init();
   </script>
+
+<script>
+(function () {
+  function getTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  }
+
+  function updateThemeUI() {
+    const light = getTheme() === 'light';
+    document.querySelectorAll('.theme-toggle').forEach(function (button) {
+      button.setAttribute('aria-pressed', String(light));
+      button.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+      button.setAttribute('title', light ? 'Switch to dark mode' : 'Switch to light mode');
+    });
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', light ? '#f5f3ee' : '#0a0a0f');
+  }
+
+  window.toggleMockifyTheme = function () {
+    const next = getTheme() === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('mockify-theme', next); } catch (e) {}
+    updateThemeUI();
+  };
+
+  window.updateMockifyThemeUI = updateThemeUI;
+  updateThemeUI();
+})();
+</script>
+
 </body>
 </html>
