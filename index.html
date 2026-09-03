@@ -3295,11 +3295,16 @@ let generateCooldownUntil = 0;
 let generateCooldownTimer = null;
 let examSubmitInFlight = false;
 let navigatingToExam = false;
+let bootFallbackTimer = null;
 
 // ─── APP BOOT ───
 function hideBootOverlay() {
   const overlay = document.getElementById('app-boot-overlay');
   if (overlay) overlay.classList.add('hidden');
+  if (bootFallbackTimer) {
+    window.clearTimeout(bootFallbackTimer);
+    bootFallbackTimer = null;
+  }
 }
 
 // ─── UTILS ───
@@ -3754,18 +3759,23 @@ function renderHistoryItems(items, append = false) {
 
 function initializeHistoryLibrary() {
   const search = document.getElementById('history-search');
+  const topicFilter = document.getElementById('history-topic-filter');
+  const sort = document.getElementById('history-sort');
+  const loadMore = document.getElementById('history-load-more');
+  if (!search || !topicFilter || !sort || !loadMore) return;
+
   search.addEventListener('input', () => {
     clearTimeout(historySearchTimer);
     historySearchTimer = setTimeout(() => { historyLibrary.query = search.value.trim(); resetHistoryLibrary(); }, 250);
   });
-  document.getElementById('history-topic-filter').addEventListener('change', event => { historyLibrary.topic = event.target.value; resetHistoryLibrary(); });
-  document.getElementById('history-sort').addEventListener('change', event => { historyLibrary.sort = event.target.value; resetHistoryLibrary(); });
+  topicFilter.addEventListener('change', event => { historyLibrary.topic = event.target.value; resetHistoryLibrary(); });
+  sort.addEventListener('change', event => { historyLibrary.sort = event.target.value; resetHistoryLibrary(); });
   document.querySelectorAll('[data-score-filter]').forEach(button => button.addEventListener('click', () => {
     historyLibrary.score = button.dataset.scoreFilter;
     document.querySelectorAll('[data-score-filter]').forEach(item => item.classList.toggle('active', item === button));
     resetHistoryLibrary();
   }));
-  document.getElementById('history-load-more').addEventListener('click', () => { historyLibrary.page += 1; loadHistoryPage(true); });
+  loadMore.addEventListener('click', () => { historyLibrary.page += 1; loadHistoryPage(true); });
 }
 
 const FEEDBACK_MAX_CHARS = 2000;
@@ -4371,8 +4381,22 @@ window.addEventListener('pageshow', (event) => {
 
 // ─── INIT ───
 
-initializeHistoryLibrary();
-repairLocalizedTopicHints();
+try {
+  initializeHistoryLibrary();
+  repairLocalizedTopicHints();
+} catch (error) {
+  console.error('Optional dashboard initialization failed.', error);
+}
+
+// Never leave visitors on a blank loading screen if a browser extension,
+// cached asset, or optional UI script fails before the auth request completes.
+bootFallbackTimer = window.setTimeout(() => {
+  const overlay = document.getElementById('app-boot-overlay');
+  if (overlay && !overlay.classList.contains('hidden')) {
+    showPage('home-page');
+    hideBootOverlay();
+  }
+}, 8000);
 
 (async () => {
   if (await handlePasswordSetupLink()) {
