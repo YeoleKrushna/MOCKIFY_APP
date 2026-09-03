@@ -139,6 +139,26 @@ def serve_public_stats():
     return static_file("public_stats.js", mimetype="application/javascript", cache_control="public, max-age=3600")
 
 
+@app.route("/favicon.ico")
+def serve_favicon():
+    return static_file("favicon.ico", mimetype="image/x-icon", cache_control="public, max-age=86400")
+
+
+@app.route("/favicon-16x16.png")
+def serve_favicon_16():
+    return static_file("favicon-16x16.png", mimetype="image/png", cache_control="public, max-age=86400")
+
+
+@app.route("/favicon-32x32.png")
+def serve_favicon_32():
+    return static_file("favicon-32x32.png", mimetype="image/png", cache_control="public, max-age=86400")
+
+
+@app.route("/apple-touch-icon.png")
+def serve_apple_touch_icon():
+    return static_file("apple-touch-icon.png", mimetype="image/png", cache_control="public, max-age=86400")
+
+
 @app.route("/logo.svg")
 def serve_logo():
     return static_file("logo.svg", mimetype="image/svg+xml", cache_control="public, max-age=86400")
