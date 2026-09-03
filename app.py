@@ -94,6 +94,10 @@ def secure_response(response):
 
 def static_file(filename, mimetype=None, cache_control=None):
     response = send_from_directory(BASE_DIR, filename, mimetype=mimetype)
+    # Explicit UTF-8 is essential for Hindi/Marathi text in static HTML.
+    # It also prevents a proxy/browser from falling back to a legacy charset.
+    if response.mimetype == "text/html":
+        response.headers["Content-Type"] = "text/html; charset=utf-8"
     if cache_control:
         response.headers["Cache-Control"] = cache_control
     return response

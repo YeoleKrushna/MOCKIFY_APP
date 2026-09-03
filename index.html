@@ -480,6 +480,7 @@
     padding: 6px 12px;
     display: flex; align-items: center; gap: 6px;
   }
+  .preview-timer svg, .fc-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
   .preview-progress-track {
     height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; margin-bottom: 20px;
@@ -631,10 +632,10 @@
     width: 42px; height: 42px;
     border-radius: 11px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem;
     background: rgba(108,99,255,0.12);
     margin-bottom: 18px;
   }
+  .feature-icon svg { width: 21px; height: 21px; stroke: var(--accent); stroke-width: 1.9; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
   .feature-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 8px; }
   .feature-card p { color: var(--text-dim); font-size: 0.88rem; line-height: 1.6; font-weight: 300; }
@@ -709,6 +710,7 @@
     font-size: 0.8rem;
     margin-top: 2px;
   }
+  .why-check svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
   .why-item h4 { font-size: 0.98rem; font-weight: 600; margin-bottom: 4px; }
   .why-item p { color: var(--text-dim); font-size: 0.87rem; line-height: 1.6; font-weight: 300; }
@@ -731,7 +733,8 @@
   }
 
   .usecase-chip:hover { border-color: rgba(108,99,255,0.4); transform: translateY(-2px); }
-  .usecase-chip .uc-icon { font-size: 1.05rem; }
+  .usecase-chip .uc-icon { display: inline-flex; }
+  .usecase-chip .uc-icon svg { width: 17px; height: 17px; stroke: var(--accent); stroke-width: 1.9; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
   /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      FAQ
@@ -2478,7 +2481,7 @@
                 <div class="preview-topic-label">Topic</div>
                 <div class="preview-topic" id="hero-preview-topic">Linear Regression in ML</div>
               </div>
-              <div class="preview-timer"><span>â±</span><span id="hero-preview-timer">05:00</span></div>
+              <div class="preview-timer"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 9v4l3 2M9 3h6"/></svg><span id="hero-preview-timer">05:00</span></div>
             </div>
             <div class="preview-progress-track"><div class="preview-progress-fill" id="hero-preview-progress"></div></div>
             <div class="preview-q" id="hero-preview-q">Which loss function is most commonly minimized in ordinary least squares regression?</div>
@@ -2494,11 +2497,11 @@
             </div>
           </div>
           <div class="float-card float-explain">
-            <span class="fc-icon">ðŸ’¡</span>
+            <span class="fc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M8.7 14.3A6 6 0 1 1 15.3 14.3c-.8.7-1.3 1.5-1.3 2.7h-4c0-1.2-.5-2-1.3-2.7Z"/></svg></span>
             <span>Explanation ready</span>
           </div>
           <div class="float-card float-streak">
-            <span class="fc-icon">âœ“</span>
+            <span class="fc-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span>
             <span>Answer saved</span>
           </div>
         </div>
@@ -2539,34 +2542,34 @@
         </div>
         <div class="bento">
           <div class="feature-card">
-            <div class="feature-icon">âœ¦</div>
+            <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M7.7 7.1 10.5 16M16.3 7.1 13.5 16M8 6h8"/></svg></div>
             <h3>AI-generated questions</h3>
-            <p>Type a topic and Mockify writes a set of multiple-choice questions built around it â€” from a single concept to a broad subject.</p>
+            <p>Type a topic and Mockify writes a set of multiple-choice questions built around it — from a single concept to a broad subject.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">â±</div>
+            <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 9v4l3 2M9 3h6M12 3v3"/></svg></div>
             <h3>Choose your own time</h3>
             <p>Set the clock before you start, from a quick 5-minute drill to a full 60-minute session. The test paces itself to your limit.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">ðŸ’¡</div>
+            <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M8.7 14.3A6 6 0 1 1 15.3 14.3c-.8.7-1.3 1.5-1.3 2.7h-4c0-1.2-.5-2-1.3-2.7Z"/></svg></div>
             <h3>Learn from mistakes</h3>
             <p>Every wrong or skipped answer comes with an explanation, so you understand the reasoning, not just the correct letter.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">ðŸ—‚</div>
+            <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 4-8 4-8-4 8-4ZM4 12l8 4 8-4M4 17l8 4 8-4"/></svg></div>
             <h3>Any topic, any format</h3>
-            <p>Technical subjects, interview concepts, aptitude questions, or academic revision â€” describe it in your own words.</p>
+            <p>Technical subjects, interview concepts, aptitude questions, or academic revision — describe it in your own words.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">ðŸ“ˆ</div>
+            <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16M7 15l4-4 3 2 5-6M16 7h3v3"/></svg></div>
             <h3>Track your results</h3>
             <p>Every mock you take is saved, so you can look back at past scores and see which topics need another pass.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">ðŸŽ¯</div>
+            <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="m15 9 5-5M16 4h4v4"/></svg></div>
             <h3>Built for active recall</h3>
-            <p>Mockify is designed around testing yourself rather than re-reading notes â€” the practice that actually sticks.</p>
+            <p>Mockify is designed around testing yourself rather than re-reading notes — the practice that actually sticks.</p>
           </div>
         </div>
       </div>
@@ -2619,19 +2622,19 @@
         </div>
         <div class="why-list">
           <div class="why-item">
-            <div class="why-check">âœ“</div>
+            <div class="why-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></div>
             <div><h4>Faster setup</h4><p>No browsing a catalog â€” describe a topic and your test is ready.</p></div>
           </div>
           <div class="why-item">
-            <div class="why-check">âœ“</div>
+            <div class="why-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></div>
             <div><h4>Personalized topics</h4><p>Practice the exact subject you're studying, worded your way.</p></div>
           </div>
           <div class="why-item">
-            <div class="why-check">âœ“</div>
+            <div class="why-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></div>
             <div><h4>Duration on your terms</h4><p>A 10-minute gap between classes or a full hour â€” you decide.</p></div>
           </div>
           <div class="why-item">
-            <div class="why-check">âœ“</div>
+            <div class="why-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></div>
             <div><h4>Mistake-first review</h4><p>The review screen puts explanations right where the wrong answers are.</p></div>
           </div>
         </div>
@@ -2646,15 +2649,15 @@
           <p class="section-copy">Use Mockify for programming, developer concepts, data science and ML, technical interview preparation, aptitude, academic revision, or any subject you want to practice. For government-exam preparation, you can also create topic-based mocks for MPSC, UPSC, Talathi, police recruitment, banking, and more in Hindi or Marathi.</p>
         </div>
         <div class="usecase-chips">
-          <div class="usecase-chip"><span class="uc-icon">ðŸŽ“</span>Students & academics</div>
-          <div class="usecase-chip"><span class="uc-icon">ðŸ’¼</span>Interview preparation</div>
-          <div class="usecase-chip"><span class="uc-icon">ðŸ‘¨â€ðŸ’»</span>Developers & programming</div>
-          <div class="usecase-chip"><span class="uc-icon">ðŸ§ </span>Data science & ML</div>
-          <div class="usecase-chip"><span class="uc-icon">ðŸ§®</span>Aptitude practice</div>
-          <div class="usecase-chip"><span class="uc-icon">ðŸ“š</span>Technical revision</div>
-          <div class="usecase-chip"><span class="uc-icon">ðŸ›ï¸</span>MPSC & UPSC preparation</div>
-          <div class="usecase-chip"><span class="uc-icon">ðŸ“</span>Talathi & police exams</div>
-          <div class="usecase-chip"><span class="uc-icon">ðŸŒ</span>Hindi & Marathi exam practice</div>
+          <div class="usecase-chip"><span class="uc-icon"><svg viewBox="0 0 24 24"><path d="m4 9 8-4 8 4-8 4-8-4ZM7 11v5c3 2 7 2 10 0v-5M20 10v5"/></svg></span>Students & academics</div>
+          <div class="usecase-chip"><span class="uc-icon"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M9 7V5h6v2M4 12h16"/></svg></span>Interview preparation</div>
+          <div class="usecase-chip"><span class="uc-icon"><svg viewBox="0 0 24 24"><path d="m8 9-3 3 3 3M16 9l3 3-3 3M14 6l-4 12"/></svg></span>Developers & programming</div>
+          <div class="usecase-chip"><span class="uc-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></span>Data science & ML</div>
+          <div class="usecase-chip"><span class="uc-icon"><svg viewBox="0 0 24 24"><path d="M7 4h10M9 4v4l-4 8a3 3 0 0 0 3 4h8a3 3 0 0 0 3-4l-4-8V4"/><path d="M8 15h8"/></svg></span>Aptitude practice</div>
+          <div class="usecase-chip"><span class="uc-icon"><svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 0-3 3V4Z"/><path d="M8 8h7M8 12h7"/></svg></span>Technical revision</div>
+          <div class="usecase-chip"><span class="uc-icon"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20v-8h12v8M4 12h16L12 4 4 12Z"/><path d="M9 15v2M12 15v2M15 15v2"/></svg></span>MPSC & UPSC preparation</div>
+          <div class="usecase-chip"><span class="uc-icon"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-3-6 3V3Z"/><path d="M9 8h6M9 12h5"/></svg></span>Talathi & police exams</div>
+          <div class="usecase-chip"><span class="uc-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4a12 12 0 0 1 0 16M12 4a12 12 0 0 0 0 16"/></svg></span>Hindi & Marathi exam practice</div>
         </div>
       </div>
     </section>
@@ -2939,9 +2942,9 @@
           <span class="hint-chip" onclick="setTopic('DBMS Normalization')">DBMS Normalization</span>
           <span class="hint-chip" onclick="setTopic('Machine Learning basics')">Machine Learning</span>
           <span class="hint-chip" onclick="setTopic('AWS fundamentals')">AWS fundamentals</span>
-          <span class="hint-chip" onclick="setTopic('Marathi Vyakaran Â· MPSC Prelims')">Marathi Vyakaran Â· MPSC Prelims</span>
-          <span class="hint-chip" onclick="setTopic('à¤ªà¥à¤°à¤¾à¤šà¥€à¤¨ à¤­à¤¾à¤°à¤¤ Â· UPSC Prelims')">à¤ªà¥à¤°à¤¾à¤šà¥€à¤¨ à¤­à¤¾à¤°à¤¤ Â· UPSC Prelims</span>
-          <span class="hint-chip" onclick="setTopic('à¤®à¤°à¤¾à¤ à¥€à¤¤à¥€à¤² à¤­à¤¾à¤°à¤¤à¥€à¤¯ à¤°à¤¾à¤œà¥à¤¯à¤˜à¤Ÿà¤¨à¤¾ Â· MPSC')">à¤®à¤°à¤¾à¤ à¥€à¤¤à¥€à¤² à¤­à¤¾à¤°à¤¤à¥€à¤¯ à¤°à¤¾à¤œà¥à¤¯à¤˜à¤Ÿà¤¨à¤¾ Â· MPSC</span>
+          <span class="hint-chip" onclick="setTopic('Marathi Vyakaran · MPSC Prelims')">Marathi Vyakaran · MPSC Prelims</span>
+          <span class="hint-chip" onclick="setTopic('प्राचीन भारत · UPSC Prelims')">प्राचीन भारत · UPSC Prelims</span>
+          <span class="hint-chip" onclick="setTopic('मराठीतील भारतीय राज्यघटना · MPSC')">मराठीतील भारतीय राज्यघटना · MPSC</span>
         </div>
 
 
@@ -2953,8 +2956,8 @@
           </label>
           <div class="language-options" role="group" aria-label="Mock language">
             <button type="button" class="language-option active" data-language="English" aria-pressed="true" onclick="setLanguage('English')">English</button>
-            <button type="button" class="language-option" data-language="Hindi" aria-pressed="false" onclick="setLanguage('Hindi')">à¤¹à¤¿à¤¨à¥à¤¦à¥€</button>
-            <button type="button" class="language-option" data-language="Marathi" aria-pressed="false" onclick="setLanguage('Marathi')">à¤®à¤°à¤¾à¤ à¥€</button>
+            <button type="button" class="language-option" data-language="Hindi" aria-pressed="false" onclick="setLanguage('Hindi')">हिन्दी</button>
+            <button type="button" class="language-option" data-language="Marathi" aria-pressed="false" onclick="setLanguage('Marathi')">मराठी</button>
           </div>
           <div class="language-help" id="language-help">Questions, options, and explanations will be generated in English.</div>
         </div>
@@ -3542,11 +3545,18 @@ document.querySelectorAll('.faq-q').forEach(btn => {
 
 // Hero product preview animation (marketing demo only, lightweight)
 (function heroPreview() {
-  const demo = [
+  const corruptedDemo = [
     { topic: 'Linear Regression in ML', q: 'Which loss function is most commonly minimized in ordinary least squares regression?', opts: ['Hinge loss', 'Mean squared error', 'Cross-entropy', 'KL divergence'], answer: 1, count: 3, timer: '05:00', progress: 30 },
     { topic: 'MPSC Prelims Â· à¤®à¤°à¤¾à¤ à¥€ à¤µà¥à¤¯à¤¾à¤•à¤°à¤£', q: 'à¤–à¤¾à¤²à¥€à¤²à¤ªà¥ˆà¤•à¥€ à¤•à¥‹à¤£à¤¤à¤¾ à¤¶à¤¬à¥à¤¦ à¤¤à¤¤à¥à¤¸à¤® à¤¶à¤¬à¥à¤¦à¤¾à¤šà¥‡ à¤‰à¤¦à¤¾à¤¹à¤°à¤£ à¤†à¤¹à¥‡?', opts: ['à¤¸à¥‚à¤°à¥à¤¯', 'à¤†à¤—', 'à¤ªà¤¾à¤Šà¤¸', 'à¤˜à¤°'], answer: 0, count: 4, timer: '04:25', progress: 40 },
     { topic: 'React Hooks', q: 'Which hook lets you persist a value across renders without causing a re-render?', opts: ['useState', 'useEffect', 'useRef', 'useMemo'], answer: 2, count: 6, timer: '03:20', progress: 60 },
     { topic: 'UPSC Prelims Â· à¤ªà¥à¤°à¤¾à¤šà¥€à¤¨ à¤­à¤¾à¤°à¤¤', q: 'à¤¸à¤¿à¤‚à¤§à¥ à¤˜à¤¾à¤Ÿà¥€ à¤¸à¤­à¥à¤¯à¤¤à¤¾ à¤•à¥‡ à¤¨à¤¿à¤®à¥à¤¨à¤²à¤¿à¤–à¤¿à¤¤ à¤¸à¥à¤¥à¤²à¥‹à¤‚ à¤®à¥‡à¤‚ à¤¸à¥‡ à¤•à¥Œà¤¨-à¤¸à¤¾ à¤—à¥à¤œà¤°à¤¾à¤¤ à¤®à¥‡à¤‚ à¤¸à¥à¤¥à¤¿à¤¤ à¤¹à¥ˆ?', opts: ['à¤¹à¤¡à¤¼à¤ªà¥à¤ªà¤¾', 'à¤²à¥‹à¤¥à¤²', 'à¤®à¥‹à¤¹à¤¨à¤œà¥‹à¤¦à¤¡à¤¼à¥‹', 'à¤°à¤¾à¤–à¥€à¤—à¤¢à¤¼à¥€'], answer: 1, count: 7, timer: '02:45', progress: 70 },
+    { topic: 'SQL Joins', q: 'Which join returns only the rows with matching values in both tables?', opts: ['LEFT JOIN', 'INNER JOIN', 'FULL JOIN', 'CROSS JOIN'], answer: 1, count: 9, timer: '01:05', progress: 90 }
+  ];
+  const demo = [
+    { topic: 'Linear Regression in ML', q: 'Which loss function is most commonly minimized in ordinary least squares regression?', opts: ['Hinge loss', 'Mean squared error', 'Cross-entropy', 'KL divergence'], answer: 1, count: 3, timer: '05:00', progress: 30 },
+    { topic: 'MPSC Prelims · मराठी व्याकरण', q: 'खालीलपैकी कोणता शब्द तत्सम शब्दाचे उदाहरण आहे?', opts: ['सूर्य', 'आग', 'पाऊस', 'घर'], answer: 0, count: 4, timer: '04:25', progress: 40 },
+    { topic: 'React Hooks', q: 'Which hook lets you persist a value across renders without causing a re-render?', opts: ['useState', 'useEffect', 'useRef', 'useMemo'], answer: 2, count: 6, timer: '03:20', progress: 60 },
+    { topic: 'UPSC Prelims · प्राचीन भारत', q: 'सिंधु घाटी सभ्यता का कौन-सा स्थल गुजरात में स्थित है?', opts: ['हड़प्पा', 'लोथल', 'मोहनजोदड़ो', 'राखीगढ़ी'], answer: 1, count: 7, timer: '02:45', progress: 70 },
     { topic: 'SQL Joins', q: 'Which join returns only the rows with matching values in both tables?', opts: ['LEFT JOIN', 'INNER JOIN', 'FULL JOIN', 'CROSS JOIN'], answer: 1, count: 9, timer: '01:05', progress: 90 }
   ];
   let i = 0;
@@ -3894,6 +3904,21 @@ async function submitFeedback(event) {
 function setTopic(t) {
   document.getElementById('topic-input').value = t;
   hideError('gen-error');
+}
+
+function repairLocalizedTopicHints() {
+  const hints = document.querySelectorAll('.hint-chip');
+  const localized = [
+    ['Marathi Vyakaran · MPSC Prelims', 'Marathi Vyakaran · MPSC Prelims'],
+    ['प्राचीन भारत · UPSC Prelims', 'प्राचीन भारत · UPSC Prelims'],
+    ['मराठीतील भारतीय राज्यघटना · MPSC', 'मराठीतील भारतीय राज्यघटना · MPSC'],
+  ];
+  localized.forEach(([label, topic], offset) => {
+    const hint = hints[4 + offset];
+    if (!hint) return;
+    hint.textContent = label;
+    hint.onclick = () => setTopic(topic);
+  });
 }
 
 let selectedLanguage = 'English';
@@ -4355,6 +4380,7 @@ window.addEventListener('pageshow', (event) => {
 // â”€â”€â”€ INIT â”€â”€â”€
 
 initializeHistoryLibrary();
+repairLocalizedTopicHints();
 
 (async () => {
   if (await handlePasswordSetupLink()) {
