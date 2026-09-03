@@ -115,7 +115,8 @@
     .timer-display.warning { border-color: rgba(255,209,102,0.45); color: var(--warn); }
     .timer-display.danger { border-color: rgba(255,77,109,0.6); color: var(--danger); animation: timer-pulse 1s ease-in-out infinite; }
     .timer-display .timer-state { font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700; letter-spacing: .04em; }
-    .sound-toggle { width: 42px; height: 42px; border: 1px solid var(--border); border-radius: 50%; background: var(--surface2); color: var(--text-dim); cursor: pointer; transition: transform .18s, border-color .18s, color .18s; }
+    .sound-toggle { width: 42px; height: 42px; border: 1px solid var(--border); border-radius: 50%; background: var(--surface2); color: var(--text-dim); cursor: pointer; transition: transform .18s, border-color .18s, color .18s; display:inline-flex; align-items:center; justify-content:center; }
+    .sound-toggle svg, .timer-display svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
     .sound-toggle:hover { transform: translateY(-1px); border-color: var(--accent); color: var(--text); }
 
     .submit-exam-btn {
@@ -360,7 +361,7 @@
     }
 
 
-    /* â”€â”€â”€ RICH TEXT / CODE PRESENTATION â”€â”€â”€ */
+    /* ─── RICH TEXT / CODE PRESENTATION ─── */
     .q-text .code-block,
     .review-q-text .code-block {
       display: block;
@@ -417,7 +418,7 @@
       color: #4c42bd;
     }
 
-    /* â”€â”€â”€ EXAM LIGHT-MODE CONTROL HIERARCHY â”€â”€â”€ */
+    /* ─── EXAM LIGHT-MODE CONTROL HIERARCHY ─── */
     html[data-theme="light"] .exam-header {
       background: rgba(255, 253, 249, .94);
       border-bottom-color: #d7d3ca;
@@ -487,7 +488,7 @@
       box-shadow: 0 7px 20px rgba(85, 72, 217, .22);
     }
 
-    /* â”€â”€â”€ MOCKIFY THEME TOGGLE + LIGHT THEME â”€â”€â”€ */
+    /* ─── MOCKIFY THEME TOGGLE + LIGHT THEME ─── */
     .theme-toggle {
       width: 38px;
       height: 38px;
@@ -767,13 +768,13 @@
           <strong id="exam-topic">Loading...</strong>
         </div>
       </div>
-      <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="false" aria-label="Enable final ten-second timer sound" title="Timer sound is off">ðŸ”‡</button>
+      <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="false" aria-label="Enable final ten-second timer sound" title="Timer sound is off"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m16 10 4 4m0-4-4 4"/></svg></button>
       <button type="button" class="theme-toggle" onclick="toggleMockifyTheme()" aria-label="Switch to light mode" title="Switch to light mode" aria-pressed="false">
   <svg class="theme-icon icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.6A8.6 8.6 0 0 1 8.4 3.8 8.6 8.6 0 1 0 20.2 15.6Z"/></svg>
   <svg class="theme-icon icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
 </button>
       <div class="timer-display" id="timer-display" aria-live="polite">
-        <span>â±</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 9v4l3 2M9 3h6"/></svg>
         <span id="timer-text">--:--</span>
         <span class="timer-state" id="timer-state"></span>
       </div>
@@ -802,9 +803,9 @@
         <div class="q-text" id="q-text">Loading question...</div>
         <div class="options-grid" id="options-grid"></div>
         <div class="exam-nav">
-          <button type="button" class="btn btn-secondary" id="prev-question-btn" onclick="prevQuestion()">â† Previous</button>
+          <button type="button" class="btn btn-secondary" id="prev-question-btn" onclick="prevQuestion()">← Previous</button>
           <div class="last-question-hint" id="last-question-hint" aria-live="polite">If you have finished, you can simply submit the test.</div>
-          <button type="button" class="btn btn-secondary" id="next-question-btn" onclick="nextQuestion()">Next â†’</button>
+          <button type="button" class="btn btn-secondary" id="next-question-btn" onclick="nextQuestion()">Next →</button>
         </div>
       </div>
     </div>
@@ -900,7 +901,9 @@
 
     function updateSoundToggle() {
       const button = document.getElementById('sound-toggle');
-      button.textContent = soundEnabled ? 'ðŸ”Š' : 'ðŸ”‡';
+      button.innerHTML = soundEnabled
+        ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 10a3 3 0 0 1 0 4M17.5 7.5a6.5 6.5 0 0 1 0 9"/></svg>'
+        : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m16 10 4 4m0-4-4 4"/></svg>';
       button.setAttribute('aria-pressed', String(soundEnabled));
       button.setAttribute('aria-label', soundEnabled ? 'Disable final ten-second timer sound' : 'Enable final ten-second timer sound');
       button.title = soundEnabled ? 'Timer sound is on' : 'Timer sound is off';
@@ -1120,7 +1123,7 @@
         });
         openResultPage(data.result_id, data);
       } catch (e) {
-        showError("We couldn't submit your test right now. Your answers are still on screenâ€”check your connection and try again.");
+        showError("We couldn't submit your test right now. Your answers are still on screen—check your connection and try again.");
       } finally {
         examSubmitInFlight = false;
         if (!navigatingToResult) {

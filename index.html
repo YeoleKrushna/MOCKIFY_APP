@@ -15,7 +15,7 @@
 })();
 </script>
 <meta name="theme-color" content="#0a0a0f">
-<meta name="description" content="Mockify turns any topic into a focused AI-generated mock test â€” choose your time, take the test, and learn from every mistake.">
+<meta name="description" content="Mockify turns any topic into a focused AI-generated mock test — choose your time, take the test, and learn from every mistake.">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://mockify.tech/">
 <meta property="og:title" content="Mockify | AI Mock Test Generator & MCQ Practice">
@@ -83,7 +83,7 @@
     border-radius: 4px;
   }
 
-  /* â”€â”€â”€ GRID NOISE â”€â”€â”€ */
+  /* ─── GRID NOISE ─── */
   body::before {
     content: '';
     position: fixed; inset: 0;
@@ -94,12 +94,12 @@
     pointer-events: none; z-index: 0;
   }
 
-  /* â”€â”€â”€ PAGE SYSTEM â”€â”€â”€ */
+  /* ─── PAGE SYSTEM ─── */
   .page { display: none; min-height: 100vh; position: relative; z-index: 1; }
   .page.active { display: flex; }
   #home-page.active, #dashboard-page.active, #admin-page.active { flex-direction: column; }
 
-  /* â”€â”€â”€ APP BOOT GATE â”€â”€â”€
+  /* ─── APP BOOT GATE ───
      Keep Home/Dashboard hidden until the session has been resolved. */
   #app-boot-overlay {
     position: fixed;
@@ -209,9 +209,9 @@
     display: none;
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      LOGO
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  ══════════════════════════════════════════ */
   .logo-mark { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .logo-mark svg { display: block; }
 
@@ -224,9 +224,9 @@
     color: var(--text);
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      PUBLIC NAVBAR
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  ══════════════════════════════════════════ */
   .site-nav {
     position: sticky; top: 0; z-index: 200;
     display: flex; align-items: center; gap: 8px;
@@ -330,9 +330,9 @@
     .site-nav { padding: 0 18px; }
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      SHARED SECTION LAYOUT
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  ══════════════════════════════════════════ */
   .home-main { position: relative; z-index: 1; }
 
   .wrap {
@@ -385,9 +385,9 @@
 
   .section-head { margin-bottom: 44px; }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      HERO
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  ══════════════════════════════════════════ */
   .hero {
     position: relative;
     padding: 76px 0 90px;
@@ -444,7 +444,7 @@
     color: var(--text-faint);
   }
 
-  /* â”€â”€â”€ Product preview mock â”€â”€â”€ */
+  /* ─── Product preview mock ─── */
   .preview-shell {
     position: relative;
     perspective: 1400px;
@@ -564,9 +564,9 @@
     50% { transform: translateY(-8px); }
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      LIVE STATS
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  ══════════════════════════════════════════ */
   .stats-section { padding: 50px 0 70px; }
 
   .public-stats {
@@ -600,9 +600,9 @@
 
   @media (max-width: 760px) { .public-stats { grid-template-columns: repeat(2, 1fr); } }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      FEATURES (bento)
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  ══════════════════════════════════════════ */
   .features-section { padding: 50px 0 90px; }
 
   .bento {
@@ -640,9 +640,9 @@
   .feature-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 8px; }
   .feature-card p { color: var(--text-dim); font-size: 0.88rem; line-height: 1.6; font-weight: 300; }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      HOW IT WORKS
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  ══════════════════════════════════════════ */
   .how-section { padding: 50px 0 90px; }
 
   .steps-row {
@@ -683,9 +683,9 @@
   .step-item h4 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
   .step-item p { color: var(--text-dim); font-size: 0.87rem; line-height: 1.6; font-weight: 300; max-width: 240px; }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      WHY MOCKIFY
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  ══════════════════════════════════════════ */
   .why-section { padding: 50px 0 90px; }
 
   .why-grid {
@@ -715,9 +715,9 @@
   .why-item h4 { font-size: 0.98rem; font-weight: 600; margin-bottom: 4px; }
   .why-item p { color: var(--text-dim); font-size: 0.87rem; line-height: 1.6; font-weight: 300; }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      USE CASES
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  ══════════════════════════════════════════ */
   .usecases-section { padding: 50px 0 90px; }
 
   .usecase-chips { display: flex; flex-wrap: wrap; gap: 12px; }
@@ -736,9 +736,9 @@
   .usecase-chip .uc-icon { display: inline-flex; }
   .usecase-chip .uc-icon svg { width: 17px; height: 17px; stroke: var(--accent); stroke-width: 1.9; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      FAQ
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  ══════════════════════════════════════════ */
   .faq-section { padding: 50px 0 90px; }
 
   .faq-list { max-width: 760px; display: flex; flex-direction: column; gap: 10px; }
@@ -785,9 +785,9 @@
 
   .faq-a p { color: var(--text-dim); font-size: 0.87rem; line-height: 1.65; font-weight: 300; }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      FINAL CTA
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  ══════════════════════════════════════════ */
   .final-cta {
     padding: 70px 0 90px;
   }
@@ -828,9 +828,9 @@
 
   .final-cta-actions { position: relative; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ══════════════════════════════════════════
      FOOTER
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  ══════════════════════════════════════════ */
   .site-footer { border-top: 1px solid var(--border); padding: 50px 0 34px; }
 
   .footer-grid {
@@ -857,9 +857,9 @@
     color: var(--text-faint); font-size: 0.8rem;
   }
 
-  /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  /* ═══════════════════════════════════════════
      AUTH PAGE
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+  ═══════════════════════════════════════════ */
   #auth-page {
     align-items: center; justify-content: center;
     padding: 20px; flex-direction: column;
@@ -987,7 +987,7 @@
     .terms-check { font-size:.76rem; }
   }
 
-  /* â”€â”€â”€ NAVBAR (app) â”€â”€â”€ */
+  /* ─── NAVBAR (app) ─── */
   .navbar {
     position: sticky; top: 0; z-index: 100;
     display: flex; align-items: center;
@@ -1086,10 +1086,10 @@
   .nav-profile-name { border: 0; padding: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
   .nav-profile-name:hover, .nav-profile-name:focus-visible { color: var(--accent); }
 
-  /* â”€â”€â”€ DASHBOARD â”€â”€â”€ */
+  /* ─── DASHBOARD ─── */
   #dashboard-page { flex-direction: column; }
 
-  /* â”€â”€â”€ FEEDBACK â”€â”€â”€ */
+  /* ─── FEEDBACK ─── */
   .feedback-card {
     grid-column: 1 / -1;
     width: 100%;
@@ -1150,7 +1150,7 @@
     .dashboard-body { grid-template-columns: 1fr; padding: 20px 16px; }
   }
 
-  /* â”€â”€â”€ DASHBOARD VISUAL ALIGNMENT â”€â”€â”€ */
+  /* ─── DASHBOARD VISUAL ALIGNMENT ─── */
   .dashboard-main {
     min-width: 0;
   }
@@ -1567,7 +1567,7 @@
   .badge-yellow { background: rgba(255,209,102,0.12); color: var(--warn); }
   .badge-purple { background: rgba(108,99,255,0.12); color: var(--accent); }
 
-  /* â”€â”€â”€ LOADING OVERLAY â”€â”€â”€ */
+  /* ─── LOADING OVERLAY ─── */
   .loading-overlay {
     position: fixed; inset: 0;
     background: rgba(10,10,15,0.9);
@@ -1597,7 +1597,7 @@
 
   .loading-sub { color: var(--text-dim); font-size: 0.875rem; }
 
-  /* â”€â”€â”€ EXAM PAGE â”€â”€â”€ */
+  /* ─── EXAM PAGE ─── */
   #exam-page { flex-direction: column; }
 
   .exam-header {
@@ -1754,7 +1754,7 @@
 
   .submit-exam-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(67,233,123,0.4); }
 
-  /* â”€â”€â”€ RESULT PAGE â”€â”€â”€ */
+  /* ─── RESULT PAGE ─── */
   #result-page { flex-direction: column; }
 
   .result-body {
@@ -1858,7 +1858,7 @@
     display: flex; gap: 12px; justify-content: center; margin-top: 28px; flex-wrap: wrap;
   }
 
-  /* â”€â”€â”€ ADMIN PAGE â”€â”€â”€ */
+  /* ─── ADMIN PAGE ─── */
   #admin-page { flex-direction: column; }
 
   .admin-body {
@@ -1954,7 +1954,7 @@
 
   .limit-input:focus { border-color: var(--accent); }
 
-  /* â”€â”€â”€ TOAST â”€â”€â”€ */
+  /* ─── TOAST ─── */
   .toast-container {
     position: fixed; top: 20px; right: 20px;
     display: flex; flex-direction: column; gap: 10px;
@@ -1979,7 +1979,7 @@
   .toast.success { border-left: 3px solid var(--success); }
   .toast.info { border-left: 3px solid var(--accent); }
 
-  /* â”€â”€â”€ CONFIRM MODAL â”€â”€â”€ */
+  /* ─── CONFIRM MODAL ─── */
   .modal-overlay {
     position: fixed; inset: 0;
     background: rgba(10,10,15,0.85);
@@ -2023,7 +2023,7 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-  /* â”€â”€â”€ FINAL DASHBOARD ALIGNMENT â”€â”€â”€ */
+  /* ─── FINAL DASHBOARD ALIGNMENT ─── */
   @media (min-width: 769px) {
     /* Keep the heading at the top, but align the first stats card with the generator card. */
     .dashboard-body > .stats-sidebar {
@@ -2056,7 +2056,7 @@
 
 
 
-  /* â”€â”€â”€ REQUIRED GENERATION FIELDS â”€â”€â”€ */
+  /* ─── REQUIRED GENERATION FIELDS ─── */
   .required-field-label {
     display: flex !important;
     align-items: center;
@@ -2112,7 +2112,7 @@
     color: #1b1b24 !important;
   }
 
-  /* â”€â”€â”€ MOCKIFY THEME TOGGLE + LIGHT THEME â”€â”€â”€ */
+  /* ─── MOCKIFY THEME TOGGLE + LIGHT THEME ─── */
     .theme-toggle {
       width: 38px;
       height: 38px;
@@ -2362,7 +2362,7 @@
 </head>
 <body>
 
-<!-- â”€â”€â”€ APP BOOT OVERLAY â”€â”€â”€ -->
+<!-- ─── APP BOOT OVERLAY ─── -->
 <div id="app-boot-overlay" aria-hidden="true">
   <div class="app-boot-inner">
     <div class="app-boot-logo" aria-hidden="true">
@@ -2379,17 +2379,17 @@
 </div>
 
 
-<!-- â”€â”€â”€ LOADING OVERLAY â”€â”€â”€ -->
+<!-- ─── LOADING OVERLAY ─── -->
 <div class="loading-overlay" id="loading-overlay">
   <div class="loading-icon"></div>
-  <div class="loading-text">Generating your mockâ€¦</div>
+  <div class="loading-text">Generating your mock…</div>
   <div class="loading-sub" id="loading-sub">Asking AI to craft 10 expert questions</div>
 </div>
 
-<!-- â”€â”€â”€ TOAST CONTAINER â”€â”€â”€ -->
+<!-- ─── TOAST CONTAINER ─── -->
 <div class="toast-container" id="toast-container"></div>
 
-<!-- â”€â”€â”€ CONFIRM MODAL â”€â”€â”€ -->
+<!-- ─── CONFIRM MODAL ─── -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Are you sure?</div>
@@ -2401,7 +2401,7 @@
   </div>
 </div>
 
-<!-- â”€â”€â”€ MOBILE NAV â”€â”€â”€ -->
+<!-- ─── MOBILE NAV ─── -->
 <div class="mobile-nav" id="mobile-nav">
   <div class="mobile-nav-head">
     <span class="brand"><span class="logo-mark" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="9" fill="url(#mg1)"/><path d="M9 20V12L16 17L23 12V20" stroke="white" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="mg1" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#6c63ff"/><stop offset="1" stop-color="#ff6584"/></linearGradient></defs></svg></span>Mockify</span>
@@ -2420,9 +2420,9 @@
   </div>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- ═══════════════════════════════════════════
      PUBLIC HOME / LANDING PAGE
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+═══════════════════════════════════════════ -->
 <div class="page active" id="home-page">
 
   <header>
@@ -2466,7 +2466,7 @@
         <div>
           <span class="eyebrow-badge"><span class="dot"></span>AI-powered mock testing</span>
           <h1 class="hero-headline">AI mock tests and MCQ practice for any topic.</h1>
-          <p class="hero-sub">Describe what you want to practice. Mockify turns any topic into a focused mock in English, Hindi, or Marathi. Practice programming, data science, aptitude, interview topics, academic subjects, or government-exam areas such as MPSC, UPSC, Talathi, and police recruitment â€” then review exactly what you missed.</p>
+          <p class="hero-sub">Describe what you want to practice. Mockify turns any topic into a focused mock in English, Hindi, or Marathi. Practice programming, data science, aptitude, interview topics, academic subjects, or government-exam areas such as MPSC, UPSC, Talathi, and police recruitment — then review exactly what you missed.</p>
           <div class="hero-ctas">
             <button type="button" class="btn btn-primary btn-lg" onclick="openAuth('register')">Start Practicing Free</button>
             <button type="button" class="btn btn-secondary btn-lg" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})">See How It Works</button>
@@ -2580,7 +2580,7 @@
       <div class="wrap">
         <div class="section-head">
           <h2 class="headline">From topic to insight in four steps</h2>
-          <p class="section-copy">The whole loop â€” write, test, submit, review â€” takes minutes.</p>
+          <p class="section-copy">The whole loop — write, test, submit, review — takes minutes.</p>
         </div>
         <div class="steps-row">
           <div class="step-item">
@@ -2623,7 +2623,7 @@
         <div class="why-list">
           <div class="why-item">
             <div class="why-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></div>
-            <div><h4>Faster setup</h4><p>No browsing a catalog â€” describe a topic and your test is ready.</p></div>
+            <div><h4>Faster setup</h4><p>No browsing a catalog — describe a topic and your test is ready.</p></div>
           </div>
           <div class="why-item">
             <div class="why-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></div>
@@ -2631,7 +2631,7 @@
           </div>
           <div class="why-item">
             <div class="why-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></div>
-            <div><h4>Duration on your terms</h4><p>A 10-minute gap between classes or a full hour â€” you decide.</p></div>
+            <div><h4>Duration on your terms</h4><p>A 10-minute gap between classes or a full hour — you decide.</p></div>
           </div>
           <div class="why-item">
             <div class="why-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></div>
@@ -2687,7 +2687,7 @@
           </div>
           <div class="faq-item">
             <button type="button" class="faq-q" aria-expanded="false">Can I choose my test duration?<span class="plus">+</span></button>
-            <div class="faq-a"><p>Yes. Choose a quick preset or select â€œCustom timeâ€ and enter any whole number of minutes from 1 to 180.</p></div>
+            <div class="faq-a"><p>Yes. Choose a quick preset or select “Custom time” and enter any whole number of minutes from 1 to 180.</p></div>
           </div>
           <div class="faq-item">
             <button type="button" class="faq-q" aria-expanded="false">How many questions are in a mock?<span class="plus">+</span></button>
@@ -2695,7 +2695,7 @@
           </div>
           <div class="faq-item">
             <button type="button" class="faq-q" aria-expanded="false">Can I practice any topic?<span class="plus">+</span></button>
-            <div class="faq-a"><p>Yes â€” technical subjects, interview prep, aptitude, academic revision, or anything else you can describe.</p></div>
+            <div class="faq-a"><p>Yes — technical subjects, interview prep, aptitude, academic revision, or anything else you can describe.</p></div>
           </div>
           <div class="faq-item">
             <button type="button" class="faq-q" aria-expanded="false">What happens after I submit a test?<span class="plus">+</span></button>
@@ -2774,18 +2774,18 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <span>Â© <span id="footer-year">2026</span> Mockify. All rights reserved.</span>
+        <span>© <span id="footer-year">2026</span> Mockify. All rights reserved.</span>
       </div>
     </div>
   </footer>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- ═══════════════════════════════════════════
      AUTH PAGE
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+═══════════════════════════════════════════ -->
 <div class="page" id="auth-page">
   <div class="auth-topbar">
-    <button type="button" class="auth-back" onclick="showPage('home-page')">â† Back to Home</button>
+    <button type="button" class="auth-back" onclick="showPage('home-page')">← Back to Home</button>
   </div>
   <div class="auth-container">
 
@@ -2861,7 +2861,7 @@
         <div class="form-group"><label>Verification code</label><input type="text" id="otp-code" inputmode="numeric" maxlength="6" placeholder="6-digit code" autocomplete="one-time-code"></div>
         <button type="button" class="btn btn-primary btn-block" id="verify-otp-btn" onclick="handleVerifyOtp()">Verify</button>
         <button type="button" class="btn btn-secondary" id="resend-otp-btn" onclick="resendOtp()" style="margin-top:10px;width:100%">Resend code</button>
-        <button type="button" class="btn btn-secondary" onclick="backToEmailEntry()" style="margin-top:10px;width:100%">â† Use a different email</button>
+        <button type="button" class="btn btn-secondary" onclick="backToEmailEntry()" style="margin-top:10px;width:100%">← Use a different email</button>
       </div>
 
       <!-- Password Setup Form -->
@@ -2874,9 +2874,9 @@
     </div>
   </div>
 </div>
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- ═══════════════════════════════════════════
      DASHBOARD PAGE
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+═══════════════════════════════════════════ -->
 <div class="page" id="dashboard-page">
   <nav class="navbar">
     <span class="nav-logo">
@@ -2895,7 +2895,7 @@
       class="btn btn-secondary btn-sm navbar-feedback-link"
       onclick="openFeedbackSection()"
       aria-label="Open feedback form"
-    >â™¡ Feedback / Report a Bug</button>
+    >Feedback / Report a Bug</button>
     <div class="nav-spacer"></div>
     <div class="nav-user">
       <button type="button" class="theme-toggle" onclick="toggleMockifyTheme()" aria-label="Switch to light mode" title="Switch to light mode" aria-pressed="false">
@@ -2928,10 +2928,10 @@
             <span class="required-badge">Required</span>
           </label>
           <textarea class="topic-input" id="topic-input" aria-required="true" aria-describedby="topic-help"
-            placeholder="Type any topic â€” e.g. Java Multithreading, React Hooks, DBMS normalization, Python decorators, AWS basics, Data Science, Marathi Vyakaran, à¤ªà¥à¤°à¤¾à¤šà¥€à¤¨ à¤­à¤¾à¤°à¤¤â€¦"
+            placeholder="Type any topic — e.g. Java Multithreading, React Hooks, DBMS normalization, Python decorators, AWS basics, Data Science, Marathi Vyakaran, प्राचीन भारत…"
             rows="3"></textarea>
           <div id="topic-help" style="margin-top:8px;color:var(--text-dim);font-size:.78rem">
-            ðŸ’¡ You can enter any subject, concept, exam, technology, or skill. Examples include programming, data science, interview prep, academic subjects, and Hindi/Marathi exam topics.
+            💡 You can enter any subject, concept, exam, technology, or skill. Examples include programming, data science, interview prep, academic subjects, and Hindi/Marathi exam topics.
           </div>
         </div>
 <div style="margin:4px 0 10px;color:var(--text-faint);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em">Try an example</div>
@@ -2977,7 +2977,7 @@
 
         <button type="button" class="generate-btn" id="generate-btn" onclick="handleGenerate()">
           <div class="spinner" id="gen-spinner"></div>
-          <span id="gen-btn-text">âœ¦ Create Mock Test</span>
+          <span id="gen-btn-text">✦ Create Mock Test</span>
         </button>
       </div>
 
@@ -2987,7 +2987,7 @@
     <div class="stats-sidebar">
       <div class="stat-card">
         <div class="stat-label">Mocks Remaining Today</div>
-        <div class="stat-value" id="mocks-remaining">â€”</div>
+        <div class="stat-value" id="mocks-remaining">—</div>
         <div class="stat-sub" id="mocks-sub">of 10 daily limit</div>
         <div class="limit-bar">
           <div class="limit-bar-fill" id="limit-bar" style="width:100%"></div>
@@ -2995,11 +2995,11 @@
       </div>
       <div class="stat-card">
         <div class="stat-label">Total Mocks Taken</div>
-        <div class="stat-value" id="total-mocks-stat">â€”</div>
+        <div class="stat-value" id="total-mocks-stat">—</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Best Score</div>
-        <div class="stat-value" id="best-score-stat">â€”</div>
+        <div class="stat-value" id="best-score-stat">—</div>
         <div class="stat-sub">out of 10</div>
       </div>
     </div>
@@ -3020,7 +3020,7 @@
         <div class="history-filter-chips" aria-label="Filter by score">
           <button class="history-chip active" type="button" data-score-filter="all">All</button>
           <button class="history-chip" type="button" data-score-filter="strong">Strong (80%+)</button>
-          <button class="history-chip" type="button" data-score-filter="steady">Steady (50â€“79%)</button>
+          <button class="history-chip" type="button" data-score-filter="steady">Steady (50–79%)</button>
           <button class="history-chip" type="button" data-score-filter="review">Review (&lt;50%)</button>
         </div>
         <span id="history-count" class="history-count"></span>
@@ -3054,7 +3054,7 @@
             id="feedback-message"
             class="feedback-textarea"
             maxlength="2000"
-            placeholder="Tell us what happened, what you expected, or what you'd improveâ€¦"
+            placeholder="Tell us what happened, what you expected, or what you'd improve…"
             required
             oninput="updateFeedbackCount()"
           ></textarea>
@@ -3070,7 +3070,7 @@
         <div class="feedback-actions">
           <button type="submit" class="btn btn-primary" id="feedback-submit-btn">Send Feedback</button>
           <span style="color:var(--text-dim);font-size:.76rem;">
-            Up to 2 MB Â· PNG, JPG, or WebP Â· 3 submissions per day
+            Up to 2 MB · PNG, JPG, or WebP · 3 submissions per day
           </span>
         </div>
       </form>
@@ -3078,24 +3078,24 @@
       <div class="feedback-history">
         <div style="font-size:.82rem;font-weight:600;margin-bottom:8px;">Your recent feedback</div>
         <div id="feedback-history-list">
-          <div style="color:var(--text-dim);font-size:.82rem;">Loadingâ€¦</div>
+          <div style="color:var(--text-dim);font-size:.82rem;">Loading…</div>
         </div>
       </div>
     </section>
   </div>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- ═══════════════════════════════════════════
      EXAM PAGE
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+═══════════════════════════════════════════ -->
 <div class="page" id="exam-page">
   <div class="exam-header">
     <div class="exam-title">
       <span>Mockify Exam</span>
-      <strong id="exam-topic">Loadingâ€¦</strong>
+      <strong id="exam-topic">Loading…</strong>
     </div>
     <div class="timer-display" id="timer-display">
-      <span>â±</span>
+      <span>⏱</span>
       <span id="timer-text">--:--</span>
     </div>
     <button type="button" class="submit-exam-btn" onclick="confirmSubmit(event)">Submit Exam</button>
@@ -3121,19 +3121,19 @@
     <!-- Question display -->
     <div class="question-area">
       <div class="q-counter" id="q-counter">Question 1 of 10</div>
-      <div class="q-text" id="q-text">Loading questionâ€¦</div>
+      <div class="q-text" id="q-text">Loading question…</div>
       <div class="options-grid" id="options-grid"></div>
       <div class="exam-nav">
-        <button type="button" class="btn btn-secondary" onclick="prevQuestion()">â† Previous</button>
-        <button type="button" class="btn btn-secondary" onclick="nextQuestion()">Next â†’</button>
+        <button type="button" class="btn btn-secondary" onclick="prevQuestion()">← Previous</button>
+        <button type="button" class="btn btn-secondary" onclick="nextQuestion()">Next →</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- ═══════════════════════════════════════════
      RESULT PAGE
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+═══════════════════════════════════════════ -->
 <div class="page" id="result-page">
   <nav class="navbar">
     <span class="nav-logo">Mockify</span>
@@ -3163,7 +3163,7 @@
           <div class="score-stat-lbl">Score</div>
         </div>
         <div class="score-stat">
-          <div class="score-stat-val" id="res-time" style="color:var(--text-dim)">â€”</div>
+          <div class="score-stat-val" id="res-time" style="color:var(--text-dim)">—</div>
           <div class="score-stat-lbl">Time</div>
         </div>
       </div>
@@ -3173,21 +3173,21 @@
     <div id="questions-review" class="questions-review"></div>
 
     <div class="result-actions">
-      <button type="button" class="btn btn-secondary" onclick="showPage('dashboard-page');loadDashboard()">â† Dashboard</button>
+      <button type="button" class="btn btn-secondary" onclick="showPage('dashboard-page');loadDashboard()">← Dashboard</button>
       <button type="button" class="btn btn-primary" onclick="showPage('dashboard-page');loadDashboard()">Take Another Mock</button>
     </div>
   </div>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- ═══════════════════════════════════════════
      ADMIN PAGE
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+═══════════════════════════════════════════ -->
 <div class="page" id="admin-page">
   <nav class="navbar">
     <span class="nav-logo">Mockify</span>
     <span class="nav-pill">Admin Panel</span>
     <div class="nav-spacer"></div>
-    <button type="button" class="btn btn-secondary btn-sm" onclick="showPage('dashboard-page');loadDashboard()">â† Dashboard</button>
+    <button type="button" class="btn btn-secondary btn-sm" onclick="showPage('dashboard-page');loadDashboard()">← Dashboard</button>
     <button type="button" class="btn btn-secondary btn-sm" onclick="handleLogout()">Sign Out</button>
   </nav>
 
@@ -3195,10 +3195,10 @@
     <h2 class="section-title" style="margin-bottom:20px">Admin Dashboard</h2>
 
     <div class="stats-grid" id="admin-stats-grid">
-      <div class="stat-box"><div class="stat-label">Total Users</div><div class="stat-value" id="a-total-users">â€”</div></div>
-      <div class="stat-box"><div class="stat-label">Total Mocks</div><div class="stat-value" id="a-total-mocks">â€”</div></div>
-      <div class="stat-box"><div class="stat-label">Total Results</div><div class="stat-value" id="a-total-results">â€”</div></div>
-      <div class="stat-box"><div class="stat-label">Avg Score</div><div class="stat-value" id="a-avg-score">â€”</div></div>
+      <div class="stat-box"><div class="stat-label">Total Users</div><div class="stat-value" id="a-total-users">—</div></div>
+      <div class="stat-box"><div class="stat-label">Total Mocks</div><div class="stat-value" id="a-total-mocks">—</div></div>
+      <div class="stat-box"><div class="stat-label">Total Results</div><div class="stat-value" id="a-total-results">—</div></div>
+      <div class="stat-box"><div class="stat-label">Avg Score</div><div class="stat-value" id="a-avg-score">—</div></div>
     </div>
 
     <div class="admin-tabs">
@@ -3225,7 +3225,7 @@
             </tr>
           </thead>
           <tbody id="users-table-body">
-            <tr><td colspan="7" style="text-align:center;color:var(--text-dim)">Loadingâ€¦</td></tr>
+            <tr><td colspan="7" style="text-align:center;color:var(--text-dim)">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -3244,7 +3244,7 @@
             </tr>
           </thead>
           <tbody id="mocks-table-body">
-            <tr><td colspan="4" style="text-align:center;color:var(--text-dim)">Loadingâ€¦</td></tr>
+            <tr><td colspan="4" style="text-align:center;color:var(--text-dim)">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -3265,7 +3265,7 @@
             </tr>
           </thead>
           <tbody id="results-table-body">
-            <tr><td colspan="5" style="text-align:center;color:var(--text-dim)">Loadingâ€¦</td></tr>
+            <tr><td colspan="5" style="text-align:center;color:var(--text-dim)">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -3273,14 +3273,14 @@
   </div>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- ═══════════════════════════════════════════
      JAVASCRIPT
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+═══════════════════════════════════════════ -->
 <script>
-// â”€â”€â”€ CONFIG â”€â”€â”€
+// ─── CONFIG ───
 const API = '/api';
 
-// â”€â”€â”€ STATE â”€â”€â”€
+// ─── STATE ───
 let currentUser = null;
 let examQuestions = [];
 let examAnswers = {};
@@ -3296,13 +3296,13 @@ let generateCooldownTimer = null;
 let examSubmitInFlight = false;
 let navigatingToExam = false;
 
-// â”€â”€â”€ APP BOOT â”€â”€â”€
+// ─── APP BOOT ───
 function hideBootOverlay() {
   const overlay = document.getElementById('app-boot-overlay');
   if (overlay) overlay.classList.add('hidden');
 }
 
-// â”€â”€â”€ UTILS â”€â”€â”€
+// ─── UTILS ───
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -3348,7 +3348,7 @@ function showSuccess(id, msg) {
   el.style.display = 'block';
 }
 
-function showLoading(msg = 'Generating your mockâ€¦', sub = 'Asking AI to craft 10 expert questions') {
+function showLoading(msg = 'Generating your mock…', sub = 'Asking AI to craft 10 expert questions') {
   document.getElementById('loading-overlay').classList.add('active');
   document.querySelector('.loading-text').textContent = msg;
   document.getElementById('loading-sub').textContent = sub;
@@ -3446,7 +3446,7 @@ function showProfile() {
   const usagePercent = currentUser.is_admin || currentUser.is_super_admin ? 100 : Math.min(100, Math.round((used / Math.max(1, currentUser.daily_mock_limit || 1)) * 100));
   const detail = (label, value) => `<div class="profile-detail"><span class="profile-detail-label">${label}</span><span class="profile-detail-value">${escapeHtml(value)}</span></div>`;
   document.getElementById('modal-title').textContent = currentUser.name || 'Your profile';
-  document.getElementById('modal-body').innerHTML = `<div class="profile-card"><div class="profile-email">${escapeHtml(currentUser.email || 'Email unavailable')}</div><div class="profile-grid">${detail('Account type', role)}${detail('Sign-in method', currentUser.auth_provider || 'Email')}${detail('Email status', currentUser.email_verified ? 'Verified' : 'Pending verification')}${detail('Member since', currentUser.created_at ? formatDate(currentUser.created_at) : 'â€”')}</div><div class="profile-usage"><div class="profile-usage-head"><span>Mock access today</span><span>${escapeHtml(access)}</span></div><div class="profile-usage-bar"><div class="profile-usage-fill" style="width:${usagePercent}%"></div></div></div></div>`;
+  document.getElementById('modal-body').innerHTML = `<div class="profile-card"><div class="profile-email">${escapeHtml(currentUser.email || 'Email unavailable')}</div><div class="profile-grid">${detail('Account type', role)}${detail('Sign-in method', currentUser.auth_provider || 'Email')}${detail('Email status', currentUser.email_verified ? 'Verified' : 'Pending verification')}${detail('Member since', currentUser.created_at ? formatDate(currentUser.created_at) : '—')}</div><div class="profile-usage"><div class="profile-usage-head"><span>Mock access today</span><span>${escapeHtml(access)}</span></div><div class="profile-usage-bar"><div class="profile-usage-fill" style="width:${usagePercent}%"></div></div></div></div>`;
   document.getElementById('modal-confirm-btn').style.display = 'none';
   document.getElementById('modal-cancel-btn').textContent = 'Close';
   document.getElementById('modal-overlay').classList.add('active');
@@ -3486,7 +3486,7 @@ function escapeHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// â”€â”€â”€ PUBLIC HOME / NAV â”€â”€â”€
+// ─── PUBLIC HOME / NAV ───
 function openAuth(tab) {
   showPage('auth-page');
   switchAuthTab(tab);
@@ -3545,13 +3545,6 @@ document.querySelectorAll('.faq-q').forEach(btn => {
 
 // Hero product preview animation (marketing demo only, lightweight)
 (function heroPreview() {
-  const corruptedDemo = [
-    { topic: 'Linear Regression in ML', q: 'Which loss function is most commonly minimized in ordinary least squares regression?', opts: ['Hinge loss', 'Mean squared error', 'Cross-entropy', 'KL divergence'], answer: 1, count: 3, timer: '05:00', progress: 30 },
-    { topic: 'MPSC Prelims Â· à¤®à¤°à¤¾à¤ à¥€ à¤µà¥à¤¯à¤¾à¤•à¤°à¤£', q: 'à¤–à¤¾à¤²à¥€à¤²à¤ªà¥ˆà¤•à¥€ à¤•à¥‹à¤£à¤¤à¤¾ à¤¶à¤¬à¥à¤¦ à¤¤à¤¤à¥à¤¸à¤® à¤¶à¤¬à¥à¤¦à¤¾à¤šà¥‡ à¤‰à¤¦à¤¾à¤¹à¤°à¤£ à¤†à¤¹à¥‡?', opts: ['à¤¸à¥‚à¤°à¥à¤¯', 'à¤†à¤—', 'à¤ªà¤¾à¤Šà¤¸', 'à¤˜à¤°'], answer: 0, count: 4, timer: '04:25', progress: 40 },
-    { topic: 'React Hooks', q: 'Which hook lets you persist a value across renders without causing a re-render?', opts: ['useState', 'useEffect', 'useRef', 'useMemo'], answer: 2, count: 6, timer: '03:20', progress: 60 },
-    { topic: 'UPSC Prelims Â· à¤ªà¥à¤°à¤¾à¤šà¥€à¤¨ à¤­à¤¾à¤°à¤¤', q: 'à¤¸à¤¿à¤‚à¤§à¥ à¤˜à¤¾à¤Ÿà¥€ à¤¸à¤­à¥à¤¯à¤¤à¤¾ à¤•à¥‡ à¤¨à¤¿à¤®à¥à¤¨à¤²à¤¿à¤–à¤¿à¤¤ à¤¸à¥à¤¥à¤²à¥‹à¤‚ à¤®à¥‡à¤‚ à¤¸à¥‡ à¤•à¥Œà¤¨-à¤¸à¤¾ à¤—à¥à¤œà¤°à¤¾à¤¤ à¤®à¥‡à¤‚ à¤¸à¥à¤¥à¤¿à¤¤ à¤¹à¥ˆ?', opts: ['à¤¹à¤¡à¤¼à¤ªà¥à¤ªà¤¾', 'à¤²à¥‹à¤¥à¤²', 'à¤®à¥‹à¤¹à¤¨à¤œà¥‹à¤¦à¤¡à¤¼à¥‹', 'à¤°à¤¾à¤–à¥€à¤—à¤¢à¤¼à¥€'], answer: 1, count: 7, timer: '02:45', progress: 70 },
-    { topic: 'SQL Joins', q: 'Which join returns only the rows with matching values in both tables?', opts: ['LEFT JOIN', 'INNER JOIN', 'FULL JOIN', 'CROSS JOIN'], answer: 1, count: 9, timer: '01:05', progress: 90 }
-  ];
   const demo = [
     { topic: 'Linear Regression in ML', q: 'Which loss function is most commonly minimized in ordinary least squares regression?', opts: ['Hinge loss', 'Mean squared error', 'Cross-entropy', 'KL divergence'], answer: 1, count: 3, timer: '05:00', progress: 30 },
     { topic: 'MPSC Prelims · मराठी व्याकरण', q: 'खालीलपैकी कोणता शब्द तत्सम शब्दाचे उदाहरण आहे?', opts: ['सूर्य', 'आग', 'पाऊस', 'घर'], answer: 0, count: 4, timer: '04:25', progress: 40 },
@@ -3606,7 +3599,7 @@ document.querySelectorAll('.faq-q').forEach(btn => {
   } else schedulePreview();
 })();
 
-// â”€â”€â”€ AUTH â”€â”€â”€
+// ─── AUTH ───
 let otpMode=null, otpEmail='', otpName='', otpResendUntil=0, otpExpiresUntil=0, otpCountdownTimer=null, authRequestInFlight=false;
 function switchAuthTab(tab){document.getElementById('auth-tab-login').classList.toggle('active',tab==='login');document.getElementById('auth-tab-register').classList.toggle('active',tab==='register');document.getElementById('login-form').style.display=tab==='login'?'block':'none';document.getElementById('register-form').style.display=tab==='register'?'block':'none';document.getElementById('password-setup-form').style.display='none';resetOtpFlow();hideError('auth-error');hideSuccess('auth-success');}
 function authButton(id,disabled,label){const b=document.getElementById(id);if(b){b.disabled=disabled;b.textContent=label;}}
@@ -3631,18 +3624,18 @@ function startGoogleLogin(){
   }
   window.location.href='/api/auth/google/start?mode=login';
 }
-async function handlePasswordLogin(){if(authRequestInFlight)return;const email=document.getElementById('login-email').value.trim(),password=document.getElementById('login-password').value;if(!email||!password)return showError('auth-error','Enter your email and password.');authRequestInFlight=true;authButton('login-password-btn',true,'Signing inâ€¦');hideError('auth-error');try{const data=await apiCall('POST','/auth/login',{email,password});currentUser=data.user;afterLogin();}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('login-password-btn',false,'Sign In');}}
-async function handleLoginOtp(){if(authRequestInFlight)return;const email=document.getElementById('login-email').value.trim();if(!email)return showError('auth-error','Enter your email first.');authRequestInFlight=true;authButton('login-otp-link',true,'Sending OTPâ€¦');hideError('auth-error');try{const data=await apiCall('POST','/auth/request-otp',{email});showOtpForm('login',email,'',data.expires_in);}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('login-otp-link',false,'Sign in with OTP instead');}}
-async function handleRegister(){if(authRequestInFlight)return;const name=document.getElementById('reg-name').value.trim(),email=document.getElementById('reg-email').value.trim(),termsAccepted=document.getElementById('reg-terms').checked;if(!name||!email)return showError('auth-error','Please fill in all fields.');if(!termsAccepted)return showError('auth-error','Please agree to the Terms of Service and acknowledge the Privacy Policy before registering.');authRequestInFlight=true;authButton('register-send-btn',true,'Sending verification codeâ€¦');hideError('auth-error');try{const data=await apiCall('POST','/auth/register',{name,email,terms_accepted:true,terms_version:'2026-09-03'});showOtpForm('register',email,name,data.expires_in);}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('register-send-btn',false,'Verify Email & Register');}}
-async function handleVerifyOtp(){if(!otpMode||authRequestInFlight)return;const otp=document.getElementById('otp-code').value.trim();if(!/^\d{6}$/.test(otp))return showError('auth-error','Enter the 6-digit verification code');authRequestInFlight=true;authButton('verify-otp-btn',true,'Verifyingâ€¦');hideError('auth-error');try{const data=await apiCall('POST','/auth/verify-otp',{email:otpEmail,otp});resetOtpFlow();if(data.needs_password_setup){showPasswordSetupForm(data.message);return;}currentUser=data.user;afterLogin();}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('verify-otp-btn',false,'Verify');}}
-async function resendOtp(){if(!otpMode||authRequestInFlight||Date.now()<otpResendUntil)return;authRequestInFlight=true;authButton('resend-otp-btn',true,'Sendingâ€¦');hideError('auth-error');try{const path=otpMode==='register'?'/auth/register':'/auth/request-otp';const body=otpMode==='register'?{name:otpName,email:otpEmail}:{email:otpEmail};const data=await apiCall('POST',path,body);showSuccess('auth-success','A new verification code was sent.');startOtpCountdown(data.expires_in);}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;refreshOtpTimers();}}
-async function handleSetPassword(){if(authRequestInFlight)return;const password=document.getElementById('setup-password').value,confirmPassword=document.getElementById('setup-password-confirm').value;if(password.length<8)return showError('auth-error','Password must be at least 8 characters.');if(password!==confirmPassword)return showError('auth-error','Passwords do not match.');authRequestInFlight=true;authButton('password-setup-btn',true,'Savingâ€¦');hideError('auth-error');try{const data=await apiCall('POST','/auth/set-password',{password,confirm_password:confirmPassword});currentUser=data.user;history.replaceState({},document.title,window.location.pathname);afterLogin();}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('password-setup-btn',false,'Set Password');}}
+async function handlePasswordLogin(){if(authRequestInFlight)return;const email=document.getElementById('login-email').value.trim(),password=document.getElementById('login-password').value;if(!email||!password)return showError('auth-error','Enter your email and password.');authRequestInFlight=true;authButton('login-password-btn',true,'Signing in…');hideError('auth-error');try{const data=await apiCall('POST','/auth/login',{email,password});currentUser=data.user;afterLogin();}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('login-password-btn',false,'Sign In');}}
+async function handleLoginOtp(){if(authRequestInFlight)return;const email=document.getElementById('login-email').value.trim();if(!email)return showError('auth-error','Enter your email first.');authRequestInFlight=true;authButton('login-otp-link',true,'Sending OTP…');hideError('auth-error');try{const data=await apiCall('POST','/auth/request-otp',{email});showOtpForm('login',email,'',data.expires_in);}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('login-otp-link',false,'Sign in with OTP instead');}}
+async function handleRegister(){if(authRequestInFlight)return;const name=document.getElementById('reg-name').value.trim(),email=document.getElementById('reg-email').value.trim(),termsAccepted=document.getElementById('reg-terms').checked;if(!name||!email)return showError('auth-error','Please fill in all fields.');if(!termsAccepted)return showError('auth-error','Please agree to the Terms of Service and acknowledge the Privacy Policy before registering.');authRequestInFlight=true;authButton('register-send-btn',true,'Sending verification code…');hideError('auth-error');try{const data=await apiCall('POST','/auth/register',{name,email,terms_accepted:true,terms_version:'2026-09-03'});showOtpForm('register',email,name,data.expires_in);}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('register-send-btn',false,'Verify Email & Register');}}
+async function handleVerifyOtp(){if(!otpMode||authRequestInFlight)return;const otp=document.getElementById('otp-code').value.trim();if(!/^\d{6}$/.test(otp))return showError('auth-error','Enter the 6-digit verification code');authRequestInFlight=true;authButton('verify-otp-btn',true,'Verifying…');hideError('auth-error');try{const data=await apiCall('POST','/auth/verify-otp',{email:otpEmail,otp});resetOtpFlow();if(data.needs_password_setup){showPasswordSetupForm(data.message);return;}currentUser=data.user;afterLogin();}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('verify-otp-btn',false,'Verify');}}
+async function resendOtp(){if(!otpMode||authRequestInFlight||Date.now()<otpResendUntil)return;authRequestInFlight=true;authButton('resend-otp-btn',true,'Sending…');hideError('auth-error');try{const path=otpMode==='register'?'/auth/register':'/auth/request-otp';const body=otpMode==='register'?{name:otpName,email:otpEmail}:{email:otpEmail};const data=await apiCall('POST',path,body);showSuccess('auth-success','A new verification code was sent.');startOtpCountdown(data.expires_in);}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;refreshOtpTimers();}}
+async function handleSetPassword(){if(authRequestInFlight)return;const password=document.getElementById('setup-password').value,confirmPassword=document.getElementById('setup-password-confirm').value;if(password.length<8)return showError('auth-error','Password must be at least 8 characters.');if(password!==confirmPassword)return showError('auth-error','Passwords do not match.');authRequestInFlight=true;authButton('password-setup-btn',true,'Saving…');hideError('auth-error');try{const data=await apiCall('POST','/auth/set-password',{password,confirm_password:confirmPassword});currentUser=data.user;history.replaceState({},document.title,window.location.pathname);afterLogin();}catch(e){showError('auth-error',e.message);}finally{authRequestInFlight=false;authButton('password-setup-btn',false,'Set Password');}}
 async function handlePasswordSetupLink(){const params=new URLSearchParams(window.location.search),token=params.get('password_setup');if(!token)return false;showPage('auth-page');document.getElementById('auth-tab-login').classList.remove('active');document.getElementById('auth-tab-register').classList.remove('active');document.getElementById('login-form').style.display='none';document.getElementById('register-form').style.display='none';document.getElementById('otp-form').style.display='none';document.getElementById('password-setup-form').style.display='none';hideError('auth-error');hideSuccess('auth-success');try{const data=await apiCall('POST','/auth/prepare-password-setup',{token});history.replaceState({},document.title,window.location.pathname);showPasswordSetupForm(`Hi ${data.name||'there'}. Create a password for your Mockify account.`);}catch(e){history.replaceState({},document.title,window.location.pathname);showError('auth-error',e.message);}return true;}
 async function handleGoogleResultQuery(){const params=new URLSearchParams(window.location.search);if(params.get('google')==='success'){history.replaceState({},document.title,window.location.pathname);try{const data=await apiCall('GET','/auth/me');currentUser=data.user;afterLogin();}catch(e){showPage('home-page');}return true;}if(params.get('google_error')){history.replaceState({},document.title,window.location.pathname);showPage('home-page');openAuth('login');showError('auth-error','Google sign-in could not be completed. Please try again.');return true;}return false;}
 async function handleLogout(){try{await apiCall('POST','/auth/logout');}catch(e){}currentUser=null;showPage('home-page');}
 function afterLogin(){loadDashboard();loadFeedbackHistory();showPage('dashboard-page');const isAdmin=Boolean(currentUser.is_admin||currentUser.is_super_admin);document.getElementById('admin-btn').style.display=isAdmin?'inline-flex':'none';document.getElementById('nav-avatar').textContent=currentUser.name.charAt(0).toUpperCase();document.getElementById('nav-username').textContent=currentUser.name;document.getElementById('nav-user-role').textContent=currentUser.is_super_admin?'Super Admin':isAdmin?'Admin':'User';document.getElementById('nav-user-role').style.display='inline-flex';}
 
-// â”€â”€â”€ DASHBOARD â”€â”€â”€
+// ─── DASHBOARD ───
 async function loadDashboard() {
   try {
     const data = await apiCall('GET', '/auth/me');
@@ -3663,7 +3656,7 @@ async function loadDashboard() {
     if (!hist.history.length) {
       list.innerHTML = '<div style="color:var(--text-dim);font-size:0.875rem;padding:16px;text-align:center">No results yet. Take your first mock!</div>';
       document.getElementById('total-mocks-stat').textContent = '0';
-      document.getElementById('best-score-stat').textContent = 'â€”';
+      document.getElementById('best-score-stat').textContent = '—';
       return;
     }
     document.getElementById('total-mocks-stat').textContent = hist.history.length;
@@ -3676,14 +3669,14 @@ async function loadDashboard() {
         <div class="history-topic">${escapeHtml(r.topic)}</div>
         <div class="history-meta">
           <span>${formatDate(r.timestamp)}</span>
-          <span class="badge ${cls}">${r.score}/${r.total} Â· ${r.percentage}%</span>
+          <span class="badge ${cls}">${r.score}/${r.total} · ${r.percentage}%</span>
         </div>
       </button>`;
     }).join('');
   } catch (e) {}
 }
 
-// â”€â”€â”€ FEEDBACK â”€â”€â”€
+// ─── FEEDBACK ───
 const historyLibrary = { page: 1, score: 'all', query: '', topic: '', sort: 'recent', loaded: [] };
 let historySearchTimer;
 
@@ -3702,7 +3695,7 @@ function renderHistoryItems(items, append = false) {
   }
   const html = items.map(r => {
     const cls = r.percentage >= 80 ? 'badge-green' : r.percentage >= 50 ? 'badge-yellow' : 'badge-red';
-    return `<button class="history-item" type="button" onclick="openResultPage(${r.result_id})"><div class="history-topic">${escapeHtml(r.topic)}</div><div class="history-meta"><span>${formatDate(r.timestamp)}</span><span class="badge ${cls}">${r.score}/${r.total} Â· ${r.percentage}%</span></div></button>`;
+    return `<button class="history-item" type="button" onclick="openResultPage(${r.result_id})"><div class="history-topic">${escapeHtml(r.topic)}</div><div class="history-meta"><span>${formatDate(r.timestamp)}</span><span class="badge ${cls}">${r.score}/${r.total} · ${r.percentage}%</span></div></button>`;
   }).join('');
   if (append) list.insertAdjacentHTML('beforeend', html); else list.innerHTML = html;
 }
@@ -3716,7 +3709,7 @@ function fillHistoryTopics(topics) {
 async function loadHistoryPage(append = false) {
   const list = document.getElementById('history-list');
   try {
-    if (!append) list.innerHTML = '<div class="history-empty">Loading resultsâ€¦</div>';
+    if (!append) list.innerHTML = '<div class="history-empty">Loading results…</div>';
     const hist = await apiCall('GET', `/results/history?${historyQueryString()}`);
     if (!append) fillHistoryTopics(hist.topics || []);
     historyLibrary.loaded = append ? historyLibrary.loaded.concat(hist.history) : hist.history;
@@ -3725,7 +3718,7 @@ async function loadHistoryPage(append = false) {
     document.getElementById('history-load-more').style.display = hist.has_more ? 'block' : 'none';
     if (!append) {
       document.getElementById('total-mocks-stat').textContent = hist.total;
-      document.getElementById('best-score-stat').textContent = hist.best_score ?? 'â€”';
+      document.getElementById('best-score-stat').textContent = hist.best_score ?? '—';
     }
   } catch (e) {
     if (!append) list.innerHTML = '<div class="history-empty">Past results are temporarily unavailable.</div>';
@@ -3754,7 +3747,7 @@ function renderHistoryItems(items, append = false) {
   }
   const html = items.map(r => {
     const cls = r.percentage >= 80 ? 'badge-green' : r.percentage >= 50 ? 'badge-yellow' : 'badge-red';
-    return `<div class="history-item"><button class="history-item-main" type="button" onclick="openResultPage(${r.result_id})"><div class="history-topic">${escapeHtml(r.topic)}</div><div class="history-meta"><span>${formatDate(r.timestamp)}</span><span class="badge ${cls}">${r.score}/${r.total} Â· ${r.percentage}%</span></div></button><div class="history-actions"><button class="btn btn-secondary btn-sm" type="button" onclick="deleteOwnResult(${r.result_id})">Delete</button></div></div>`;
+    return `<div class="history-item"><button class="history-item-main" type="button" onclick="openResultPage(${r.result_id})"><div class="history-topic">${escapeHtml(r.topic)}</div><div class="history-meta"><span>${formatDate(r.timestamp)}</span><span class="badge ${cls}">${r.score}/${r.total} · ${r.percentage}%</span></div></button><div class="history-actions"><button class="btn btn-secondary btn-sm" type="button" onclick="deleteOwnResult(${r.result_id})">Delete</button></div></div>`;
   }).join('');
   if (append) list.insertAdjacentHTML('beforeend', html); else list.innerHTML = html;
 }
@@ -3800,7 +3793,7 @@ function renderFeedbackHistory(items) {
   list.innerHTML = items.map(item => `<div class="feedback-history-item">
     <div class="feedback-history-head">
       <span>${escapeHtml(item.category_label)}</span>
-      <span style="color:var(--text-dim)">${escapeHtml(formatDate(item.created_at))} Â· ${escapeHtml(item.status)}</span>
+      <span style="color:var(--text-dim)">${escapeHtml(formatDate(item.created_at))} · ${escapeHtml(item.status)}</span>
     </div>
     <div class="feedback-history-msg">${escapeHtml(item.message)}</div>
   </div>`).join('');
@@ -3865,7 +3858,7 @@ async function submitFeedback(event) {
   }
 
   button.disabled = true;
-  button.textContent = 'Sendingâ€¦';
+  button.textContent = 'Sending…';
 
   try {
     const formData = new FormData();
@@ -3890,7 +3883,7 @@ async function submitFeedback(event) {
     messageEl.value = '';
     imageEl.value = '';
     updateFeedbackCount();
-    feedbackShowSuccess('Thanks â€” your feedback was sent to the Mockify team.');
+    feedbackShowSuccess('Thanks — your feedback was sent to the Mockify team.');
     await loadFeedbackHistory();
   } catch (e) {
     feedbackShowError(e.message);
@@ -3937,7 +3930,7 @@ function setLanguage(language) {
 
   const help = document.getElementById('language-help');
   if (help) {
-    const labels = {
+  const labels = { excellent: 'Outstanding', good: 'Great job', average: 'Keep practicing', poor: 'Study more' };
       English: 'Questions, options, and explanations will be generated in English.',
       Hindi: 'Questions, options, and explanations will be generated in Hindi.',
       Marathi: 'Questions, options, and explanations will be generated in Marathi.'
@@ -3989,7 +3982,7 @@ async function handleGenerate() {
 
   generateInFlight = true;
   refreshGenerateButton();
-  showLoading('Building your mock...', `Preparing a fresh ${language} question set for â€œ${topic.substring(0, 60)}â€`);
+  showLoading('Building your mock...', `Preparing a fresh ${language} question set for “${topic.substring(0, 60)}”`);
 
   try {
     const requestBody = {
@@ -4025,7 +4018,7 @@ async function handleGenerate() {
 
         showLoading(
           'Still preparing your mock...',
-          `Generating a fresh ${language} question set for â€œ${topic.substring(0, 60)}â€`
+          `Generating a fresh ${language} question set for “${topic.substring(0, 60)}”`
         );
 
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -4065,7 +4058,7 @@ async function handleGenerate() {
     const finalMessage =
       language !== 'English' &&
       (/fresh multilingual mock/i.test(errorText) || /temporarily unavailable/i.test(errorText))
-        ? `Weâ€™re having trouble generating your ${language} mock right now. Your topic is still here â€” please try again in a moment.`
+        ? `We're having trouble generating your ${language} mock right now. Your topic is still here — please try again in a moment.`
         : 'We could not create this mock right now. Check your connection and try again; your topic is still here.';
 
     showError('gen-error', finalMessage);
@@ -4076,7 +4069,7 @@ async function handleGenerate() {
   }
 }
 
-// â”€â”€â”€ EXAM â”€â”€â”€
+// ─── EXAM ───
 function loadExam(data) {
   examQuestions = data.questions || [];
   examMockId = data.mock_id;
@@ -4189,7 +4182,7 @@ async function submitExam() {
   examSubmitInFlight = true;
   clearInterval(timerInterval);
   const timeTaken = Math.round((Date.now() - examStartTime) / 1000);
-  showLoading('Evaluating answersâ€¦', 'Calculating your score');
+  showLoading('Evaluating answers…', 'Calculating your score');
 
   try {
     const data = await apiCall('POST', '/results/submit', {
@@ -4206,14 +4199,13 @@ async function submitExam() {
   }
 }
 
-// â”€â”€â”€ RESULTS â”€â”€â”€
+// ─── RESULTS ───
 function renderResults(data) {
   const pct = data.percentage;
   const gradeEl = document.getElementById('result-grade');
   gradeEl.textContent = `${data.score}/${data.total}`;
   gradeEl.className = 'score-grade ' + (pct >= 80 ? 'excellent' : pct >= 60 ? 'good' : pct >= 40 ? 'average' : 'poor');
-
-  const labels = { excellent: 'ðŸ† Outstanding!', good: 'â­ Great job!', average: 'ðŸ’ª Keep practicing', poor: 'ðŸ“– Study more' };
+  const labels = { excellent: 'Outstanding', good: 'Great job', average: 'Keep practicing', poor: 'Study more' };
   document.getElementById('result-label').textContent = pct >= 80 ? labels.excellent : pct >= 60 ? labels.good : pct >= 40 ? labels.average : labels.poor;
   document.getElementById('result-topic-label').textContent = `Topic: ${data.topic}`;
   document.getElementById('res-correct').textContent = data.correct_answers;
@@ -4231,8 +4223,8 @@ function renderResults(data) {
       return `<div class="review-opt ${optCls}">
         <span class="review-opt-key">${k}</span>
         <span>${escapeHtml(q.options[k])}</span>
-        ${k === q.correct_answer ? ' âœ“' : ''}
-        ${k === q.user_answer && !q.is_correct ? ' âœ—' : ''}
+        ${k === q.correct_answer ? ' ✓' : ''}
+        ${k === q.user_answer && !q.is_correct ? ' ×' : ''}
       </div>`;
     }).join('');
     return `<div class="review-card ${cls}">
@@ -4245,7 +4237,7 @@ function renderResults(data) {
   }).join('');
 }
 
-// â”€â”€â”€ ADMIN â”€â”€â”€
+// ─── ADMIN ───
 async function loadAdmin() {
   try {
     const stats = await apiCall('GET', '/admin/stats');
@@ -4377,7 +4369,7 @@ window.addEventListener('pageshow', (event) => {
   loadFeedbackHistory();
 });
 
-// â”€â”€â”€ INIT â”€â”€â”€
+// ─── INIT ───
 
 initializeHistoryLibrary();
 repairLocalizedTopicHints();

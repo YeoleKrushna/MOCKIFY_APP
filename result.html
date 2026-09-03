@@ -318,7 +318,7 @@
     }
 
 
-    /* â”€â”€â”€ RESULT LIGHT-MODE VISUAL HIERARCHY â”€â”€â”€ */
+    /* ─── RESULT LIGHT-MODE VISUAL HIERARCHY ─── */
     html[data-theme="light"] .result-body {
       color: var(--text);
     }
@@ -525,7 +525,7 @@
       color: #4c42bd;
     }
 
-    /* â”€â”€â”€ MOCKIFY THEME TOGGLE + LIGHT THEME â”€â”€â”€ */
+    /* ─── MOCKIFY THEME TOGGLE + LIGHT THEME ─── */
     .theme-toggle {
       width: 38px;
       height: 38px;
@@ -792,28 +792,28 @@
 
     <div class="result-body">
       <div class="score-hero">
-        <div class="score-grade" id="result-grade" aria-live="polite">â€”</div>
-        <div class="score-label" id="result-label">Loading your resultâ€¦</div>
+        <div class="score-grade" id="result-grade" aria-live="polite">—</div>
+        <div class="score-label" id="result-label">Loading your result…</div>
         <div class="result-topic-label" id="result-topic-label"></div>
         <div class="score-stats">
           <div class="score-stat">
-            <div class="score-stat-val" id="res-correct" style="color:var(--success)">â€”</div>
+            <div class="score-stat-val" id="res-correct" style="color:var(--success)">—</div>
             <div class="score-stat-lbl">Correct</div>
           </div>
           <div class="score-stat">
-            <div class="score-stat-val" id="res-wrong" style="color:var(--danger)">â€”</div>
+            <div class="score-stat-val" id="res-wrong" style="color:var(--danger)">—</div>
             <div class="score-stat-lbl">Wrong</div>
           </div>
           <div class="score-stat">
-            <div class="score-stat-val" id="res-unanswered" style="color:var(--text-dim)">â€”</div>
+            <div class="score-stat-val" id="res-unanswered" style="color:var(--text-dim)">—</div>
             <div class="score-stat-lbl">Unanswered</div>
           </div>
           <div class="score-stat">
-            <div class="score-stat-val" id="res-pct" style="color:var(--accent)">â€”</div>
+            <div class="score-stat-val" id="res-pct" style="color:var(--accent)">—</div>
             <div class="score-stat-lbl">Score</div>
           </div>
           <div class="score-stat">
-            <div class="score-stat-val" id="res-time" style="color:var(--text-dim)">â€”</div>
+            <div class="score-stat-val" id="res-time" style="color:var(--text-dim)">—</div>
             <div class="score-stat-lbl">Time</div>
           </div>
         </div>
@@ -826,7 +826,7 @@
       <div id="questions-review" class="questions-review"></div>
 
       <div class="result-actions">
-        <button type="button" class="btn btn-secondary" onclick="window.location.href='/'">â† Dashboard</button>
+        <button type="button" class="btn btn-secondary" onclick="window.location.href='/'">← Dashboard</button>
         <button type="button" class="btn btn-primary" onclick="window.location.href='/'">Take Another Mock</button>
       </div>
     </div>
@@ -894,8 +894,7 @@
       const gradeEl = document.getElementById('result-grade');
       gradeEl.textContent = `0/${data.total}`;
       gradeEl.className = 'score-grade ' + (pct >= 80 ? 'excellent' : pct >= 60 ? 'good' : pct >= 40 ? 'average' : 'poor');
-
-      const labels = { excellent: 'ðŸ† Outstanding!', good: 'â­ Great job!', average: 'ðŸ’ª Keep practicing', poor: 'ðŸ“– Study more' };
+  const labels = { excellent: 'Outstanding', good: 'Great job', average: 'Keep practicing', poor: 'Study more' };
       document.getElementById('result-label').textContent = pct >= 80 ? labels.excellent : pct >= 60 ? labels.good : pct >= 40 ? labels.average : labels.poor;
       document.getElementById('result-topic-label').textContent = `Topic: ${data.topic}`;
       animateNumber(gradeEl, data.score, data.total, (value) => `${value}/${data.total}`);
@@ -915,18 +914,18 @@
           return `<div class="review-opt ${optCls}">
             <span class="review-opt-key">${k}</span>
             <span>${renderRichText(q.options[k])}</span>
-            ${k === q.correct_answer ? ' âœ“' : ''}
-            ${k === q.user_answer && q.is_wrong ? ' âœ—' : ''}
+            ${k === q.correct_answer ? ' &check;' : ''}
+            ${k === q.user_answer && q.is_wrong ? ' &times;' : ''}
           </div>`;
         }).join('');
         const explanationHtml = q.is_wrong ? `
           <div class="explanation-box">
-            <div class="explanation-title">ðŸ’¡ Why this answer is incorrect</div>
+            <div class="explanation-title">Explanation</div>
             <div class="explanation-text">${renderRichText(q.explanation || 'Explanation is unavailable for this question.')}</div>
-            <div class="your-answer-line">Your answer: <strong>${escapeHtml(q.user_answer)}</strong> Â· Correct answer: <strong>${escapeHtml(q.correct_answer)}</strong></div>
+            <div class="your-answer-line">Your answer: <strong>${escapeHtml(q.user_answer)}</strong> · Correct answer: <strong>${escapeHtml(q.correct_answer)}</strong></div>
           </div>` : q.is_unanswered ? `
           <div class="explanation-box">
-            <div class="explanation-title">ðŸ“Œ Unanswered</div>
+            <div class="explanation-title">Unanswered question</div>
             <div class="explanation-text">You did not answer this question. Review the correct answer below.</div>
             <div class="your-answer-line">Correct answer: <strong>${escapeHtml(q.correct_answer)}</strong></div>
           </div>` : '';
